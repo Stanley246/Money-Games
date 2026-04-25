@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Money Games</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle at top, #0a0f24, #000);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* TOP NAV BAR (MATCHES MAIN SITE) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: #00eaff;
+            text-shadow: 0 0 10px #00eaff;
+        }
+
+        nav a {
+            color: #fff;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #00eaff;
+        }
+
+        h1.page-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00eaff;
+            text-shadow: 0 0 10px #00eaff;
+            text-align: center;
+            font-size: 40px;
+            margin-top: 40px;
+        }
+
+        p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,234,255,0.3);
+            box-shadow: 0 0 15px rgba(0,234,255,0.3);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-size: 18px;
+            color: #00eaff;
+            font-family: 'Orbitron';
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: 1px solid #00eaff;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #00eaff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+        }
+
+        button:hover {
+            background: #00c7ff;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #00eaff;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAV BAR -->
+    <nav>
+        <h1>Money Games</h1>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="index.html#games">Games</a>
+            <a href="about.html">About</a>
+                        <a href="contributors.html">Contributors</a>
+
+            <a href="#" id="openLeaderboard">Leaderboard</a>
+        </div>
+    </nav>
+
+    <h1 class="page-title">About Money Games</h1>
+
+    <p>
+        MoneyGames.work.gd is a growing collection of strategy and tycoon-style games designed to test your skills, challenge your thinking, and help you build virtual empires.
+    </p>
+
+    <p>
+        If you beat a record and want to be added to the official leaderboard, fill out the form below and upload a screenshot of your winning page including your time or years.
+    </p>
+
+    <div class="form-container">
+
+        <!-- ⭐ PUT YOUR EMAIL BELOW ⭐ -->
+        <form action="https://formsubmit.co/stanleyrroe@gmail.com" method="POST" enctype="multipart/form-data">
+
+            <!-- FormSubmit settings -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+
+            <label>Your Name</label>
+            <input type="text" name="name" placeholder="Enter your name" required>
+
+            <label>Your Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Your Inquiry / Leaderboard Request</label>
+            <textarea name="message" placeholder="Write your message here..." required></textarea>
+
+            <label>Upload Screenshot</label>
+            <input type="file" name="attachment" accept="image/*" required>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+        <p class="note">
+            Make sure your screenshot clearly shows your winning time or years.
+        </p>
+    </div>
+
+</body>
+</html>
