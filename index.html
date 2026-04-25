@@ -8,10 +8,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
 
+        :root {
+            --bg: radial-gradient(circle at top, #0a0f24, #000);
+            --text: #fff;
+            --card-bg: rgba(255,255,255,0.05);
+            --card-border: rgba(0,234,255,0.3);
+            --accent: #00eaff;
+            --gameColor: #0000E7;
+        }
+
         body {
             margin: 0;
-            background: radial-gradient(circle at top, #0a0f24, #000);
-            color: #fff;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Roboto', sans-serif;
         }
 
@@ -32,20 +41,29 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 28px;
             letter-spacing: 3px;
-            color: #00eaff;
-            text-shadow: 0 0 10px #00eaff;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
         }
 
-        nav a {
-            color: #fff;
+        nav a, nav button, #userDisplay {
+            color: var(--text);
             margin-left: 20px;
             text-decoration: none;
             font-weight: 500;
             transition: 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
         }
 
-        nav a:hover {
-            color: #00eaff;
+        nav a:hover, nav button:hover {
+            color: var(--accent);
+        }
+
+        #userDisplay {
+            cursor: default;
         }
 
         /* HERO SECTION */
@@ -70,9 +88,10 @@
 
         .hero h2 {
             position: relative;
-            font-size: 60px;
+            font-size: 50px;
             font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 20px #00eaff;
+            text-shadow: 0 0 20px var(--accent);
+            z-index: 2;
         }
 
         .hero p {
@@ -80,6 +99,7 @@
             font-size: 20px;
             max-width: 600px;
             opacity: 0.9;
+            z-index: 2;
         }
 
         /* GAME GRID */
@@ -92,8 +112,8 @@
             font-size: 36px;
             margin-bottom: 30px;
             text-align: center;
-            color: #00eaff;
-            text-shadow: 0 0 10px #00eaff;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
         }
 
         .game-grid {
@@ -103,17 +123,19 @@
         }
 
         .game-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(0,234,255,0.3);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 12px;
             overflow: hidden;
             transition: 0.3s;
             cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
         }
 
         .game-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 0 20px #00eaff;
+            box-shadow: 0 0 20px var(--accent);
         }
 
         .game-card img {
@@ -126,11 +148,15 @@
             font-family: 'Orbitron', sans-serif;
             padding: 15px;
             font-size: 20px;
+            text-decoration: underline;
+            color: var(--gameColor);
         }
 
         .game-card p {
             padding: 0 15px 20px;
-            opacity: 0.8;
+            opacity: 0.9;
+            color: var(--gameColor);
+            text-decoration: none;
         }
 
         footer {
@@ -138,6 +164,68 @@
             padding: 30px;
             opacity: 0.6;
             font-size: 14px;
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            width: 380px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .modal input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--text);
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            color: var(--text);
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            padding: 8px;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        table th {
+            color: var(--accent);
+            font-family: 'Orbitron';
         }
     </style>
 </head>
@@ -148,69 +236,276 @@
     <nav>
         <h1>Money Games</h1>
         <div>
+            <span id="userDisplay"></span>
             <a href="#">Home</a>
-            <a href="#">Games</a>
-            <a href="#">About</a>
+            <a href="#games">Games</a>
+            <a href="about.html" target="_blank">About</a>
+            <a href="#" id="openLeaderboard">Leaderboard</a>
+            <a href="cuntributors.html" target="_blank">Cuntributors</a>
+            <button id="loginBtn">Login</button>
         </div>
     </nav>
 
     <!-- HERO -->
     <section class="hero">
-        <h2>Welcome to MoneyGames.work.gd</h2>
+        <h2 id="heroTitle">Welcome to MoneyGames.work.gd</h2>
         <p>Jump into a universe of fun. Choose a game and start Making Money instantly.</p>
     </section>
 
-    
-    <section class="games-section">
+    <!-- GAME SECTION -->
+    <section id="games" class="games-section">
         <h2 class="games-title">Available Games</h2>
-
+        
         <div class="game-grid">
 
-            
-            <a class="game-card" href="race_to_a_billion.html">
-                <img src="https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=80">
+            <a class="game-card" href="race_to_a_billion.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
                 <h3>Race To A Billion</h3>
-                <p>Short description of the game.</p>
+                <p>Master the markets and outmanoeuvre your rivals.</p>
             </a>
 
-            
-            <a class="game-card" href="race_to_a_trillion.html">
+            <a class="game-card" href="race_to_a_trillion.html" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
                 <h3>Race To A Trillion</h3>
-                <p>Short description of the game.</p>
+                <p>Build a global empire and reach the trillion‑dollar milestone.</p>
             </a>
 
-            
-            <a class="game-card" href="real_estate_tycoon.html">
-                <img src="https://images.unsplash.com/photo-1519750783826-e2420f4d687f?auto=format&fit=crop&w=800&q=80">
+            <a class="game-card" href="real_estate_tycoon.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
                 <h3>Real Estate Tycoon</h3>
-                <p>Short description of the game.</p>
+                <p>Flip properties and dominate the housing market.</p>
             </a>
 
-            <a class="game-card" href="YOUR-GAME-LINK-HERE">
+            <a class="game-card" href="bank_fund_tycoon_v1.html" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Real Estate Tycoon</h3>
+                <p>Flip properties and dominate the housing market. (upgraded/V2)</p>
+            </a>
+
+            <a class="game-card" href="real_estate_tycoon_v2.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Bank Fund Tycoon</h3>
+                <p>Manage deposits, approve loans, and build a financial empire.</p>
+            </a>
+
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (Poker)</h3>
+                <p></p>
+            </a>
+
+            <a class="game-card" href="xxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Coming Soon (Life Sim)</h3>
+                <p></p>
+            </a>
+
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (career sim)</h3>
+                <p></p>
+            </a>
+           
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (black jack)</h3>
+                <p></p>
+            </a>
+
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
                 <h3>Coming Soon</h3>
                 <p></p>
             </a>
 
-            <a class="game-card" href="YOUR-GAME-LINK-HERE">
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
                 <h3>Coming Soon</h3>
                 <p></p>
             </a>
-
-            <a class="game-card" href="YOUR-GAME-LINK-HERE">
+            
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
                 <h3>Coming Soon</h3>
                 <p></p>
             </a>
-
         </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
+            <p>If you beat a record and want to be added to the leaderboard, email us! (On the about page)</p>
+        </div>
+    
     </section>
 
     <footer>
-        © 2026 Game Hub — All Rights Reserved
+        © 2026 Money Games — All Rights Reserved
     </footer>
+
+    <!-- LOGIN / SIGNUP MODAL -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogin()">&times;</span>
+            <h2>Sign in / Sign up</h2>
+            <input id="email" type="email" placeholder="Enter email">
+            <input id="username" placeholder="Enter username">
+            <input id="password" type="password" placeholder="Enter password">
+            <button onclick="handleAuth()">Continue</button>
+            <p style="margin-top:10px; font-size:14px; opacity:0.8;">
+                If this email already has an account, you'll be logged in.  
+                If not, a new account will be created.
+            </p>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLeaderboard()">&times;</span>
+            <h2>Leaderboard</h2>
+
+            <table>
+                <tr><th>Game</th><th>Player</th><th>Time</th></tr>
+                <tbody id="leaderboardBody"></tbody>
+            </table>
+
+        </div>
+    </div>
+<script>
+/* AUTH + UI ELEMENTS */
+const loginModal = document.getElementById("loginModal");
+const leaderboardModal = document.getElementById("leaderboardModal");
+const heroTitle = document.getElementById("heroTitle");
+const loginBtn = document.getElementById("loginBtn");
+const userDisplay = document.getElementById("userDisplay");
+
+/* OPEN/CLOSE LOGIN MODAL */
+loginBtn.onclick = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+        logout();
+    } else {
+        loginModal.style.display = "flex";
+    }
+};
+
+function closeLogin() { loginModal.style.display = "none"; }
+
+/* LOCALSTORAGE AUTH SYSTEM */
+function handleAuth() {
+    const email = document.getElementById("email").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+        alert("Email and password are required.");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // Check if email exists
+    const existingByEmail = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (existingByEmail) {
+        // LOGIN FLOW
+        if (existingByEmail.password !== password) {
+            alert("Incorrect password.");
+            return;
+        }
+
+        // Successful login
+        localStorage.setItem("currentUser", JSON.stringify(existingByEmail));
+        updateUIForLogin(existingByEmail);
+        closeLogin();
+        return;
+    }
+
+    // SIGNUP FLOW — username required
+    if (!username) {
+        alert("Please enter a username to create an account.");
+        return;
+    }
+
+    // Prevent duplicate usernames
+    const existingByUsername = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (existingByUsername) {
+        alert("Username already taken.");
+        return;
+    }
+
+    // Create new user
+    const newUser = { email, username, password };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    updateUIForLogin(newUser);
+    closeLogin();
+}
+
+function updateUIForLogin(user) {
+    heroTitle.textContent = "Welcome to MoneyGames.work.gd"; // stays generic
+    loginBtn.textContent = "Logout";
+    userDisplay.textContent = user.username;
+}
+
+function logout() {
+    localStorage.removeItem("currentUser");
+    heroTitle.textContent = "Welcome to MoneyGames.work.gd";
+    loginBtn.textContent = "Login";
+    userDisplay.textContent = "";
+}
+
+/* LOAD STATE ON PAGE LOAD */
+(function initAuth() {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+        updateUIForLogin(currentUser);
+    } else {
+        heroTitle.textContent = "Welcome to MoneyGames.work.gd";
+        loginBtn.textContent = "Login";
+        userDisplay.textContent = "";
+    }
+})();
+
+/* LEADERBOARD */
+document.getElementById("openLeaderboard").onclick = () => {
+    loadLeaderboard();
+    leaderboardModal.style.display = "flex";
+};
+
+function closeLeaderboard() { leaderboardModal.style.display = "none"; }
+
+/* EDIT THIS ARRAY TO CHANGE LEADERBOARD */
+const leaderboardData = [
+    { game: "Race To A Billion", player: "Alex", time: "12:44" },
+    { game: "Race To A Trillion", player: "Sam", time: "18:22" },
+    { game: "Real Estate Tycoon", player: "Jordan", time: "09:51" },
+    { game: "Bank Fund Tycoon", player: "Chris", time: "14:10" }
+];
+
+function loadLeaderboard() {
+    const body = document.getElementById("leaderboardBody");
+    body.innerHTML = "";
+
+    leaderboardData.forEach(entry => {
+        body.innerHTML += `
+            <tr>
+                <td>${entry.game}</td>
+                <td>${entry.player}</td>
+                <td>${entry.time}</td>
+            </tr>
+        `;
+    });
+}
+
+/* CLOSE MODALS ON BACKGROUND CLICK */
+window.onclick = e => {
+    if (e.target === loginModal) closeLogin();
+    if (e.target === leaderboardModal) closeLeaderboard();
+};
+</script>
+
 
 </body>
 </html>
