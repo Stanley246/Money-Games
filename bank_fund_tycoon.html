@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bank & Mutual Fund Manager</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020617;
+      --panel: #020617;
+      --panel-alt: #020617;
+      --border: rgba(148,163,184,0.35);
+      --accent: #38bdf8;
+      --accent-strong: #0ea5e9;
+      --accent-soft: rgba(56,189,248,0.35);
+      --danger: #ef4444;
+      --success: #22c55e;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-soft: #6b7280;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 18px 26px 14px;
+      background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.7));
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 18px 60px rgba(15,23,42,0.95);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      display: none;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      text-shadow: 0 0 18px rgba(56,189,248,0.9);
+    }
+
+    header p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .bank-name {
+      font-size: 13px;
+      color: var(--accent);
+      text-shadow: 0 0 14px rgba(56,189,248,0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 2.2fr 2.2fr 1.8fr;
+      gap: 18px;
+      padding: 18px 26px 26px;
+      display: none;
+    }
+
+    section {
+      background: radial-gradient(circle at top left, #020617 0, #020617 60%);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 40px rgba(15,23,42,0.95),
+        0 0 60px rgba(15,23,42,0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(59,130,246,0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #e5e7eb;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    h3 {
+      margin: 10px 0 6px;
+      font-size: 13px;
+      color: #cbd5f5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.7));
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 0 24px rgba(15,23,42,0.9);
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+    }
+
+    .metric-value {
+      font-weight: 600;
+      color: #f9fafb;
+      font-size: 13px;
+    }
+
+    .metric-value.good {
+      color: var(--success);
+    }
+
+    .metric-value.bad {
+      color: var(--danger);
+    }
+
+    .metric-value.goal {
+      color: var(--accent);
+      text-shadow: 0 0 14px var(--accent-soft);
+    }
+
+    .scroll {
+      max-height: 260px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 5px 7px;
+      text-align: right;
+      border-bottom: 1px solid rgba(31,41,55,0.95);
+    }
+
+    th:first-child, td:first-child {
+      text-align: left;
+    }
+
+    th {
+      background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.7));
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, input {
+      background: radial-gradient(circle at top, #020617 0, #020617 60%);
+      border: 1px solid rgba(148,163,184,0.45);
+      color: #f9fafb;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      flex: 1;
+      outline: none;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.95);
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 22px var(--accent-soft);
+    }
+
+    input::placeholder {
+      color: #6b7280;
+    }
+
+    button {
+      background: radial-gradient(circle at top, var(--accent-strong) 0, #1d4ed8 60%);
+      border: none;
+      color: #f9fafb;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+      box-shadow: 0 0 22px var(--accent-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    button.secondary {
+      background: radial-gradient(circle at top, #111827 0, #020617 60%);
+      box-shadow: 0 0 16px rgba(15,23,42,0.95);
+    }
+
+    button.danger {
+      background: radial-gradient(circle at top, #b91c1c 0, #7f1d1d 60%);
+      box-shadow: 0 0 22px rgba(248,113,113,0.4);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 0 28px var(--accent-soft);
+    }
+
+    button.secondary:hover:not(:disabled) {
+      box-shadow: 0 0 20px rgba(15,23,42,0.95);
+    }
+
+    button.danger:hover:not(:disabled) {
+      box-shadow: 0 0 28px rgba(248,113,113,0.5);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .log {
+      font-size: 11px;
+      background: radial-gradient(circle at top, #020617 0, #020617 60%);
+      border-radius: 10px;
+      padding: 7px;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid rgba(31,41,55,0.95);
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.95);
+      position: relative;
+      z-index: 1;
+    }
+
+    .log-entry {
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .log-entry span.time {
+      color: var(--text-soft);
+      margin-right: 4px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: #111827;
+      color: #e5e7eb;
+      margin-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .pill.good {
+      background: rgba(34,197,94,0.15);
+      color: #4ade80;
+    }
+
+    .pill.bad {
+      background: rgba(248,113,113,0.15);
+      color: #fca5a5;
+    }
+
+    .pill.info {
+      background: rgba(56,189,248,0.15);
+      color: #7dd3fc;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .highlight {
+      color: #facc15;
+      font-weight: 600;
+      text-shadow: 0 0 12px rgba(250,204,21,0.6);
+    }
+
+    .tagline {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .loan-card {
+      background: radial-gradient(circle at top, #020617 0, #020617 60%);
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.45);
+      padding: 8px 9px;
+      font-size: 12px;
+      box-shadow: 0 0 20px rgba(56,189,248,0.25);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 8px;
+    }
+
+    .loan-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .loan-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .loan-proposal {
+      font-size: 11px;
+      color: #cbd5f5;
+      margin-bottom: 6px;
+    }
+
+    .loan-status {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    .loan-status span {
+      font-weight: 600;
+    }
+
+    .loan-status.good span {
+      color: var(--success);
+    }
+
+    .loan-status.bad span {
+      color: var(--danger);
+    }
+
+    .loan-list {
+      font-size: 11px;
+    }
+
+    .loan-list-row {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr 0.8fr 0.7fr 0.7fr;
+      border-bottom: 1px solid rgba(31,41,55,0.95);
+      padding: 3px 0;
+      gap: 6px;
+    }
+
+    .loan-list-row span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .loan-list-header {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr 0.8fr 0.7fr 0.7fr;
+      padding: 3px 0;
+      gap: 6px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(31,41,55,0.95);
+    }
+
+    .glow-border {
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 40px rgba(56,189,248,0.25),
+        0 0 80px rgba(15,23,42,0.95);
+    }
+
+    @media (max-width: 1100px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Intro screen */
+    #introScreen {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%),
+        radial-gradient(circle at bottom, rgba(59,130,246,0.18), transparent 55%),
+        #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 24px;
+    }
+
+    .intro-card {
+      max-width: 720px;
+      width: 100%;
+      background: radial-gradient(circle at top left, #020617 0, #020617 60%);
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 60px rgba(15,23,42,0.95),
+        0 0 120px rgba(56,189,248,0.45);
+      padding: 32px 32px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.22), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(59,130,246,0.22), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .intro-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .intro-title {
+      font-size: 32px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow:
+        0 0 24px rgba(56,189,248,0.9),
+        0 0 60px rgba(15,23,42,0.95);
+    }
+
+    .intro-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto 18px;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .intro-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .intro-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #bankNameInput {
+      flex: 1;
+      background: radial-gradient(circle at top, #020617 0, #020617 60%);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 9px 14px;
+      color: #f9fafb;
+      font-size: 13px;
+      outline: none;
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 26px rgba(15,23,42,0.95);
+    }
+
+    #bankNameInput:focus {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.95),
+        0 0 30px var(--accent-soft);
+    }
+
+    .intro-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .intro-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+    }
+
+    #startGameBtn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px 0;
+      font-size: 13px;
+    }
+
+    .intro-right {
+      font-size: 11px;
+      color: var(--text-soft);
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 10px 12px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.9));
+      box-shadow: 0 0 26px rgba(15,23,42,0.95);
+    }
+
+    .intro-right h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #e5e7eb;
+    }
+
+    .intro-right ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+
+    .intro-right li {
+      margin-bottom: 4px;
+    }
+
+    .intro-footer {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--text-soft);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- FULL GAME PAGE NAV BAR -->
+<nav class="game-nav">
+    <h1>Money Games</h1>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
+        <a href="#" id="openLeaderboard">Leaderboard</a>
+    </div>
+</nav>
+
+<style>
+    .game-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .game-nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .game-nav a {
+        color: #fff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .game-nav a:hover {
+        color: #00eaff;
+    }
+</style>
+
+<div id="introScreen">
+  <div class="intro-card">
+    <div class="intro-inner">
+      <div class="intro-title">BANK & FUND MANAGER</div>
+      <div class="intro-subtitle">
+        Build a trillion‑pound institution. Grant loans, allocate into mutual funds, and survive the cycle as months fly by.
+      </div>
+      <div class="intro-grid">
+        <div>
+          <div class="intro-label">Name your bank</div>
+          <div class="intro-input-row">
+            <input id="bankNameInput" type="text" placeholder="Aurora Capital Bank" />
+          </div>
+          <div class="intro-pill-row">
+            <div class="intro-pill">Auto‑time: 1 month every 2 seconds</div>
+            <div class="intro-pill">Only mutual funds & loans</div>
+            <div class="intro-pill">Win at £1,000,000,000,000 net worth</div>
+          </div>
+          <button id="startGameBtn">Enter the markets</button>
+        </div>
+        <div class="intro-right">
+          <h4>How this works</h4>
+          <ul>
+            <li>Start with £1,000,000 in cash.</li>
+            <li>Invest only in diversified mutual funds.</li>
+            <li>Review up to 10 loan requests at a time and decide which to fund.</li>
+            <li>Good ideas tend to repay; risky ones default more often.</li>
+            <li>Every 2 seconds is a month: markets move, loans mature, and your net worth updates.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="intro-footer">
+        Tip: Treat it like a real investment committee. Size your loans, diversify your funds, and watch the compounding.
+      </div>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="header-row">
+    <div>
+      <h1>BANK & FUND MANAGER</h1>
+      <p>Run your bank, allocate into mutual funds, underwrite loans, and aim for £1,000,000,000,000 net worth.</p>
+    </div>
+    <div class="bank-name" id="bankNameHeader"></div>
+  </div>
+</header>
+
+<main>
+  <!-- Portfolio & Benchmark -->
+  <section class="glow-border">
+    <h2>Portfolio overview</h2>
+    <div class="metrics">
+      <div class="metric">
+        <span class="metric-label">Month</span>
+        <span class="metric-value"><span id="month">0</span></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Net worth</span>
+        <span class="metric-value goal" id="portfolioValue">£1,000,000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Total return</span>
+        <span class="metric-value" id="portfolioReturn">0.00%</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Benchmark return</span>
+        <span class="metric-value" id="benchmarkReturn">0.00%</span>
+      </div>
+    </div>
+
+    <h3>Allocation</h3>
+    <div class="scroll" id="allocationTableContainer"></div>
+
+    <p class="footer-text">
+      Benchmark: <span class="highlight">Global 60/40</span> (60% equity‑tilted mutual funds, 40% bond‑tilted).  
+      Time: <span class="highlight">1 month every 2 seconds</span>. Win at <span class="highlight">£1T</span> net worth.
+    </p>
+  </section>
+
+  <!-- Mutual funds & Loans -->
+  <section>
+    <h2>Mutual funds & time</h2>
+    <h3>Mutual fund universe</h3>
+    <div class="scroll" id="fundsTableContainer"></div>
+
+    <div class="controls">
+      <h3>Fund trade ticket</h3>
+      <div class="row">
+        <select id="tradeFund"></select>
+        <input id="tradeAmount" type="number" min="0" step="1000" placeholder="Amount (£)" />
+      </div>
+      <div class="button-row">
+        <button id="buyBtn">Buy fund</button>
+        <button id="sellBtn" class="secondary">Sell fund</button>
+      </div>
+      <div class="small" id="cashInfo"></div>
+    </div>
+
+    <div class="controls">
+      <h3>Time control</h3>
+      <div class="button-row">
+        <button id="pauseBtn" class="secondary">Pause time</button>
+        <button id="resumeBtn">Resume time</button>
+      </div>
+      <p class="tagline">
+        Months pass automatically. Mutual funds reprice, loans move toward maturity, and your bank’s net worth evolves.
+      </p>
+    </div>
+
+    <div class="controls">
+      <h3>Pending loan requests</h3>
+      <div class="scroll" id="loanRequestsContainer"></div>
+      <p class="small">
+        You can see up to <span class="highlight">10</span> pending requests at once. Fund selectively—defaults hurt.
+      </p>
+    </div>
+  </section>
+
+  <!-- Positions, Loans & Log -->
+  <section>
+    <h2>Positions, loans & log</h2>
+    <h3>Fund positions</h3>
+    <div class="scroll" id="positionsTableContainer"></div>
+
+    <h3>Loan book</h3>
+    <div class="scroll loan-list" id="loansTableContainer"></div>
+
+    <h3>Activity & performance log</h3>
+    <div class="log" id="log"></div>
+  </section>
+</main>
+
+<script>
+  // ---------- Core models ----------
+  class Fund {
+    constructor(name, style, baseReturn, volatility, group) {
+      this.name = name;
+      this.style = style;
+      this.baseReturn = baseReturn;   // annual mean
+      this.volatility = volatility;   // annual std
+      this.group = group;
+    }
+    simulateMonthlyReturn(macroFactor) {
+      const monthlyMean = this.baseReturn / 12;
+      const monthlyVol = this.volatility / Math.sqrt(12);
+      const idio = randn() * monthlyVol * 0.7;
+      const corr = macroFactor * monthlyVol * 0.7;
+      return monthlyMean + idio + corr;
+    }
+  }
+
+  class Portfolio {
+    constructor(cash) {
+      this.cash = cash;
+      this.positions = {}; // fundName -> units
+    }
+    totalValue(prices) {
+      let v = this.cash;
+      for (const [name, units] of Object.entries(this.positions)) {
+        v += units * prices[name];
+      }
+      return v;
+    }
+    allocation(prices) {
+      const total = this.totalValue(prices);
+      if (total <= 0) return {};
+      const alloc = {};
+      for (const [name, units] of Object.entries(this.positions)) {
+        alloc[name] = (units * prices[name]) / total;
+      }
+      alloc["CASH"] = this.cash / total;
+      return alloc;
+    }
+    buy(fundName, amount, prices) {
+      if (amount > this.cash) return false;
+      const price = prices[fundName];
+      const units = amount / price;
+      this.cash -= amount;
+      this.positions[fundName] = (this.positions[fundName] || 0) + units;
+      return true;
+    }
+    sell(fundName, amount, prices) {
+      const units = this.positions[fundName] || 0;
+      if (units <= 0) return false;
+      const maxValue = units * prices[fundName];
+      if (amount > maxValue) return false;
+      const unitsToSell = amount / prices[fundName];
+      const newUnits = units - unitsToSell;
+      if (newUnits <= 1e-8) {
+        delete this.positions[fundName];
+      } else {
+        this.positions[fundName] = newUnits;
+      }
+      this.cash += amount;
+      return true;
+    }
+  }
+
+  class Market {
+    constructor(funds) {
+      this.funds = funds;
+      this.prices = {};
+      for (const f of funds) {
+        this.prices[f.name] = 100;
+      }
+      this.history = [];
+    }
+    stepMonth() {
+      const groups = {};
+      for (const f of this.funds) {
+        if (!groups[f.group]) {
+          groups[f.group] = randn() * 0.15;
+        }
+      }
+      const periodReturns = {};
+      for (const f of this.funds) {
+        const macro = groups[f.group];
+        const r = f.simulateMonthlyReturn(macro);
+        periodReturns[f.name] = r;
+        this.prices[f.name] *= (1 + r);
+        if (this.prices[f.name] < 1) this.prices[f.name] = 1;
+      }
+      this.history.push({ prices: { ...this.prices }, returns: { ...periodReturns } });
+      return periodReturns;
+    }
+  }
+
+  class Loan {
+    constructor(id, borrower, idea, principal, annualRate, termMonths, startMonth, quality) {
+      this.id = id;
+      this.borrower = borrower;
+      this.idea = idea;
+      this.principal = principal;
+      this.annualRate = annualRate;
+      this.termMonths = termMonths;
+      this.startMonth = startMonth;
+      this.quality = quality; // "good" or "risky"
+      this.status = "active"; // active, repaid, defaulted
+      this.endMonth = startMonth + termMonths;
+    }
+    payoffAmount() {
+      const years = this.termMonths / 12;
+      return this.principal * (1 + this.annualRate * years);
+    }
+  }
+
+  class Game {
+    constructor() {
+      this.started = false;
+      this.bankName = "Aurora Capital Bank";
+      this.funds = [];
+      this.market = null;
+      this.portfolio = null;
+      this.month = 0;
+      this.benchmarkReturns = [];
+      this.portfolioValues = [];
+      this.benchmarkName = "Global 60/40 Mutual Fund Index";
+      this.loans = [];
+      this.pendingLoanOffers = [];
+      this.nextLoanId = 1;
+      this.isPaused = false;
+      this.winTarget = 1_000_000_000_000; // £1T
+
+      this.setupIntro();
+    }
+
+    setupIntro() {
+      this.introScreen = document.getElementById("introScreen");
+      this.bankNameInput = document.getElementById("bankNameInput");
+      this.startGameBtn = document.getElementById("startGameBtn");
+
+      this.startGameBtn.addEventListener("click", () => {
+        const name = this.bankNameInput.value.trim();
+        this.startGame(name || "Aurora Capital Bank");
+      });
+    }
+
+    startGame(bankName) {
+      if (this.started) return;
+      this.started = true;
+      this.bankName = bankName;
+
+      this.introScreen.style.display = "none";
+      document.querySelector("header").style.display = "block";
+      document.querySelector("main").style.display = "grid";
+
+      this.initGame();
+    }
+
+    initGame() {
+      this.funds = this.createFunds();
+      this.market = new Market(this.funds);
+      this.portfolio = new Portfolio(1_000_000);
+      this.month = 0;
+      this.benchmarkReturns = [];
+      this.portfolioValues = [this.portfolio.totalValue(this.market.prices)];
+      this.loans = [];
+      this.pendingLoanOffers = [];
+      this.nextLoanId = 1;
+      this.isPaused = false;
+
+      this.initUI();
+      this.renderAll();
+      logMessage(
+        `Game started. Initial cash: £1,000,000. Bank: ${this.bankName}. You can only buy mutual funds and grant loans. Target: £1T net worth.`,
+        "info"
+      );
+
+      this.startTimeLoop();
+    }
+
+    createFunds() {
+      return [
+        new Fund("Global Equity Fund", "Equity‑tilted", 0.085, 0.17, "EQUITY_DEV"),
+        new Fund("Global Bond Fund", "Core bonds", 0.035, 0.06, "BOND"),
+        new Fund("Balanced 60/40 Fund", "Balanced", 0.065, 0.11, "BALANCED"),
+        new Fund("Emerging Growth Fund", "High growth", 0.11, 0.24, "EQUITY_EM"),
+        new Fund("Real Asset Income Fund", "Real assets", 0.07, 0.15, "REAL")
+      ];
+    }
+
+    benchmarkMonthlyReturn(periodReturns) {
+      const weights = {
+        "Global Equity Fund": 0.35,
+        "Emerging Growth Fund": 0.25,
+        "Balanced 60/40 Fund": 0.20,
+        "Global Bond Fund": 0.15,
+        "Real Asset Income Fund": 0.05
+      };
+      let r = 0;
+      for (const [name, w] of Object.entries(weights)) {
+        r += w * (periodReturns[name] || 0);
+      }
+      return r;
+    }
+
+    growthFromReturns(returns) {
+      return returns.reduce((g, r) => g * (1 + r), 1);
+    }
+
+    initUI() {
+      this.bankNameHeaderEl = document.getElementById("bankNameHeader");
+      this.bankNameHeaderEl.textContent = this.bankName;
+
+      this.monthEl = document.getElementById("month");
+      this.portfolioValueEl = document.getElementById("portfolioValue");
+      this.portfolioReturnEl = document.getElementById("portfolioReturn");
+      this.benchmarkReturnEl = document.getElementById("benchmarkReturn");
+      this.allocationTableContainer = document.getElementById("allocationTableContainer");
+      this.fundsTableContainer = document.getElementById("fundsTableContainer");
+      this.positionsTableContainer = document.getElementById("positionsTableContainer");
+      this.loansTableContainer = document.getElementById("loansTableContainer");
+      this.loanRequestsContainer = document.getElementById("loanRequestsContainer");
+      this.tradeFundSelect = document.getElementById("tradeFund");
+      this.tradeAmountInput = document.getElementById("tradeAmount");
+      this.cashInfoEl = document.getElementById("cashInfo");
+      this.pauseBtn = document.getElementById("pauseBtn");
+      this.resumeBtn = document.getElementById("resumeBtn");
+      this.buyBtn = document.getElementById("buyBtn");
+      this.sellBtn = document.getElementById("sellBtn");
+
+      this.tradeFundSelect.innerHTML = "";
+      for (const f of this.funds) {
+        const opt = document.createElement("option");
+        opt.value = f.name;
+        opt.textContent = `${f.name} (${f.style})`;
+        this.tradeFundSelect.appendChild(opt);
+      }
+
+      this.buyBtn.onclick = () => this.handleTrade("buy");
+      this.sellBtn.onclick = () => this.handleTrade("sell");
+      this.pauseBtn.onclick = () => this.pauseTime();
+      this.resumeBtn.onclick = () => this.resumeTime();
+
+      this.loanRequestsContainer.onclick = (e) => {
+        const btn = e.target.closest("button[data-loan-id]");
+        if (!btn) return;
+        const id = parseInt(btn.getAttribute("data-loan-id"), 10);
+        const action = btn.getAttribute("data-action");
+        if (action === "accept") this.acceptLoanOffer(id);
+        if (action === "decline") this.declineLoanOffer(id);
+      };
+    }
+
+    handleTrade(side) {
+      const fundName = this.tradeFundSelect.value;
+      const amount = parseFloat(this.tradeAmountInput.value);
+      if (!fundName || isNaN(amount) || amount <= 0) {
+        alert("Enter a positive amount and select a mutual fund.");
+        return;
+      }
+      const prices = this.market.prices;
+      let ok = false;
+      if (side === "buy") {
+        ok = this.portfolio.buy(fundName, amount, prices);
+        if (!ok) {
+          alert("Insufficient cash for this trade.");
+          return;
+        }
+        logMessage(`Bought £${formatNumber(amount)} of ${fundName}.`, "info");
+      } else {
+        ok = this.portfolio.sell(fundName, amount, prices);
+        if (!ok) {
+          alert("You don't have enough of that fund to sell that amount.");
+          return;
+        }
+        logMessage(`Sold £${formatNumber(amount)} of ${fundName}.`, "info");
+      }
+      this.tradeAmountInput.value = "";
+      this.renderAll();
+    }
+
+    pauseTime() {
+      this.isPaused = true;
+      logMessage("Time paused. You can still trade and review loans.", "info");
+    }
+
+    resumeTime() {
+      this.isPaused = false;
+      logMessage("Time resumed. Months will continue to pass every 2 seconds.", "info");
+    }
+
+    startTimeLoop() {
+      setInterval(() => {
+        if (!this.isPaused && this.started) {
+          this.advanceMonth();
+        }
+      }, 2000);
+    }
+
+    advanceMonth() {
+      this.month += 1;
+      const periodReturns = this.market.stepMonth();
+      const prices = this.market.prices;
+      const value = this.portfolio.totalValue(prices);
+      this.portfolioValues.push(value);
+      const benchR = this.benchmarkMonthlyReturn(periodReturns);
+      this.benchmarkReturns.push(benchR);
+
+      this.processLoansForMonth();
+      this.maybeGenerateLoanOffers();
+
+      const lines = [];
+      lines.push(`Month ${this.month}. Net worth: £${formatNumber(this.portfolio.totalValue(prices))}.`);
+      lines.push("Mutual fund moves:");
+      for (const [name, r] of Object.entries(periodReturns)) {
+        lines.push(`• ${name}: ${(r * 100).toFixed(2)}%`);
+      }
+      lines.push(`Benchmark (${this.benchmarkName}) monthly return: ${(benchR * 100).toFixed(2)}%.`);
+      logMessage(lines.join(" "), "info");
+
+      this.renderAll();
+      this.checkWinOrLoss();
+    }
+
+    processLoansForMonth() {
+      const currentMonth = this.month;
+      for (const loan of this.loans) {
+        if (loan.status !== "active") continue;
+
+        if (currentMonth >= loan.endMonth) {
+          const isGood = loan.quality === "good";
+          const defaultChance = isGood ? 0.1 : 0.6;
+          const defaulted = Math.random() < defaultChance;
+
+          if (defaulted) {
+            loan.status = "defaulted";
+            logMessage(
+              `Loan to ${loan.borrower} for "${loan.idea}" has defaulted at maturity. You lose £${formatNumber(loan.principal)}.`,
+              "bad"
+            );
+          } else {
+            loan.status = "repaid";
+            const payoff = loan.payoffAmount();
+            this.portfolio.cash += payoff;
+            logMessage(
+              `Loan to ${loan.borrower} for "${loan.idea}" fully repaid. You receive £${formatNumber(payoff)}.`,
+              "good"
+            );
+          }
+        }
+      }
+    }
+
+    maybeGenerateLoanOffers() {
+      if (this.pendingLoanOffers.length >= 10) return;
+
+      const slots = 10 - this.pendingLoanOffers.length;
+      for (let i = 0; i < slots; i++) {
+        if (Math.random() > 0.35) break;
+        const offer = this.createRandomLoanOffer();
+        this.pendingLoanOffers.push(offer);
+        logMessage(
+          `New loan request from ${offer.borrower}: "${offer.idea}" for £${formatNumber(offer.principal)} at ${(offer.annualRate * 100).toFixed(1)}% p.a. over ${offer.termMonths} months.`,
+          "info"
+        );
+      }
+    }
+
+    createRandomLoanOffer() {
+      const borrowers = [
+        "NovaTech Startups",
+        "Harborline Logistics",
+        "GreenSprout Farms",
+        "Skyline Apartments Ltd",
+        "Quantum Coffee Roasters",
+        "Solaris Microgrid Co.",
+        "BlueWave Shipping",
+        "UrbanCraft Studios",
+        "Atlas Data Centers",
+        "Aurora Mobility"
+      ];
+      const ideasGood = [
+        "scaling a profitable SaaS platform with strong recurring revenue",
+        "expanding a logistics network with signed long‑term contracts",
+        "building solar farms with government‑backed feed‑in tariffs",
+        "acquiring stabilized residential properties in prime locations",
+        "rolling out EV charging hubs with anchor tenants"
+      ];
+      const ideasRisky = [
+        "launching an untested luxury gadget with no market research",
+        "opening a chain of theme cafés in already saturated areas",
+        "speculating on volatile meme tokens",
+        "building a giant VR arcade in a small town",
+        "funding a celebrity‑branded energy drink with no distribution"
+      ];
+
+      const isGood = Math.random() < 0.55;
+      const idea = isGood
+        ? ideasGood[Math.floor(Math.random() * ideasGood.length)]
+        : ideasRisky[Math.floor(Math.random() * ideasRisky.length)];
+
+      const borrower = borrowers[Math.floor(Math.random() * borrowers.length)];
+      const principal = randomInRange(150_000, 7_500_000);
+      const baseRate = isGood ? randomInRangeFloat(0.05, 0.10) : randomInRangeFloat(0.10, 0.22);
+      const termMonths = [12, 18, 24, 36, 48][Math.floor(Math.random() * 5)];
+
+      return {
+        id: this.nextLoanId++,
+        borrower,
+        idea,
+        principal,
+        annualRate: baseRate,
+        termMonths,
+        quality: isGood ? "good" : "risky"
+      };
+    }
+
+    acceptLoanOffer(id) {
+      const idx = this.pendingLoanOffers.findIndex(o => o.id === id);
+      if (idx === -1) return;
+      const offer = this.pendingLoanOffers[idx];
+
+      if (offer.principal > this.portfolio.cash) {
+        alert("You don't have enough cash to fund this loan.");
+        return;
+      }
+
+      this.portfolio.cash -= offer.principal;
+      const loan = new Loan(
+        offer.id,
+        offer.borrower,
+        offer.idea,
+        offer.principal,
+        offer.annualRate,
+        offer.termMonths,
+        this.month,
+        offer.quality
+      );
+      this.loans.push(loan);
+      this.pendingLoanOffers.splice(idx, 1);
+
+      logMessage(
+        `You funded a loan to ${offer.borrower} for "${offer.idea}" (£${formatNumber(offer.principal)} at ${(offer.annualRate * 100).toFixed(1)}% p.a., ${offer.termMonths} months).`,
+        "info"
+      );
+      this.renderAll();
+    }
+
+    declineLoanOffer(id) {
+      const idx = this.pendingLoanOffers.findIndex(o => o.id === id);
+      if (idx === -1) return;
+      const offer = this.pendingLoanOffers[idx];
+      this.pendingLoanOffers.splice(idx, 1);
+      logMessage(
+        `You declined a loan request from ${offer.borrower} for "${offer.idea}".`,
+        "info"
+      );
+      this.renderAll();
+    }
+
+    checkWinOrLoss() {
+      const prices = this.market.prices;
+      const value = this.portfolio.totalValue(prices);
+      if (value >= this.winTarget) {
+        this.isPaused = true;
+        this.buyBtn.disabled = true;
+        this.sellBtn.disabled = true;
+        logMessage(
+          `Congratulations! ${this.bankName} has reached £${formatNumber(value)} net worth and crossed the £1T target. You win.`,
+          "good"
+        );
+        alert("You hit £1T net worth. You win!");
+      } else if (value <= 0) {
+        this.isPaused = true;
+        this.buyBtn.disabled = true;
+        this.sellBtn.disabled = true;
+        logMessage(
+          `Your bank's net worth has collapsed to zero. The regulators step in and shut you down.`,
+          "bad"
+        );
+        alert("Net worth collapsed to zero. Game over.");
+      }
+    }
+
+    renderAll() {
+      this.renderTopMetrics();
+      this.renderAllocationTable();
+      this.renderFundsTable();
+      this.renderPositionsTable();
+      this.renderLoansTable();
+      this.renderLoanRequests();
+      this.renderCashInfo();
+    }
+
+    renderTopMetrics() {
+      const prices = this.market.prices;
+      const value = this.portfolio.totalValue(prices);
+      const initial = this.portfolioValues[0] || value;
+      const portRet = initial > 0 ? value / initial - 1 : 0;
+      const benchGrowth = this.growthFromReturns(this.benchmarkReturns);
+      const benchRet = benchGrowth - 1;
+
+      this.monthEl.textContent = this.month.toString();
+      this.portfolioValueEl.textContent = "£" + formatNumber(value);
+      this.portfolioReturnEl.textContent = (portRet * 100).toFixed(2) + "%";
+      this.benchmarkReturnEl.textContent = (benchRet * 100).toFixed(2) + "%";
+
+      this.portfolioReturnEl.classList.remove("good", "bad");
+      if (portRet > benchRet) {
+        this.portfolioReturnEl.classList.add("good");
+      } else if (portRet < benchRet) {
+        this.portfolioReturnEl.classList.add("bad");
+      }
+    }
+
+    renderAllocationTable() {
+      const prices = this.market.prices;
+      const alloc = this.portfolio.allocation(prices);
+
+      let html = "<table><thead><tr><th>Asset</th><th>Alloc %</th><th>Value (£)</th></tr></thead><tbody>";
+      const entries = Object.entries(alloc);
+      if (entries.length === 0) {
+        html += "<tr><td colspan='3' style='text-align:center;color:#6b7280;'>No holdings yet.</td></tr>";
+      } else {
+        for (const [name, w] of entries) {
+          const value = name === "CASH"
+            ? this.portfolio.cash
+            : (this.portfolio.positions[name] || 0) * prices[name];
+          html += `<tr>
+            <td>${name}</td>
+            <td>${(w * 100).toFixed(2)}%</td>
+            <td>${formatNumber(value)}</td>
+          </tr>`;
+        }
+      }
+      html += "</tbody></table>";
+      this.allocationTableContainer.innerHTML = html;
+    }
+
+    renderFundsTable() {
+      const prices = this.market.prices;
+      let html = "<table><thead><tr><th>Fund</th><th>Style</th><th>Price</th><th>Exp. Ret (p.a.)</th><th>Vol (p.a.)</th></tr></thead><tbody>";
+      for (const f of this.funds) {
+        html += `<tr>
+          <td>${f.name}</td>
+          <td>${f.style}</td>
+          <td>${prices[f.name].toFixed(2)}</td>
+          <td>${(f.baseReturn * 100).toFixed(1)}%</td>
+          <td>${(f.volatility * 100).toFixed(1)}%</td>
+        </tr>`;
+      }
+      html += "</tbody></table>";
+      this.fundsTableContainer.innerHTML = html;
+    }
+
+    renderPositionsTable() {
+      const prices = this.market.prices;
+      let html = "<table><thead><tr><th>Fund</th><th>Units</th><th>Price</th><th>Value (£)</th></tr></thead><tbody>";
+      const entries = Object.entries(this.portfolio.positions);
+      if (entries.length === 0) {
+        html += "<tr><td colspan='4' style='text-align:center;color:#6b7280;'>No fund positions yet.</td></tr>";
+      } else {
+        for (const [name, units] of entries) {
+          const price = prices[name];
+          const value = units * price;
+          html += `<tr>
+            <td>${name}</td>
+            <td>${units.toFixed(2)}</td>
+            <td>${price.toFixed(2)}</td>
+            <td>${formatNumber(value)}</td>
+          </tr>`;
+        }
+      }
+      html += "</tbody></table>";
+      this.positionsTableContainer.innerHTML = html;
+    }
+
+    renderLoansTable() {
+      let html = "";
+      if (this.loans.length === 0) {
+        html = "<div style='color:#6b7280;text-align:center;padding:4px 0;'>No loans funded yet.</div>";
+      } else {
+        html += `<div class="loan-list-header">
+          <span>Borrower</span>
+          <span>Principal</span>
+          <span>Rate</span>
+          <span>Term</span>
+          <span>Status</span>
+        </div>`;
+        for (const loan of this.loans) {
+          const remaining = Math.max(loan.endMonth - this.month, 0);
+          let statusLabel = "Active";
+          if (loan.status === "repaid") statusLabel = "Repaid";
+          if (loan.status === "defaulted") statusLabel = "Defaulted";
+          html += `<div class="loan-list-row">
+            <span>${loan.borrower}</span>
+            <span>£${formatNumber(loan.principal)}</span>
+            <span>${(loan.annualRate * 100).toFixed(1)}% p.a.</span>
+            <span>${loan.termMonths}m (${remaining}m left)</span>
+            <span>${statusLabel}</span>
+          </div>`;
+        }
+      }
+      this.loansTableContainer.innerHTML = html;
+    }
+
+    renderLoanRequests() {
+      const container = this.loanRequestsContainer;
+      container.innerHTML = "";
+      if (this.pendingLoanOffers.length === 0) {
+        container.innerHTML = "<div class='small' style='color:#6b7280;'>No new loan requests right now. They will appear over time.</div>";
+        return;
+      }
+
+      for (const offer of this.pendingLoanOffers) {
+        const qualityLabel = offer.quality === "good" ? "Stronger fundamentals" : "High risk";
+        const qualityClass = offer.quality === "good" ? "good" : "bad";
+
+        const div = document.createElement("div");
+        div.className = "loan-card";
+        div.innerHTML = `
+          <div class="loan-title">
+            <span>${offer.borrower}</span>
+            <span class="pill ${qualityClass}">${qualityLabel}</span>
+          </div>
+          <div class="loan-meta">
+            Amount: <strong>£${formatNumber(offer.principal)}</strong> · Rate: <strong>${(offer.annualRate * 100).toFixed(1)}% p.a.</strong> · Term: <strong>${offer.termMonths} months</strong>
+          </div>
+          <div class="loan-proposal">
+            Proposal: ${offer.borrower} wants funding for ${offer.idea}.
+          </div>
+          <div class="button-row">
+            <button data-loan-id="${offer.id}" data-action="accept">Fund loan</button>
+            <button data-loan-id="${offer.id}" data-action="decline" class="secondary">Decline</button>
+          </div>
+          <div class="loan-status ${qualityClass}">
+            <span>Note:</span> Good ideas are more likely to repay; risky ideas default more often. You lose the principal if they go bankrupt.
+          </div>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    renderCashInfo() {
+      this.cashInfoEl.textContent = `Available cash: £${formatNumber(this.portfolio.cash)}.`;
+    }
+  }
+
+  // ---------- Helpers ----------
+  function randn() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  }
+
+  function formatNumber(x) {
+    return x.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+  }
+
+  function randomInRange(min, max) {
+    return Math.round(min + Math.random() * (max - min));
+  }
+
+  function randomInRangeFloat(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function logMessage(msg, type = "info") {
+    const logEl = document.getElementById("log");
+    const entry = document.createElement("div");
+    entry.className = "log-entry";
+    const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
+    let pill = "";
+    if (type === "good") pill = `<span class="pill good">P&L +</span>`;
+    else if (type === "bad") pill = `<span class="pill bad">P&L −</span>`;
+    else pill = `<span class="pill info">Info</span>`;
+    entry.innerHTML = `<span class="time">[${time}]</span>${pill} ${msg}`;
+    logEl.prepend(entry);
+  }
+
+  // ---------- Start game ----------
+  const game = new Game();
+</script>
+</body>
+</html>
