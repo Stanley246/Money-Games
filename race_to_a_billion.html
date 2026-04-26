@@ -510,6 +510,54 @@
   </style>
 </head>
 <body>
+  <!-- FULL GAME PAGE NAV BAR -->
+<nav class="game-nav">
+    <h1>Money Games</h1>
+  <div>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
+       <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
+       
+    </div>
+</nav>
+
+<style>
+    .game-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .game-nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .game-nav a {
+        color: #fff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .game-nav a:hover {
+        color: #00eaff;
+    }
+</style>
+
 <div id="pageTitle">RACE TO 1 BILLION</div>
 
 <!-- First page / intro screen -->
@@ -709,6 +757,7 @@
     <canvas id="chartModalCanvas"></canvas>
   </div>
 </div>
+  
 
 <script>
   // =============================
@@ -1918,5 +1967,6 @@ loanTakeBtn.onclick = () => {
   renderAssetsList();
   renderAchievements();
 </script>
+  
 </body>
 </html>
