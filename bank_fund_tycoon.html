@@ -636,11 +636,13 @@
   <!-- FULL GAME PAGE NAV BAR -->
 <nav class="game-nav">
     <h1>Money Games</h1>
-    <div>
+      <div>
         <a href="index.html">Home</a>
         <a href="index.html#games">Games</a>
         <a href="about.html">About</a>
-        <a href="#" id="openLeaderboard">Leaderboard</a>
+       <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
+      
     </div>
 </nav>
 
@@ -811,6 +813,44 @@
     <div class="log" id="log"></div>
   </section>
 </main>
+<script>
+const leaderboardData = [
+    { game: "Race To A Billion", player: "Alex", time: "12:44" },
+    { game: "Race To A Trillion", player: "Sam", time: "18:22" },
+    { game: "Real Estate Tycoon", player: "Jordan", time: "09:51" },
+    { game: "Bank Fund Tycoon", player: "Chris", time: "14:10" }
+];
+
+document.getElementById("openLeaderboard").onclick = () => {
+    loadLeaderboard();
+    document.getElementById("leaderboardModal").style.display = "flex";
+};
+
+function closeLeaderboard() {
+    document.getElementById("leaderboardModal").style.display = "none";
+}
+
+function loadLeaderboard() {
+    const body = document.getElementById("leaderboardBody");
+    body.innerHTML = "";
+
+    leaderboardData.forEach(entry => {
+        body.innerHTML += `
+            <tr>
+                <td>${entry.game}</td>
+                <td>${entry.player}</td>
+                <td>${entry.time}</td>
+            </tr>
+        `;
+    });
+}
+
+window.onclick = e => {
+    if (e.target === document.getElementById("leaderboardModal")) {
+        closeLeaderboard();
+    }
+};
+</script>
 
 <script>
   // ---------- Core models ----------
