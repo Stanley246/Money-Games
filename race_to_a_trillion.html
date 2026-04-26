@@ -510,6 +510,54 @@
   </style>
 </head>
 <body>
+  <!-- FULL GAME PAGE NAV BAR -->
+<nav class="game-nav">
+    <h1>Money Games</h1>
+     <div>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
+       <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
+     
+    </div>
+</nav>
+
+<style>
+    .game-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .game-nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .game-nav a {
+        color: #fff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .game-nav a:hover {
+        color: #00eaff;
+    }
+</style>
+
 <div id="pageTitle">RACE TO 1 TRILLION</div>
 
 <!-- First page / intro screen -->
@@ -709,6 +757,44 @@
     <canvas id="chartModalCanvas"></canvas>
   </div>
 </div>
+<script>
+const leaderboardData = [
+    { game: "Race To A Billion", player: "Alex", time: "12:44" },
+    { game: "Race To A Trillion", player: "Sam", time: "18:22" },
+    { game: "Real Estate Tycoon", player: "Jordan", time: "09:51" },
+    { game: "Bank Fund Tycoon", player: "Chris", time: "14:10" }
+];
+
+document.getElementById("openLeaderboard").onclick = () => {
+    loadLeaderboard();
+    document.getElementById("leaderboardModal").style.display = "flex";
+};
+
+function closeLeaderboard() {
+    document.getElementById("leaderboardModal").style.display = "none";
+}
+
+function loadLeaderboard() {
+    const body = document.getElementById("leaderboardBody");
+    body.innerHTML = "";
+
+    leaderboardData.forEach(entry => {
+        body.innerHTML += `
+            <tr>
+                <td>${entry.game}</td>
+                <td>${entry.player}</td>
+                <td>${entry.time}</td>
+            </tr>
+        `;
+    });
+}
+
+window.onclick = e => {
+    if (e.target === document.getElementById("leaderboardModal")) {
+        closeLeaderboard();
+    }
+};
+</script>
 
 <script>
   // =============================
