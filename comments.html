@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments – Money Games</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
+
+        :root {
+            --bg: radial-gradient(circle at top, #0a0f24, #000);
+            --text: #fff;
+            --accent: #00eaff;
+            --card-bg: rgba(255,255,255,0.05);
+            --card-border: rgba(0,234,255,0.3);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        nav a {
+            color: var(--text);
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* PAGE TITLE */
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-top: 40px;
+            font-size: 40px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        /* EXPLANATION BOX */
+        .explain-box {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+            box-shadow: 0 0 15px rgba(0,234,255,0.2);
+        }
+
+        /* COMMENT INPUT BOX */
+        .comment-box {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,234,255,0.2);
+        }
+
+        .comment-box input, .comment-box textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        .comment-box button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #000;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <h1>Money Games</h1>
+        <div>
+            <a href="index.html" target="_blank">Home</a>
+            <a href="index.html#games" target="_blank">Games</a>
+            <a href="about.html" target="_blank">About</a>
+            <a href="cuntributors.html" target="_blank">Contributors</a>
+            <a href="comments.html">Comments</a>
+        </div>
+    </nav>
+
+    <h2>Community Comments</h2>
+
+    <div class="explain-box">
+        Feel free to leave a comment below!  
+        Share ideas, feedback, game suggestions, or just say hi.  
+        Newest comments appear at the top.
+    </div>
+
+    <!-- COMMENT INPUT -->
+    <div class="comment-box">
+        <input id="displayName" placeholder="Name to display">
+        <textarea id="commentText" placeholder="Write your comment..." rows="4"></textarea>
+        <button onclick="postComment()">Post Comment</button>
+    </div>
+
+    <!-- GISCUS (replace with your real script) -->
+    <!-- PASTE YOUR GISCUS SCRIPT HERE -->
+
+    <script>
+        function postComment() {
+            const name = document.getElementById("displayName").value.trim();
+            const text = document.getElementById("commentText").value.trim();
+
+            if (!name || !text) {
+                alert("Please enter a name and a comment.");
+                return;
+            }
+
+            // Format comment for Giscus
+            const formatted = `**${name}** says:\n\n${text}`;
+
+            // Open GitHub Discussions comment box
+            window.location.href = "#giscus";
+            document.querySelector("iframe.giscus-frame").contentWindow.postMessage(
+                { giscus: { discussion: { body: formatted } } },
+                "https://giscus.app"
+            );
+
+            document.getElementById("commentText").value = "";
+        }
+    </script>
+
+</body>
+</html>
