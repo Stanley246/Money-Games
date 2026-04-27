@@ -227,9 +227,9 @@
         <a href="index.html">Home</a>
         <a href="index.html#games">Games</a>
         <a href="about.html">About</a>
-       <a href="comments.html">Comments</a>
+     <!--  <a href="comments.html">Comments</a>
       <a href="contributors.html">Contributors</a>
-    
+    -->
     </div>
 </nav>
 
@@ -419,6 +419,37 @@ window.onclick = e => {
         closeLeaderboard();
     }
 };
+</script>
+<!-- PARTIAL INSPECT PROTECTION -->
+<script>
+// Disable right-click
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// Disable common inspect shortcuts
+document.addEventListener("keydown", e => {
+    if (e.key === "F12") e.preventDefault();
+    if (e.ctrlKey && e.shiftKey && e.key === "I") e.preventDefault();
+    if (e.ctrlKey && e.shiftKey && e.key === "C") e.preventDefault();
+    if (e.ctrlKey && e.shiftKey && e.key === "J") e.preventDefault();
+    if (e.ctrlKey && e.key === "U") e.preventDefault();
+    if (e.ctrlKey && e.key === "S") e.preventDefault();
+});
+
+// Disable dragging elements
+document.addEventListener("dragstart", e => e.preventDefault());
+
+// Disable selection (optional — uncomment to enable)
+// document.addEventListener("selectstart", e => e.preventDefault());
+
+// Anti-debugger loop (annoying but effective)
+setInterval(() => {
+    const before = new Date();
+    debugger;
+    const after = new Date();
+    if (after - before > 50) {
+        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:40px;'>Developer tools detected.</h1>";
+    }
+}, 1000);
 </script>
 
   <script>
