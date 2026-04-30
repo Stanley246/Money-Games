@@ -114,6 +114,9 @@
             font-size: 18px;
         }
     </style>
+
+    <!-- Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -133,7 +136,7 @@
     <h2>Community Comments</h2>
 
     <div class="explain-box">
-        Feel free to leave a comment below!  
+        Feel free to leave a comment below.  
         Share ideas, feedback, game suggestions, or just say hi.  
         Newest comments appear at the top.
     </div>
@@ -145,11 +148,54 @@
         <button onclick="postComment()">Post Comment</button>
     </div>
 
-    <!-- GISCUS (replace with your real script) -->
-    <!-- PASTE YOUR GISCUS SCRIPT HERE -->
+    <!-- COMMENTS WILL BE INSERTED HERE -->
+    <div id="commentsList" style="max-width:900px; margin:20px auto;"></div>
 
     <script>
-        function postComment() {
+        // 1. Connect to Supabase
+        const supabase = supabase.createClient(
+            "YOUR_SUPABASE_URL",
+            "YOUR_SUPABASE_ANON_KEY"
+        );
+
+        const pageId = "comments-page";
+
+        // 2. Load existing comments
+        async function loadComments() {
+            const { data } = await supabase
+                .from("comments")
+                .select("*")
+                .eq("page_id", pageId)
+                .order("created_at", { ascending: false });
+
+            renderComments(data);
+        }
+
+        // 3. Render comments
+        function renderComments(comments) {
+            const container = document.getElementById("commentsList");
+            container.innerHTML = "";
+
+            comments.forEach(c => {
+                const div = document.createElement("div");
+                div.style.background = "rgba(255,255,255,0.05)";
+                div.style.border = "1px solid rgba(0,234,255,0.3)";
+                div.style.padding = "15px";
+                div.style.marginBottom = "15px";
+                div.style.borderRadius = "10px";
+
+                div.innerHTML = `
+                    <strong style="color:#00eaff">${c.name}</strong><br>
+                    <p>${c.content}</p>
+                    <small>${new Date(c.created_at).toLocaleString()}</small>
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // 4. Post a new comment
+        async function postComment() {
             const name = document.getElementById("displayName").value.trim();
             const text = document.getElementById("commentText").value.trim();
 
@@ -158,18 +204,29 @@
                 return;
             }
 
-            // Format comment for Giscus
-            const formatted = `**${name}** says:\n\n${text}`;
-
-            // Open GitHub Discussions comment box
-            window.location.href = "#giscus";
-            document.querySelector("iframe.giscus-frame").contentWindow.postMessage(
-                { giscus: { discussion: { body: formatted } } },
-                "https://giscus.app"
-            );
+            await supabase.from("comments").insert({
+                name: name,
+                content: text,
+                page_id: pageId
+            });
 
             document.getElementById("commentText").value = "";
+
+            loadComments();
         }
+
+        // 5. Realtime updates
+        supabase
+            .channel("comments")
+            .on(
+                "postgres_changes",
+                { event: "INSERT", schema: "public", table: "comments" },
+                () => loadComments()
+            )
+            .subscribe();
+
+        // Load comments on page load
+        loadComments();
     </script>
 
 </body>
