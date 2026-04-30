@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Money Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Money Games</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
@@ -27,6 +24,7 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        /* NAVBAR */
         nav {
             display: flex;
             justify-content: space-between;
@@ -47,7 +45,7 @@
             text-shadow: 0 0 10px var(--accent);
         }
 
-        nav a, nav button, #userProfileBtn, #balanceDisplay {
+        nav a, nav button, #userDisplay, #balanceDisplay {
             color: var(--text);
             margin-left: 20px;
             text-decoration: none;
@@ -60,12 +58,12 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        nav a:hover, nav button:hover, #userProfileBtn:hover {
+        nav a:hover, nav button:hover {
             color: var(--accent);
         }
 
-        #userProfileBtn {
-            cursor: pointer;
+        #userDisplay {
+            cursor: default;
         }
 
         #balanceDisplay {
@@ -73,7 +71,18 @@
             opacity: 0.9;
         }
 
+        /* CLAIM REWARD BUTTON */
         #claimRewardNavBtn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            background: linear-gradient(135deg, #00eaff, #7b61ff);
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0,234,255,0.7);
+        }
+         #xxx {
             padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid var(--accent);
@@ -106,6 +115,7 @@
             50% { box-shadow: 0 0 20px rgba(123,97,255,0.9); }
         }
 
+        /* HERO SECTION */
         .hero {
             height: 70vh;
             display: flex;
@@ -141,6 +151,7 @@
             z-index: 2;
         }
 
+        /* GAME GRID */
         .games-section {
             padding: 60px 40px;
         }
@@ -148,28 +159,10 @@
         .games-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 36px;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
             text-align: center;
             color: var(--accent);
             text-shadow: 0 0 10px var(--accent);
-        }
-
-        .leaderboardBtn {
-            display: block;
-            margin: 10px auto 30px auto;
-            padding: 10px 22px;
-            border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: linear-gradient(135deg, #00eaff, #7b61ff);
-            color: #000;
-            font-weight: 700;
-            text-transform: uppercase;
-            box-shadow: 0 0 12px rgba(0,234,255,0.6);
-            cursor: pointer;
-        }
-
-        .leaderboardBtn:hover {
-            filter: brightness(1.05);
         }
 
         .game-grid {
@@ -212,6 +205,7 @@
             padding: 0 15px 20px;
             opacity: 0.9;
             color: var(--gameColor);
+            text-decoration: none;
         }
 
         footer {
@@ -221,6 +215,7 @@
             font-size: 14px;
         }
 
+        /* MODALS */
         .modal {
             display: none;
             position: fixed;
@@ -324,244 +319,190 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        .profile-label {
-            font-weight: 500;
-            margin-top: 6px;
-        }
-
-        .profile-value {
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .profile-section {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
+
 <body>
 
-<nav>
-    <h1>Money Games</h1>
-    <div>
-        <button id="userProfileBtn" style="display:none;"></button>
-        <span id="balanceDisplay"></span>
-        <a href="#">Home</a>
-        <a href="#games">Games</a>
-        <a href="about.html" target="_blank">About</a>
-        <a href="#" id="openMission">Daily Mission</a>
-        <a href="comments.html" target="_blank">Comments</a>
-        <a href="cuntributors.html" target="_blank">Contributors</a>
-        <button id="loginBtn">Login</button>
-        <button id="claimRewardNavBtn" class="disabled">Claim Reward</button>
-    </div>
-</nav>
+    <!-- NAVBAR -->
+    <nav>
+        <h1>Money Games</h1>
+        <div>
+            <span id="userDisplay"></span>
+            <span id="balanceDisplay"></span>
+        <!--    <a href="#">Home</a>
+            <a href="#games">Games</a>-->
+            <a href="about.html" target="_blank">About</a>
+           <!-- <a href="#" id="openLeaderboard">Leaderboard</a>-->
+            <a href="#" id="openMission">Daily Mission</a>
+            <a href="comments.html" target="_blank">Comments</a>
+            <a href="contributors.html" target="_blank">Contributors</a>
+            <button id="loginBtn">Login</button>
+            <button id="claimRewardNavBtn" class="disabled">Claim Reward</button>
+        </div>
+    </nav>
 
-<section class="hero">
-    <h2 id="heroTitle">Welcome to MoneyGames.work.gd</h2>
-    <p>Jump into a universe of fun. Choose a game and start Making Money instantly.</p>
-</section>
+    <!-- HERO -->
+    <section class="hero">
+        <h2 id="heroTitle">Welcome to MoneyGames.work.gd</h2>
+        <p>Jump into a universe of fun. Choose a game and start Making Money instantly.</p>
+    </section>
 
-<section id="games" class="games-section">
-    <h2 class="games-title">Available Games</h2>
+    <!-- GAME SECTION -->
+    <section id="games" class="games-section">
+        <h2 class="games-title">Available Games</h2>
+        <a href="#" id="openLeaderboard" class="xxx">Leaderboard</a>
+        <div class="game-grid">
 
-    <button id="openLeaderboard" class="leaderboardBtn">Leaderboard</button>
+            <a class="game-card" href="race_to_a_billion.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Race To A Billion</h3>
+                <p>Master the markets and outmanoeuvre your rivals.</p>
+            </a>
 
-    <div class="game-grid">
-        <a class="game-card" href="race_to_a_billion.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-            <h3>Race To A Billion</h3>
-            <p>Master the markets and outmanoeuvre your rivals.</p>
-        </a>
+            <a class="game-card" href="race_to_a_trillion.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Race To A Trillion</h3>
+                <p>Build a global empire and reach the trillion‑dollar milestone.</p>
+            </a>
 
-        <a class="game-card" href="race_to_a_trillion.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Race To A Trillion</h3>
-            <p>Build a global empire and reach the trillion‑dollar milestone.</p>
-        </a>
+            <a class="game-card" href="real_estate_tycoon_v1.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Real Estate Tycoon</h3>
+                <p>Flip properties and dominate the housing market.</p>
+            </a>
 
-        <a class="game-card" href="real_estate_tycoon_v1.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-            <h3>Real Estate Tycoon</h3>
-            <p>Flip properties and dominate the housing market.</p>
-        </a>
+            <a class="game-card" href="real_estate_tycoon_v2.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Real Estate Tycoon</h3>
+                <p>Flip properties and dominate the housing market. (upgraded/V2)</p>
+            </a>
 
-        <a class="game-card" href="real_estate_tycoon_v2.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Real Estate Tycoon</h3>
-            <p>Flip properties and dominate the housing market. (upgraded/V2)</p>
-        </a>
+            <a class="game-card" href="bank_fund_tycoon.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Bank Fund Tycoon</h3>
+                <p>Manage deposits, approve loans, and build a financial empire.</p>
+            </a>
 
-        <a class="game-card" href="bank_fund_tycoon.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-            <h3>Bank Fund Tycoon</h3>
-            <p>Manage deposits, approve loans, and build a financial empire.</p>
-        </a>
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (Poker)</h3>
+                <p></p>
+            </a>
 
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Coming Soon (Poker)</h3>
-            <p></p>
-        </a>
+            <a class="game-card" href="xxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Coming Soon (Life Sim)</h3>
+                <p></p>
+            </a>
 
-        <a class="game-card" href="xxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-            <h3>Coming Soon (Life Sim)</h3>
-            <p></p>
-        </a>
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (career sim)</h3>
+                <p></p>
+            </a>
+           
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon (black jack)</h3>
+                <p></p>
+            </a>
 
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Coming Soon (career sim)</h3>
-            <p></p>
-        </a>
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
+                <h3>Coming Soon</h3>
+                <p></p>
+            </a>
 
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Coming Soon (black jack)</h3>
-            <p></p>
-        </a>
-
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-            <h3>Coming Soon</h3>
-            <p></p>
-        </a>
-
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Coming Soon</h3>
-            <p></p>
-        </a>
-
-        <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-            <h3>Coming Soon</h3>
-            <p></p>
-        </a>
-    </div>
-
-    <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-        <p>If you beat a record and want to be added to the leaderboard, email us! (On the about page)</p>
-    </div>
-</section>
-
-<footer>
-    © 2026 Money Games — All Rights Reserved
-</footer>
-
-<!-- LOGIN MODAL -->
-<div class="modal" id="loginModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeLogin()">&times;</span>
-        <h2>Sign in / Sign up</h2>
-        <input id="email" type="email" placeholder="Enter email">
-        <input id="username" placeholder="Enter username (for new accounts)">
-        <input id="password" type="password" placeholder="Enter password">
-        <button onclick="handleAuth()">Continue</button>
-        <p style="margin-top:10px; font-size:14px; opacity:0.8;">
-            If this email already has an account, you'll be logged in.  
-            If not, a new account will be created.
-        </p>
-    </div>
-</div>
-
-<!-- LEADERBOARD MODAL -->
-<div class="modal" id="leaderboardModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeLeaderboard()">&times;</span>
-        <h2>Leaderboard</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Game</th>
-                    <th>Player</th>
-                    <th>Time / Score</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboardBody"></tbody>
-        </table>
-    </div>
-</div>
-
-<!-- DAILY REWARD MODAL -->
-<div class="modal" id="dailyRewardModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeDailyReward()">&times;</span>
-        <h2>Daily Cash Reward</h2>
-        <p id="rewardWelcome"></p>
-        <div class="reward-highlight" id="rewardAmountDisplay"></div>
-        <p id="streakDisplay"></p>
-        <p class="reward-meta" id="missionBonusInfo"></p>
-        <p class="reward-meta" id="nextClaimInfo"></p>
-        <button id="claimRewardBtn">Claim Today's Reward</button>
-    </div>
-</div>
-
-<!-- DAILY MISSION MODAL -->
-<div class="modal" id="missionModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeMission()">&times;</span>
-        <div class="mission-title">Daily Mission</div>
-        <p id="missionGameDisplay" class="mission-game"></p>
-        <p id="missionStatusDisplay" class="mission-status"></p>
-        <div id="missionBadge" class="mission-badge">Double Daily Reward</div>
-        <p class="reward-meta" id="missionHint"></p>
-    </div>
-</div>
-
-<!-- PROFILE MODAL -->
-<div class="modal" id="profileModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeProfile()">&times;</span>
-        <h2>Your Profile</h2>
-
-        <div class="profile-section">
-            <div class="profile-label">Username</div>
-            <div class="profile-value" id="profileUsername"></div>
-
-            <div class="profile-label">Email</div>
-            <div class="profile-value" id="profileEmail"></div>
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon</h3>
+                <p></p>
+            </a>
+            
+            <a class="game-card" href="xxxxxxxxxxxxxxxxxxxxxxxx" target="_blank">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                <h3>Coming Soon</h3>
+                <p></p>
+            </a>
         </div>
 
-        <div class="profile-section">
-            <div class="profile-label">Current Streak</div>
-            <div class="profile-value" id="profileStreak"></div>
-
-            <div class="profile-label">Cash Balance</div>
-            <div class="profile-value" id="profileBalance"></div>
+        <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
+            <p>If you beat a record and want to be added to the leaderboard, email us! (On the about page)</p>
         </div>
+    
+    </section>
 
-        <div class="profile-section">
-            <div class="profile-label">Level</div>
-            <div class="profile-value" id="profileLevel"></div>
+    <footer>
+        © 2026 Money Games — All Rights Reserved
+    </footer>
 
-            <div class="profile-label" id="profileNextLevelLabel"></div>
-            <div class="profile-value" id="profileNextLevel"></div>
+    <!-- LOGIN / SIGNUP MODAL -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogin()">&times;</span>
+            <h2>Sign in / Sign up</h2>
+            <input id="email" type="email" placeholder="Enter email">
+            <input id="username" placeholder="Enter username">
+            <input id="password" type="password" placeholder="Enter password">
+            <button onclick="handleAuth()">Continue</button>
+            <p style="margin-top:10px; font-size:14px; opacity:0.8;">
+                If this email already has an account, you'll be logged in.  
+                If not, a new account will be created.
+            </p>
         </div>
-
-        <button id="logoutProfileBtn">Logout</button>
     </div>
-</div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLeaderboard()">&times;</span>
+            <h2>Leaderboard</h2>
+
+            <table>
+                <tr><th>Game</th><th>Player</th><th>Time</th></tr>
+                <tbody id="leaderboardBody"></tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- DAILY REWARD MODAL -->
+    <div class="modal" id="dailyRewardModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDailyReward()">&times;</span>
+            <h2>Daily Cash Reward</h2>
+            <p id="rewardWelcome"></p>
+            <div class="reward-highlight" id="rewardAmountDisplay"></div>
+            <p id="streakDisplay"></p>
+            <p class="reward-meta" id="missionBonusInfo"></p>
+            <p class="reward-meta" id="nextClaimInfo"></p>
+            <button id="claimRewardBtn">Claim Today's Reward</button>
+        </div>
+    </div>
+
+    <!-- DAILY MISSION MODAL -->
+    <div class="modal" id="missionModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMission()">&times;</span>
+            <div class="mission-title">Daily Mission</div>
+            <p id="missionGameDisplay" class="mission-game"></p>
+            <p id="missionStatusDisplay" class="mission-status"></p>
+            <div id="missionBadge" class="mission-badge">Double Daily Reward</div>
+            <p class="reward-meta" id="missionHint"></p>
+        </div>
+    </div>
 
 <script>
-const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_fQtAwX9bUJhFNMGcyo2rIw_8zMiFaBm";
-
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-/* ---------- DOM ELEMENTS ---------- */
+/* AUTH + UI ELEMENTS */
 const loginModal = document.getElementById("loginModal");
 const leaderboardModal = document.getElementById("leaderboardModal");
 const dailyRewardModal = document.getElementById("dailyRewardModal");
 const missionModal = document.getElementById("missionModal");
-const profileModal = document.getElementById("profileModal");
 
 const heroTitle = document.getElementById("heroTitle");
 const loginBtn = document.getElementById("loginBtn");
-const userProfileBtn = document.getElementById("userProfileBtn");
+const userDisplay = document.getElementById("userDisplay");
 const balanceDisplay = document.getElementById("balanceDisplay");
 
 const claimRewardBtn = document.getElementById("claimRewardBtn");
@@ -577,16 +518,7 @@ const missionGameDisplay = document.getElementById("missionGameDisplay");
 const missionStatusDisplay = document.getElementById("missionStatusDisplay");
 const missionHint = document.getElementById("missionHint");
 
-const profileUsername = document.getElementById("profileUsername");
-const profileEmail = document.getElementById("profileEmail");
-const profileStreak = document.getElementById("profileStreak");
-const profileBalance = document.getElementById("profileBalance");
-const profileLevel = document.getElementById("profileLevel");
-const profileNextLevelLabel = document.getElementById("profileNextLevelLabel");
-const profileNextLevel = document.getElementById("profileNextLevel");
-const logoutProfileBtn = document.getElementById("logoutProfileBtn");
-
-/* ---------- CONSTANTS ---------- */
+/* MISSION GAME POOL */
 const missionGames = [
     { id: "race_to_a_billion", name: "Race To A Billion" },
     { id: "race_to_a_trillion", name: "Race To A Trillion" },
@@ -595,155 +527,84 @@ const missionGames = [
     { id: "bank_fund_tycoon", name: "Bank Fund Tycoon" }
 ];
 
-const levelNames = [
-    "Bronze",
-    "Silver",
-    "Gold",
-    "Platinum",
-    "Diamond",
-    "Master",
-    "Grandmaster",
-    "Elite",
-    "Legend",
-    "Mythic"
-];
-const daysPerLevel = 60;
+/* NAVBAR LOGIN */
+loginBtn.onclick = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+        logout();
+    } else {
+        loginModal.style.display = "flex";
+    }
+};
 
-/* ---------- HELPERS ---------- */
+function closeLogin() { loginModal.style.display = "none"; }
+
+/* HELPERS */
+function saveUserToStorage(user) {
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    const idx = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
+    if (idx !== -1) {
+        users[idx] = user;
+    } else {
+        users.push(user);
+    }
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(user));
+}
+
+function formatMoney(amount) {
+    return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
 function sameDay(d1, d2) {
     return d1.getFullYear() === d2.getFullYear() &&
            d1.getMonth() === d2.getMonth() &&
            d1.getDate() === d2.getDate();
 }
 
-function formatMoney(amount) {
-    return "$" + (amount || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
-}
-
-function getLevelFromStreak(streakDays) {
-    const levelIndex = Math.min(Math.floor((streakDays || 0) / daysPerLevel), 9);
-    return {
-        levelNumber: levelIndex + 1,
-        levelName: levelNames[levelIndex]
-    };
-}
-
-function getNextLevelInfo(streakDays) {
-    const { levelNumber } = getLevelFromStreak(streakDays);
-    if (levelNumber >= 10) {
-        return { hasNext: false, nextLevelName: null, daysRemaining: 0 };
-    }
-    const nextLevelNumber = levelNumber + 1;
-    const nextLevelName = levelNames[nextLevelNumber - 1];
-    const nextThresholdDays = nextLevelNumber * daysPerLevel;
-    const daysRemaining = Math.max(0, nextThresholdDays - (streakDays || 0));
-    return { hasNext: true, nextLevelName, daysRemaining };
-}
-
-/* ---------- USER DATA HELPERS (SUPABASE) ---------- */
-async function getCurrentUser() {
-    const { data, error } = await supabaseClient.auth.getUser();
-    if (error || !data.user) return null;
-    return data.user;
-}
-
-async function getUserDoc(uid) {
-    const { data, error } = await supabaseClient
-        .from("users")
-        .select("*")
-        .eq("id", uid)
-        .maybeSingle();
-    if (error) {
-        console.error("getUserDoc error:", error);
-        return null;
-    }
-    return data || null;
-}
-
-async function createUserDoc(uid, email, username) {
-    const randomMission = missionGames[Math.floor(Math.random() * missionGames.length)];
-    const today = new Date();
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-    const data = {
-        id: uid,
-        email,
-        username,
-        balance: 0,
-        streak: 0,
-        last_claim: null,
-        mission_game_id: randomMission.id,
-        mission_game_name: randomMission.name,
-        mission_date: todayDate.toISOString().slice(0, 10),
-        mission_completed: false
-    };
-
-    const { error } = await supabaseClient.from("users").insert(data);
-    if (error) {
-        console.error("createUserDoc error:", error);
-        return null;
-    }
-    return data;
-}
-
-async function ensureMissionForToday(user) {
+/* ASSIGN / UPDATE DAILY MISSION */
+function ensureMissionForToday(user) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (!user.mission_date || !user.mission_game_id) {
+    if (!user.missionDate || !user.missionGameId) {
         const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.mission_game_id = random.id;
-        user.mission_game_name = random.name;
-        user.mission_date = today.toISOString().slice(0, 10);
-        user.mission_completed = false;
-
-        const { error } = await supabaseClient.from("users").update({
-            mission_game_id: user.mission_game_id,
-            mission_game_name: user.mission_game_name,
-            mission_date: user.mission_date,
-            mission_completed: user.mission_completed
-        }).eq("id", user.id);
-        if (error) console.error("ensureMissionForToday set error:", error);
+        user.missionGameId = random.id;
+        user.missionGameName = random.name;
+        user.missionDate = today.toISOString();
+        user.missionCompleted = false;
+        saveUserToStorage(user);
         return user;
     }
 
-    const missionDate = new Date(user.mission_date);
+    const missionDate = new Date(user.missionDate);
     const missionDay = new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate());
 
     if (!sameDay(today, missionDay)) {
         const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.mission_game_id = random.id;
-        user.mission_game_name = random.name;
-        user.mission_date = today.toISOString().slice(0, 10);
-        user.mission_completed = false;
-
-        const { error } = await supabaseClient.from("users").update({
-            mission_game_id: user.mission_game_id,
-            mission_game_name: user.mission_game_name,
-            mission_date: user.mission_date,
-            mission_completed: user.mission_completed
-        }).eq("id", user.id);
-        if (error) console.error("ensureMissionForToday rotate error:", error);
+        user.missionGameId = random.id;
+        user.missionGameName = random.name;
+        user.missionDate = today.toISOString();
+        user.missionCompleted = false;
+        saveUserToStorage(user);
     }
 
     return user;
 }
 
-async function syncMissionCompletion(user) {
+/* SYNC MISSION COMPLETION FROM GAMES */
+function syncMissionCompletion(user) {
     const completedGameId = localStorage.getItem("missionCompleteGame");
     if (!completedGameId) return user;
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const missionDate = user.mission_date ? new Date(user.mission_date) : null;
+    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
 
     if (missionDate && sameDay(today, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        if (completedGameId === user.mission_game_id) {
-            user.mission_completed = true;
-            const { error } = await supabaseClient.from("users").update({
-                mission_completed: true
-            }).eq("id", user.id);
-            if (error) console.error("syncMissionCompletion error:", error);
+        if (completedGameId === user.missionGameId) {
+            user.missionCompleted = true;
+            saveUserToStorage(user);
         }
     }
 
@@ -751,10 +612,11 @@ async function syncMissionCompletion(user) {
     return user;
 }
 
+/* REWARD STATE CALCULATION */
 function getRewardState(user) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = user.last_claim ? new Date(user.last_claim) : null;
+    let lastClaimDate = user.lastClaim ? new Date(user.lastClaim) : null;
 
     let canClaim = false;
     let streak = user.streak || 0;
@@ -771,6 +633,8 @@ function getRewardState(user) {
             canClaim = true;
         } else if (diffDays > 1) {
             streak = 0;
+            user.streak = 0;
+            saveUserToStorage(user);
             canClaim = true;
         }
     }
@@ -779,12 +643,14 @@ function getRewardState(user) {
     const previewStreak = canClaim ? (streak + 1) : streak;
     let rewardAmount = baseReward + previewStreak * 200;
 
-    const missionDate = user.mission_date ? new Date(user.mission_date) : null;
+    const nowDate = new Date();
+    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
     let missionActiveToday = false;
-    if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+    if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
     }
-    const missionCompletedToday = missionActiveToday && user.mission_completed;
+
+    const missionCompletedToday = missionActiveToday && user.missionCompleted;
 
     if (canClaim && missionCompletedToday) {
         rewardAmount = rewardAmount * 2;
@@ -802,6 +668,7 @@ function getRewardState(user) {
     };
 }
 
+/* UPDATE NAV CLAIM BUTTON */
 function updateRewardButtonState(user) {
     if (!user) {
         claimRewardNavBtn.textContent = "Claim Reward";
@@ -823,56 +690,8 @@ function updateRewardButtonState(user) {
     }
 }
 
-/* ---------- AUTH UI ---------- */
-loginBtn.onclick = () => {
-    loginModal.style.display = "flex";
-};
-
-function closeLogin() { loginModal.style.display = "none"; }
-
-userProfileBtn.onclick = async () => {
-    const user = await getCurrentUser();
-    if (!user) return;
-    const userData = await getUserDoc(user.id);
-    if (!userData) return;
-    openProfile(userData);
-};
-
-function openProfile(userData) {
-    profileUsername.textContent = userData.username || "";
-    profileEmail.textContent = userData.email || "";
-
-    const streak = userData.streak || 0;
-    profileStreak.textContent = streak + " day" + (streak === 1 ? "" : "s");
-
-    const balance = userData.balance || 0;
-    profileBalance.textContent = formatMoney(balance);
-
-    const levelInfo = getLevelFromStreak(streak);
-    profileLevel.textContent = levelInfo.levelName + " (Level " + levelInfo.levelNumber + ")";
-
-    const nextInfo = getNextLevelInfo(streak);
-    if (!nextInfo.hasNext) {
-        profileNextLevelLabel.textContent = "Level Status";
-        profileNextLevel.textContent = "You have the highest level of streak — keep the streak up to keep your title.";
-    } else {
-        profileNextLevelLabel.textContent = "Next Level";
-        profileNextLevel.textContent = nextInfo.nextLevelName + " in " + nextInfo.daysRemaining + " more day" + (nextInfo.daysRemaining === 1 ? "" : "s") + " of streak.";
-    }
-
-    profileModal.style.display = "flex";
-}
-
-function closeProfile() { profileModal.style.display = "none"; }
-
-logoutProfileBtn.onclick = async () => {
-    await supabaseClient.auth.signOut();
-    closeProfile();
-    resetUIForLogout();
-};
-
-/* ---------- AUTH LOGIC (SIGN IN / SIGN UP) ---------- */
-async function handleAuth() {
+/* LOCALSTORAGE AUTH SYSTEM */
+function handleAuth() {
     const email = document.getElementById("email").value.trim();
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -882,182 +701,166 @@ async function handleAuth() {
         return;
     }
 
-    try {
-        // Try sign in first
-        const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-        if (signInError) {
-            if (signInError.message && signInError.message.toLowerCase().includes("invalid login credentials")) {
-                // Try sign up if user not found
-                if (!username) {
-                    alert("Please enter a username to create an account.");
-                    return;
-                }
+    let existingByEmail = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-                const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
-                    email,
-                    password
-                });
-
-                if (signUpError) {
-                    console.error(signUpError);
-                    alert("Error creating account: " + signUpError.message);
-                    return;
-                }
-// Sign-up succeeded — now wait for auth state listener to fire
-alert("Account created! Logging you in...");
-return;
-
-                if (!userData) {
-                    alert("Error creating user profile.");
-                    return;
-                }
-
-                userData = await ensureMissionForToday(userData);
-                updateUIForLogin(userData);
-                closeLogin();
-                return;
-            } else {
-                console.error(signInError);
-                alert("Authentication error: " + signInError.message);
-                return;
-            }
-        }
-
-        const user = signInData.user;
-        if (!user) {
-            alert("No user returned from sign in.");
+    if (existingByEmail) {
+        if (existingByEmail.password !== password) {
+            alert("Incorrect password.");
             return;
         }
 
-        let userData = await getUserDoc(user.id);
-        if (!userData) {
-            const fallbackUsername = username || email.split("@")[0];
-            userData = await createUserDoc(user.id, email, fallbackUsername);
-        }
+        if (existingByEmail.balance == null) existingByEmail.balance = 0;
+        if (existingByEmail.streak == null) existingByEmail.streak = 0;
+        if (!existingByEmail.lastClaim) existingByEmail.lastClaim = null;
+        if (!existingByEmail.missionGameId) existingByEmail.missionGameId = null;
+        if (!existingByEmail.missionGameName) existingByEmail.missionGameName = null;
+        if (!existingByEmail.missionDate) existingByEmail.missionDate = null;
+        if (existingByEmail.missionCompleted == null) existingByEmail.missionCompleted = false;
 
-        userData = await ensureMissionForToday(userData);
-        userData = await syncMissionCompletion(userData);
+        existingByEmail = ensureMissionForToday(existingByEmail);
+        existingByEmail = syncMissionCompletion(existingByEmail);
 
-        updateUIForLogin(userData);
+        localStorage.setItem("currentUser", JSON.stringify(existingByEmail));
+        updateUIForLogin(existingByEmail);
         closeLogin();
-    } catch (err) {
-        console.error(err);
-        alert("Authentication error: " + err.message);
+        return;
     }
+
+    if (!username) {
+        alert("Please enter a username to create an account.");
+        return;
+    }
+
+    const existingByUsername = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (existingByUsername) {
+        alert("Username already taken.");
+        return;
+    }
+
+    const newUser = { 
+        email, 
+        username, 
+        password,
+        balance: 0,
+        streak: 0,
+        lastClaim: null,
+        missionGameId: null,
+        missionGameName: null,
+        missionDate: null,
+        missionCompleted: false
+    };
+
+    ensureMissionForToday(newUser);
+    saveUserToStorage(newUser);
+    updateUIForLogin(newUser);
+    closeLogin();
 }
 
-function updateUIForLogin(userData) {
+function updateUIForLogin(user) {
     heroTitle.textContent = "Welcome to MoneyGames.work.gd";
-    loginBtn.style.display = "none";
-    userProfileBtn.style.display = "inline-block";
-    userProfileBtn.textContent = userData.username || "Profile";
-    balanceDisplay.textContent = "Balance: " + formatMoney(userData.balance || 0);
-    updateRewardButtonState(userData);
+    loginBtn.textContent = "Logout";
+    userDisplay.textContent = user.username;
+    const balance = user.balance || 0;
+    balanceDisplay.textContent = "Balance: " + formatMoney(balance);
+    updateRewardButtonState(user);
 }
 
-function resetUIForLogout() {
+function logout() {
+    localStorage.removeItem("currentUser");
     heroTitle.textContent = "Welcome to MoneyGames.work.gd";
-    loginBtn.style.display = "inline-block";
-    userProfileBtn.style.display = "none";
-    userProfileBtn.textContent = "";
+    loginBtn.textContent = "Login";
+    userDisplay.textContent = "";
     balanceDisplay.textContent = "";
     updateRewardButtonState(null);
 }
 
-/* ---------- AUTH STATE LISTENER ---------- */
-supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (session && session.user) {
-        const user = session.user;
-        let userData = await getUserDoc(user.id);
-        if (!userData) {
-            const fallbackUsername = user.email ? user.email.split("@")[0] : "Player";
-            userData = await createUserDoc(user.id, user.email || "", fallbackUsername);
-        }
-        userData.id = user.id;
-        userData = await ensureMissionForToday(userData);
-        userData = await syncMissionCompletion(userData);
-        updateUIForLogin(userData);
-    } else {
-        resetUIForLogout();
-    }
-});
+/* LOAD STATE ON PAGE LOAD */
+(function initAuth() {
+    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+        if (currentUser.balance == null) currentUser.balance = 0;
+        if (currentUser.streak == null) currentUser.streak = 0;
+        if (!currentUser.lastClaim) currentUser.lastClaim = null;
+        if (!currentUser.missionGameId) currentUser.missionGameId = null;
+        if (!currentUser.missionGameName) currentUser.missionGameName = null;
+        if (!currentUser.missionDate) currentUser.missionDate = null;
+        if (currentUser.missionCompleted == null) currentUser.missionCompleted = false;
 
-/* ---------- LEADERBOARD (SUPABASE) ---------- */
-document.getElementById("openLeaderboard").onclick = async () => {
-    await loadLeaderboard();
+        currentUser = ensureMissionForToday(currentUser);
+        currentUser = syncMissionCompletion(currentUser);
+        saveUserToStorage(currentUser);
+        updateUIForLogin(currentUser);
+    } else {
+        heroTitle.textContent = "Welcome to MoneyGames.work.gd";
+        loginBtn.textContent = "Login";
+        userDisplay.textContent = "";
+        balanceDisplay.textContent = "";
+        updateRewardButtonState(null);
+    }
+})();
+
+/* LEADERBOARD */
+document.getElementById("openLeaderboard").onclick = () => {
+    loadLeaderboard();
     leaderboardModal.style.display = "flex";
 };
 
 function closeLeaderboard() { leaderboardModal.style.display = "none"; }
 
-async function loadLeaderboard() {
+const leaderboardData = [
+    { game: "Race To A Billion", player: "Alex", time: "12:44" },
+    { game: "Race To A Trillion", player: "Sam", time: "18:22" },
+    { game: "Real Estate Tycoon", player: "Jordan", time: "09:51" },
+    { game: "Bank Fund Tycoon", player: "Chris", time: "14:10" }
+];
+
+function loadLeaderboard() {
     const body = document.getElementById("leaderboardBody");
     body.innerHTML = "";
 
-    const { data, error } = await supabaseClient
-        .from("leaderboard")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-    if (error) {
-        console.error("loadLeaderboard error:", error);
-        body.innerHTML = `<tr><td colspan="3">Error loading leaderboard.</td></tr>`;
-        return;
-    }
-
-    if (!data || data.length === 0) {
-        body.innerHTML = `<tr><td colspan="3">No leaderboard entries yet.</td></tr>`;
-        return;
-    }
-
-    data.forEach(entry => {
-        const gameName = entry.game_name || entry.game_id || "Unknown Game";
-        const player = entry.username || "Unknown";
-        const value = entry.time_or_score || "-";
+    leaderboardData.forEach(entry => {
         body.innerHTML += `
             <tr>
-                <td>${gameName}</td>
-                <td>${player}</td>
-                <td>${value}</td>
+                <td>${entry.game}</td>
+                <td>${entry.player}</td>
+                <td>${entry.time}</td>
             </tr>
         `;
     });
 }
 
-/* ---------- DAILY REWARD ---------- */
-claimRewardNavBtn.onclick = async () => {
-    const user = await getCurrentUser();
-    if (!user) {
+/* DAILY REWARD SYSTEM */
+document.getElementById("openDailyReward")?.addEventListener("click", () => {
+    openDailyRewardModal();
+});
+
+claimRewardNavBtn.onclick = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (!currentUser) {
         alert("Log in or create an account to claim your daily reward.");
         loginModal.style.display = "flex";
         return;
     }
-    await openDailyRewardModal();
+    openDailyRewardModal();
 };
 
-async function openDailyRewardModal() {
-    const user = await getCurrentUser();
-    if (!user) {
+function openDailyRewardModal() {
+    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (!currentUser) {
         alert("Log in or create an account to claim your daily reward.");
         loginModal.style.display = "flex";
         return;
     }
 
-    let userData = await getUserDoc(user.id);
-    if (!userData) return;
+    currentUser = ensureMissionForToday(currentUser);
+    currentUser = syncMissionCompletion(currentUser);
+    saveUserToStorage(currentUser);
 
-    userData.id = user.id;
-    userData = await ensureMissionForToday(userData);
-    userData = await syncMissionCompletion(userData);
+    const state = getRewardState(currentUser);
 
-    const state = getRewardState(userData);
-
-    rewardWelcome.textContent = "Hey " + (userData.username || "Player") + ", your money machine is waiting.";
+    rewardWelcome.textContent = "Hey " + currentUser.username + ", your money machine is waiting.";
     rewardAmountDisplay.textContent = state.canClaim
         ? "Today's reward: " + formatMoney(state.rewardAmount)
         : "You've already claimed today's reward!";
@@ -1089,23 +892,20 @@ async function openDailyRewardModal() {
 
 function closeDailyReward() { dailyRewardModal.style.display = "none"; }
 
-claimRewardBtn.onclick = async () => {
-    const user = await getCurrentUser();
-    if (!user) return;
+claimRewardBtn.onclick = () => {
+    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (!currentUser) return;
 
-    let userData = await getUserDoc(user.id);
-    if (!userData) return;
-
-    userData.id = user.id;
-    userData = await ensureMissionForToday(userData);
-    userData = await syncMissionCompletion(userData);
+    currentUser = ensureMissionForToday(currentUser);
+    currentUser = syncMissionCompletion(currentUser);
+    saveUserToStorage(currentUser);
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = userData.last_claim ? new Date(userData.last_claim) : null;
+    let lastClaimDate = currentUser.lastClaim ? new Date(currentUser.lastClaim) : null;
 
     let canClaim = false;
-    let streak = userData.streak || 0;
+    let streak = currentUser.streak || 0;
 
     if (!lastClaimDate) {
         canClaim = true;
@@ -1132,37 +932,24 @@ claimRewardBtn.onclick = async () => {
     const baseReward = 1000;
     let rewardAmount = baseReward + streak * 200;
 
-    const missionDate = userData.mission_date ? new Date(userData.mission_date) : null;
+    const nowDate = new Date();
+    const missionDate = currentUser.missionDate ? new Date(currentUser.missionDate) : null;
     let missionActiveToday = false;
-    if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+    if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
     }
-    const missionCompletedToday = missionActiveToday && userData.mission_completed;
+    const missionCompletedToday = missionActiveToday && currentUser.missionCompleted;
 
     if (missionCompletedToday) {
         rewardAmount = rewardAmount * 2;
     }
 
-    const newBalance = (userData.balance || 0) + rewardAmount;
-    const todayISO = today.toISOString().slice(0, 10);
+    currentUser.streak = streak;
+    currentUser.lastClaim = today.toISOString();
+    currentUser.balance = (currentUser.balance || 0) + rewardAmount;
 
-    const { error } = await supabaseClient.from("users").update({
-        streak: streak,
-        last_claim: todayISO,
-        balance: newBalance
-    }).eq("id", userData.id);
-
-    if (error) {
-        console.error("claimReward update error:", error);
-        alert("Error updating reward. Try again later.");
-        return;
-    }
-
-    userData.streak = streak;
-    userData.last_claim = todayISO;
-    userData.balance = newBalance;
-
-    updateUIForLogin(userData);
+    saveUserToStorage(currentUser);
+    updateUIForLogin(currentUser);
 
     const nextRewardAmount = baseReward + (streak + 1) * 200;
 
@@ -1181,27 +968,24 @@ claimRewardBtn.onclick = async () => {
     claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
 };
 
-/* ---------- DAILY MISSION UI ---------- */
-document.getElementById("openMission").onclick = async () => {
-    const user = await getCurrentUser();
-    if (!user) {
+/* DAILY MISSION UI */
+document.getElementById("openMission").onclick = () => {
+    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (!currentUser) {
         alert("Log in or create an account to see your daily mission.");
         loginModal.style.display = "flex";
         return;
     }
 
-    let userData = await getUserDoc(user.id);
-    if (!userData) return;
+    currentUser = ensureMissionForToday(currentUser);
+    currentUser = syncMissionCompletion(currentUser);
+    saveUserToStorage(currentUser);
 
-    userData.id = user.id;
-    userData = await ensureMissionForToday(userData);
-    userData = await syncMissionCompletion(userData);
-
-    missionGameDisplay.textContent = "Today's mission: " + (userData.mission_game_name || "Unknown");
+    missionGameDisplay.textContent = "Today's mission: " + (currentUser.missionGameName || "Unknown");
     missionHint.textContent = "Beat this game today to double your daily cash reward.";
 
     const now = new Date();
-    const missionDate = userData.mission_date ? new Date(userData.mission_date) : null;
+    const missionDate = currentUser.missionDate ? new Date(currentUser.missionDate) : null;
     let missionActiveToday = false;
     if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
@@ -1209,7 +993,7 @@ document.getElementById("openMission").onclick = async () => {
 
     if (!missionActiveToday) {
         missionStatusDisplay.textContent = "A new mission will be assigned at midnight.";
-    } else if (userData.mission_completed) {
+    } else if (currentUser.missionCompleted) {
         missionStatusDisplay.textContent = "Status: Completed ✅ — your next claim today will be doubled.";
     } else {
         missionStatusDisplay.textContent = "Status: In progress — beat this game before claiming to earn double.";
@@ -1220,15 +1004,15 @@ document.getElementById("openMission").onclick = async () => {
 
 function closeMission() { missionModal.style.display = "none"; }
 
-/* ---------- CLOSE MODALS ON BACKGROUND CLICK ---------- */
+/* CLOSE MODALS ON BACKGROUND CLICK */
 window.onclick = e => {
     if (e.target === loginModal) closeLogin();
     if (e.target === leaderboardModal) closeLeaderboard();
     if (e.target === dailyRewardModal) closeDailyReward();
     if (e.target === missionModal) closeMission();
-    if (e.target === profileModal) closeProfile();
 };
 </script>
+
 
 </body>
 </html>
