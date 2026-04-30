@@ -5,10 +5,8 @@
     <title>Money Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Firebase (compat version so it works with plain HTML/JS on GitHub Pages) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
@@ -476,16 +474,15 @@
         <span class="close" onclick="closeLeaderboard()">&times;</span>
         <h2>Leaderboard</h2>
         <table>
-    <thead>
-        <tr>
-            <th>Game</th>
-            <th>Player</th>
-            <th>Time / Score</th>
-        </tr>
-    </thead>
-
-    <tbody id="leaderboardBody"></tbody>
-</table>
+            <thead>
+                <tr>
+                    <th>Game</th>
+                    <th>Player</th>
+                    <th>Time / Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+        </table>
     </div>
 </div>
 
@@ -550,23 +547,10 @@
 </div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDFCWukBEJO3AaWCol3SHG7gNdJO3rMNqw",
-  authDomain: "money-games-1d9bc.firebaseapp.com",
-  projectId: "money-games-1d9bc",
-  storageBucket: "money-games-1d9bc.appspot.com",
-  messagingSenderId: "870612078521",
-  appId: "1:870612078521:web:fa00e139816fb49204b068",
-  measurementId: "G-LFS2DR5DGN"
-};
+const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_fQtAwX9bUJhFNMGcyo2rIw_8zMiFaBm";
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-</script>
-
-<script>
-
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ---------- DOM ELEMENTS ---------- */
 const loginModal = document.getElementById("loginModal");
@@ -656,68 +640,90 @@ function getNextLevelInfo(streakDays) {
     return { hasNext: true, nextLevelName, daysRemaining };
 }
 
-/* ---------- USER DATA HELPERS (FIRESTORE) ---------- */
+/* ---------- USER DATA HELPERS (SUPABASE) ---------- */
+async function getCurrentUser() {
+    const { data, error } = await supabaseClient.auth.getUser();
+    if (error || !data.user) return null;
+    return data.user;
+}
+
 async function getUserDoc(uid) {
-    const doc = await db.collection("users").doc(uid).get();
-    if (!doc.exists) return null;
-    return { id: doc.id, ...doc.data() };
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("id", uid)
+        .maybeSingle();
+    if (error) {
+        console.error("getUserDoc error:", error);
+        return null;
+    }
+    return data || null;
 }
 
 async function createUserDoc(uid, email, username) {
     const randomMission = missionGames[Math.floor(Math.random() * missionGames.length)];
     const today = new Date();
-    const todayISO = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
     const data = {
+        id: uid,
         email,
         username,
         balance: 0,
         streak: 0,
-        lastClaim: null,
-        missionGameId: randomMission.id,
-        missionGameName: randomMission.name,
-        missionDate: todayISO,
-        missionCompleted: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        last_claim: null,
+        mission_game_id: randomMission.id,
+        mission_game_name: randomMission.name,
+        mission_date: todayDate.toISOString().slice(0, 10),
+        mission_completed: false
     };
-    await db.collection("users").doc(uid).set(data);
-    return { id: uid, ...data };
+
+    const { error } = await supabaseClient.from("users").insert(data);
+    if (error) {
+        console.error("createUserDoc error:", error);
+        return null;
+    }
+    return data;
 }
 
 async function ensureMissionForToday(user) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (!user.missionDate || !user.missionGameId) {
+    if (!user.mission_date || !user.mission_game_id) {
         const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.missionGameId = random.id;
-        user.missionGameName = random.name;
-        user.missionDate = today.toISOString();
-        user.missionCompleted = false;
-        await db.collection("users").doc(user.id).set({
-            missionGameId: user.missionGameId,
-            missionGameName: user.missionGameName,
-            missionDate: user.missionDate,
-            missionCompleted: user.missionCompleted
-        }, { merge: true });
+        user.mission_game_id = random.id;
+        user.mission_game_name = random.name;
+        user.mission_date = today.toISOString().slice(0, 10);
+        user.mission_completed = false;
+
+        const { error } = await supabaseClient.from("users").update({
+            mission_game_id: user.mission_game_id,
+            mission_game_name: user.mission_game_name,
+            mission_date: user.mission_date,
+            mission_completed: user.mission_completed
+        }).eq("id", user.id);
+        if (error) console.error("ensureMissionForToday set error:", error);
         return user;
     }
 
-    const missionDate = new Date(user.missionDate);
+    const missionDate = new Date(user.mission_date);
     const missionDay = new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate());
 
     if (!sameDay(today, missionDay)) {
         const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.missionGameId = random.id;
-        user.missionGameName = random.name;
-        user.missionDate = today.toISOString();
-        user.missionCompleted = false;
-        await db.collection("users").doc(user.id).set({
-            missionGameId: user.missionGameId,
-            missionGameName: user.missionGameName,
-            missionDate: user.missionDate,
-            missionCompleted: user.missionCompleted
-        }, { merge: true });
+        user.mission_game_id = random.id;
+        user.mission_game_name = random.name;
+        user.mission_date = today.toISOString().slice(0, 10);
+        user.mission_completed = false;
+
+        const { error } = await supabaseClient.from("users").update({
+            mission_game_id: user.mission_game_id,
+            mission_game_name: user.mission_game_name,
+            mission_date: user.mission_date,
+            mission_completed: user.mission_completed
+        }).eq("id", user.id);
+        if (error) console.error("ensureMissionForToday rotate error:", error);
     }
 
     return user;
@@ -729,14 +735,15 @@ async function syncMissionCompletion(user) {
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
+    const missionDate = user.mission_date ? new Date(user.mission_date) : null;
 
     if (missionDate && sameDay(today, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        if (completedGameId === user.missionGameId) {
-            user.missionCompleted = true;
-            await db.collection("users").doc(user.id).set({
-                missionCompleted: true
-            }, { merge: true });
+        if (completedGameId === user.mission_game_id) {
+            user.mission_completed = true;
+            const { error } = await supabaseClient.from("users").update({
+                mission_completed: true
+            }).eq("id", user.id);
+            if (error) console.error("syncMissionCompletion error:", error);
         }
     }
 
@@ -747,7 +754,7 @@ async function syncMissionCompletion(user) {
 function getRewardState(user) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = user.lastClaim ? new Date(user.lastClaim) : null;
+    let lastClaimDate = user.last_claim ? new Date(user.last_claim) : null;
 
     let canClaim = false;
     let streak = user.streak || 0;
@@ -772,12 +779,12 @@ function getRewardState(user) {
     const previewStreak = canClaim ? (streak + 1) : streak;
     let rewardAmount = baseReward + previewStreak * 200;
 
-    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
+    const missionDate = user.mission_date ? new Date(user.mission_date) : null;
     let missionActiveToday = false;
     if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
     }
-    const missionCompletedToday = missionActiveToday && user.missionCompleted;
+    const missionCompletedToday = missionActiveToday && user.mission_completed;
 
     if (canClaim && missionCompletedToday) {
         rewardAmount = rewardAmount * 2;
@@ -818,16 +825,15 @@ function updateRewardButtonState(user) {
 
 /* ---------- AUTH UI ---------- */
 loginBtn.onclick = () => {
-    if (auth.currentUser) return;
     loginModal.style.display = "flex";
 };
 
 function closeLogin() { loginModal.style.display = "none"; }
 
 userProfileBtn.onclick = async () => {
-    const user = auth.currentUser;
+    const user = await getCurrentUser();
     if (!user) return;
-    const userData = await getUserDoc(user.uid);
+    const userData = await getUserDoc(user.id);
     if (!userData) return;
     openProfile(userData);
 };
@@ -860,8 +866,9 @@ function openProfile(userData) {
 function closeProfile() { profileModal.style.display = "none"; }
 
 logoutProfileBtn.onclick = async () => {
-    await auth.signOut();
+    await supabaseClient.auth.signOut();
     closeProfile();
+    resetUIForLogout();
 };
 
 /* ---------- AUTH LOGIC (SIGN IN / SIGN UP) ---------- */
@@ -877,14 +884,63 @@ async function handleAuth() {
 
     try {
         // Try sign in first
-        const cred = await auth.signInWithEmailAndPassword(email, password);
-        const user = cred.user;
-        let userData = await getUserDoc(user.uid);
+        const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
 
+        if (signInError) {
+            if (signInError.message && signInError.message.toLowerCase().includes("invalid login credentials")) {
+                // Try sign up if user not found
+                if (!username) {
+                    alert("Please enter a username to create an account.");
+                    return;
+                }
+
+                const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+                    email,
+                    password
+                });
+
+                if (signUpError) {
+                    console.error(signUpError);
+                    alert("Error creating account: " + signUpError.message);
+                    return;
+                }
+
+                const newUser = signUpData.user;
+                if (!newUser) {
+                    alert("Account created, but no user returned.");
+                    return;
+                }
+
+                let userData = await createUserDoc(newUser.id, email, username);
+                if (!userData) {
+                    alert("Error creating user profile.");
+                    return;
+                }
+
+                userData = await ensureMissionForToday(userData);
+                updateUIForLogin(userData);
+                closeLogin();
+                return;
+            } else {
+                console.error(signInError);
+                alert("Authentication error: " + signInError.message);
+                return;
+            }
+        }
+
+        const user = signInData.user;
+        if (!user) {
+            alert("No user returned from sign in.");
+            return;
+        }
+
+        let userData = await getUserDoc(user.id);
         if (!userData) {
-            // If somehow no doc, create one with fallback username
             const fallbackUsername = username || email.split("@")[0];
-            userData = await createUserDoc(user.uid, email, fallbackUsername);
+            userData = await createUserDoc(user.id, email, fallbackUsername);
         }
 
         userData = await ensureMissionForToday(userData);
@@ -893,29 +949,8 @@ async function handleAuth() {
         updateUIForLogin(userData);
         closeLogin();
     } catch (err) {
-        if (err.code === "auth/user-not-found") {
-            // Create new account
-            if (!username) {
-                alert("Please enter a username to create an account.");
-                return;
-            }
-            try {
-                const credNew = await auth.createUserWithEmailAndPassword(email, password);
-                const userNew = credNew.user;
-                const userData = await createUserDoc(userNew.uid, email, username);
-                const updated = await ensureMissionForToday(userData);
-                updateUIForLogin(updated);
-                closeLogin();
-            } catch (e2) {
-                console.error(e2);
-                alert("Error creating account: " + e2.message);
-            }
-        } else if (err.code === "auth/wrong-password") {
-            alert("Incorrect password.");
-        } else {
-            console.error(err);
-            alert("Authentication error: " + err.message);
-        }
+        console.error(err);
+        alert("Authentication error: " + err.message);
     }
 }
 
@@ -938,13 +973,15 @@ function resetUIForLogout() {
 }
 
 /* ---------- AUTH STATE LISTENER ---------- */
-auth.onAuthStateChanged(async (user) => {
-    if (user) {
-        let userData = await getUserDoc(user.uid);
+supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    if (session && session.user) {
+        const user = session.user;
+        let userData = await getUserDoc(user.id);
         if (!userData) {
             const fallbackUsername = user.email ? user.email.split("@")[0] : "Player";
-            userData = await createUserDoc(user.uid, user.email || "", fallbackUsername);
+            userData = await createUserDoc(user.id, user.email || "", fallbackUsername);
         }
+        userData.id = user.id;
         userData = await ensureMissionForToday(userData);
         userData = await syncMissionCompletion(userData);
         updateUIForLogin(userData);
@@ -953,7 +990,7 @@ auth.onAuthStateChanged(async (user) => {
     }
 });
 
-/* ---------- LEADERBOARD (FIRESTORE) ---------- */
+/* ---------- LEADERBOARD (SUPABASE) ---------- */
 document.getElementById("openLeaderboard").onclick = async () => {
     await loadLeaderboard();
     leaderboardModal.style.display = "flex";
@@ -965,24 +1002,27 @@ async function loadLeaderboard() {
     const body = document.getElementById("leaderboardBody");
     body.innerHTML = "";
 
-    // Example structure: collection "leaderboard" with fields:
-    // gameId, gameName, username, timeOrScore
-    // You can write entries from each game page later.
-    const snapshot = await db.collection("leaderboard")
-        .orderBy("createdAt", "desc")
-        .limit(50)
-        .get();
+    const { data, error } = await supabaseClient
+        .from("leaderboard")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
 
-    if (snapshot.empty) {
+    if (error) {
+        console.error("loadLeaderboard error:", error);
+        body.innerHTML = `<tr><td colspan="3">Error loading leaderboard.</td></tr>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
         body.innerHTML = `<tr><td colspan="3">No leaderboard entries yet.</td></tr>`;
         return;
     }
 
-    snapshot.forEach(doc => {
-        const entry = doc.data();
-        const gameName = entry.gameName || entry.gameId || "Unknown Game";
+    data.forEach(entry => {
+        const gameName = entry.game_name || entry.game_id || "Unknown Game";
         const player = entry.username || "Unknown";
-        const value = entry.timeOrScore || "-";
+        const value = entry.time_or_score || "-";
         body.innerHTML += `
             <tr>
                 <td>${gameName}</td>
@@ -995,7 +1035,7 @@ async function loadLeaderboard() {
 
 /* ---------- DAILY REWARD ---------- */
 claimRewardNavBtn.onclick = async () => {
-    const user = auth.currentUser;
+    const user = await getCurrentUser();
     if (!user) {
         alert("Log in or create an account to claim your daily reward.");
         loginModal.style.display = "flex";
@@ -1005,16 +1045,17 @@ claimRewardNavBtn.onclick = async () => {
 };
 
 async function openDailyRewardModal() {
-    const user = auth.currentUser;
+    const user = await getCurrentUser();
     if (!user) {
         alert("Log in or create an account to claim your daily reward.");
         loginModal.style.display = "flex";
         return;
     }
 
-    let userData = await getUserDoc(user.uid);
+    let userData = await getUserDoc(user.id);
     if (!userData) return;
 
+    userData.id = user.id;
     userData = await ensureMissionForToday(userData);
     userData = await syncMissionCompletion(userData);
 
@@ -1053,18 +1094,19 @@ async function openDailyRewardModal() {
 function closeDailyReward() { dailyRewardModal.style.display = "none"; }
 
 claimRewardBtn.onclick = async () => {
-    const user = auth.currentUser;
+    const user = await getCurrentUser();
     if (!user) return;
 
-    let userData = await getUserDoc(user.uid);
+    let userData = await getUserDoc(user.id);
     if (!userData) return;
 
+    userData.id = user.id;
     userData = await ensureMissionForToday(userData);
     userData = await syncMissionCompletion(userData);
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = userData.lastClaim ? new Date(userData.lastClaim) : null;
+    let lastClaimDate = userData.last_claim ? new Date(userData.last_claim) : null;
 
     let canClaim = false;
     let streak = userData.streak || 0;
@@ -1094,28 +1136,34 @@ claimRewardBtn.onclick = async () => {
     const baseReward = 1000;
     let rewardAmount = baseReward + streak * 200;
 
-    const missionDate = userData.missionDate ? new Date(userData.missionDate) : null;
+    const missionDate = userData.mission_date ? new Date(userData.mission_date) : null;
     let missionActiveToday = false;
     if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
     }
-    const missionCompletedToday = missionActiveToday && userData.missionCompleted;
+    const missionCompletedToday = missionActiveToday && userData.mission_completed;
 
     if (missionCompletedToday) {
         rewardAmount = rewardAmount * 2;
     }
 
     const newBalance = (userData.balance || 0) + rewardAmount;
-    const todayISO = today.toISOString();
+    const todayISO = today.toISOString().slice(0, 10);
 
-    await db.collection("users").doc(userData.id).set({
+    const { error } = await supabaseClient.from("users").update({
         streak: streak,
-        lastClaim: todayISO,
+        last_claim: todayISO,
         balance: newBalance
-    }, { merge: true });
+    }).eq("id", userData.id);
+
+    if (error) {
+        console.error("claimReward update error:", error);
+        alert("Error updating reward. Try again later.");
+        return;
+    }
 
     userData.streak = streak;
-    userData.lastClaim = todayISO;
+    userData.last_claim = todayISO;
     userData.balance = newBalance;
 
     updateUIForLogin(userData);
@@ -1139,24 +1187,25 @@ claimRewardBtn.onclick = async () => {
 
 /* ---------- DAILY MISSION UI ---------- */
 document.getElementById("openMission").onclick = async () => {
-    const user = auth.currentUser;
+    const user = await getCurrentUser();
     if (!user) {
         alert("Log in or create an account to see your daily mission.");
         loginModal.style.display = "flex";
         return;
     }
 
-    let userData = await getUserDoc(user.uid);
+    let userData = await getUserDoc(user.id);
     if (!userData) return;
 
+    userData.id = user.id;
     userData = await ensureMissionForToday(userData);
     userData = await syncMissionCompletion(userData);
 
-    missionGameDisplay.textContent = "Today's mission: " + (userData.missionGameName || "Unknown");
+    missionGameDisplay.textContent = "Today's mission: " + (userData.mission_game_name || "Unknown");
     missionHint.textContent = "Beat this game today to double your daily cash reward.";
 
     const now = new Date();
-    const missionDate = userData.missionDate ? new Date(userData.missionDate) : null;
+    const missionDate = userData.mission_date ? new Date(userData.mission_date) : null;
     let missionActiveToday = false;
     if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
         missionActiveToday = true;
@@ -1164,7 +1213,7 @@ document.getElementById("openMission").onclick = async () => {
 
     if (!missionActiveToday) {
         missionStatusDisplay.textContent = "A new mission will be assigned at midnight.";
-    } else if (userData.missionCompleted) {
+    } else if (userData.mission_completed) {
         missionStatusDisplay.textContent = "Status: Completed ✅ — your next claim today will be doubled.";
     } else {
         missionStatusDisplay.textContent = "Status: In progress — beat this game before claiming to earn double.";
