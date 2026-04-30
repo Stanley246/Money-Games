@@ -907,14 +907,10 @@ async function handleAuth() {
                     alert("Error creating account: " + signUpError.message);
                     return;
                 }
+// Sign-up succeeded — now wait for auth state listener to fire
+alert("Account created! Logging you in...");
+return;
 
-                const newUser = signUpData.user;
-                if (!newUser) {
-                    alert("Account created, but no user returned.");
-                    return;
-                }
-
-                let userData = await createUserDoc(newUser.id, email, username);
                 if (!userData) {
                     alert("Error creating user profile.");
                     return;
