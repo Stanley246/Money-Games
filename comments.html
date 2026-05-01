@@ -249,36 +249,37 @@
 
     <div id="commentsList"></div>
     <button id="loadMoreBtn" class="load-more">Load more</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_REAL_ANON_KEY_HERE"; // keep as-is in your real file
 
-    <script>
-        const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
+    const PAGE_ID = "comments-page";
+    const PAGE_SIZE = 5;
 
-        const PAGE_ID = "comments-page";
-        const PAGE_SIZE = 5;
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentPage = 0;
+    let topLevelComments = [];
+    let allReplies = [];
+    let votesMap = {};
 
-        let currentPage = 0;
-        let topLevelComments = [];
-        let allReplies = [];
-        let votesMap = {};
+    let voterId = localStorage.getItem("mg_voter_id");
+    if (!voterId) {
+        voterId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
+        localStorage.setItem("mg_voter_id", voterId);
+    }
 
-        let voterId = localStorage.getItem("mg_voter_id");
-        if (!voterId) {
-            voterId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
-            localStorage.setItem("mg_voter_id", voterId);
-        }
+    const commentsListEl = document.getElementById("commentsList");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    const postRootBtn = document.getElementById("postRootBtn");
 
-        const commentsListEl = document.getElementById("commentsList");
-        const loadMoreBtn = document.getElementById("loadMoreBtn");
-        const postRootBtn = document.getElementById("postRootBtn");
-
-        async function loadCommentsPage(initial = false) {
+    async function loadCommentsPage(initial = false) {
+        try {
             const from = currentPage * PAGE_SIZE;
             const to = from + PAGE_SIZE - 1;
 
-            const { data: parents } = await client
+            const { data: parents, error: parentsError } = await client
                 .from("comments")
                 .select("*")
                 .eq("page_id", PAGE_ID)
@@ -286,27 +287,43 @@
                 .order("created_at", { ascending: false })
                 .range(from, to);
 
+            if (parentsError) {
+                console.error("Error loading parent comments:", parentsError);
+                return;
+            }
+
             if (initial) topLevelComments = parents || [];
             else topLevelComments = topLevelComments.concat(parents || []);
 
-            const { data: replies } = await client
+            const { data: replies, error: repliesError } = await client
                 .from("comments")
                 .select("*")
                 .eq("page_id", PAGE_ID)
                 .not("parent_id", "is", null)
                 .order("created_at", { ascending: true });
 
+            if (repliesError) {
+                console.error("Error loading replies:", repliesError);
+                return;
+            }
+
             allReplies = replies || [];
 
             const allIds = [...topLevelComments, ...allReplies].map(c => c.id);
 
             if (allIds.length > 0) {
-                const { data: votes } = await client
+                const { data: votes, error: votesError } = await client
                     .from("comment_votes")
                     .select("*")
                     .in("comment_id", allIds);
 
-                buildVotesMap(votes || []);
+                if (votesError) {
+                    console.error("Error loading votes:", votesError);
+                } else {
+                    buildVotesMap(votes || []);
+                }
+            } else {
+                votesMap = {};
             }
 
             renderCommentsTree();
@@ -316,188 +333,208 @@
             } else {
                 loadMoreBtn.style.display = "block";
             }
+        } catch (err) {
+            console.error("Unexpected error loading comments:", err);
         }
+    }
 
-        function buildVotesMap(votes) {
-            votesMap = {};
-            votes.forEach(v => {
-                if (!votesMap[v.comment_id]) {
-                    votesMap[v.comment_id] = { score: 0, myVote: 0 };
-                }
-                votesMap[v.comment_id].score += v.vote_type;
-                if (v.voter_hash === voterId) {
-                    votesMap[v.comment_id].myVote = v.vote_type;
-                }
-            });
-        }
-
-        function renderCommentsTree() {
-            commentsListEl.innerHTML = "";
-
-            const childrenMap = {};
-            [...topLevelComments, ...allReplies].forEach(c => {
-                if (c.parent_id) {
-                    if (!childrenMap[c.parent_id]) childrenMap[c.parent_id] = [];
-                    childrenMap[c.parent_id].push(c);
-                }
-            });
-
-            topLevelComments.forEach(c => {
-                const node = renderCommentNode(c, childrenMap);
-                commentsListEl.appendChild(node);
-            });
-        }
-
-        function renderCommentNode(comment, childrenMap) {
-            const wrapper = document.createElement("div");
-            wrapper.className = "comment-item";
-
-            const header = document.createElement("div");
-            header.className = "comment-header";
-
-            const nameEl = document.createElement("div");
-            nameEl.className = "comment-name";
-            nameEl.textContent = comment.user_name;
-
-            const metaEl = document.createElement("div");
-            metaEl.className = "comment-meta";
-            metaEl.textContent = new Date(comment.created_at).toLocaleString();
-
-            header.appendChild(nameEl);
-            header.appendChild(metaEl);
-
-            const bodyEl = document.createElement("div");
-            bodyEl.innerHTML = `<p>${escapeHtml(comment.content).replace(/\n/g, "<br>")}</p>`;
-
-            const actions = document.createElement("div");
-            actions.className = "comment-actions";
-
-            const scoreInfo = votesMap[comment.id] || { score: 0, myVote: 0 };
-
-            const upBtn = document.createElement("button");
-            upBtn.className = "vote-btn";
-            upBtn.textContent = "▲";
-            if (scoreInfo.myVote === 1) upBtn.classList.add("active");
-            upBtn.addEventListener("click", () => handleVote(comment.id, 1));
-
-            const scoreEl = document.createElement("span");
-            scoreEl.className = "score";
-            scoreEl.textContent = scoreInfo.score;
-
-            const downBtn = document.createElement("button");
-            downBtn.className = "vote-btn";
-            downBtn.textContent = "▼";
-            if (scoreInfo.myVote === -1) downBtn.classList.add("active");
-            downBtn.addEventListener("click", () => handleVote(comment.id, -1));
-
-            const replyLink = document.createElement("span");
-            replyLink.className = "reply-link";
-            replyLink.textContent = "Reply";
-            replyLink.addEventListener("click", () => toggleReplyBox(comment.id, wrapper));
-
-            actions.appendChild(upBtn);
-            actions.appendChild(scoreEl);
-            actions.appendChild(downBtn);
-            actions.appendChild(replyLink);
-
-            wrapper.appendChild(header);
-            wrapper.appendChild(bodyEl);
-            wrapper.appendChild(actions);
-
-            const children = childrenMap[comment.id] || [];
-            if (children.length > 0) {
-                const childrenContainer = document.createElement("div");
-                childrenContainer.className = "children";
-                children.forEach(child => {
-                    const childNode = renderCommentNode(child, childrenMap);
-                    childrenContainer.appendChild(childNode);
-                });
-                wrapper.appendChild(childrenContainer);
+    function buildVotesMap(votes) {
+        votesMap = {};
+        votes.forEach(v => {
+            if (!votesMap[v.comment_id]) {
+                votesMap[v.comment_id] = { score: 0, myVote: 0 };
             }
-
-            return wrapper;
-        }
-
-        function toggleReplyBox(commentId, parentEl) {
-            let existing = parentEl.querySelector(".reply-box");
-            if (existing) {
-                existing.remove();
-                return;
+            votesMap[v.comment_id].score += v.vote_type;
+            if (v.voter_hash === voterId) {
+                votesMap[v.comment_id].myVote = v.vote_type;
             }
+        });
+    }
 
-            const box = document.createElement("div");
-            box.className = "reply-box";
+    function renderCommentsTree() {
+        commentsListEl.innerHTML = "";
 
-            const textarea = document.createElement("textarea");
-            textarea.rows = 3;
-            textarea.placeholder = "Write a reply...";
-
-            const btn = document.createElement("button");
-            btn.textContent = "Post reply";
-            btn.addEventListener("click", () => postReply(commentId, textarea.value));
-
-            box.appendChild(textarea);
-            box.appendChild(btn);
-            parentEl.appendChild(box);
-        }
-
-        function escapeHtml(str) {
-            return str
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-        }
-
-        postRootBtn.addEventListener("click", async () => {
-            const name = document.getElementById("displayName").value.trim();
-            const text = document.getElementById("commentText").value.trim();
-
-            if (!name || !text) {
-                alert("Please enter a name and a comment.");
-                return;
+        const childrenMap = {};
+        [...topLevelComments, ...allReplies].forEach(c => {
+            if (c.parent_id) {
+                if (!childrenMap[c.parent_id]) childrenMap[c.parent_id] = [];
+                childrenMap[c.parent_id].push(c);
             }
-
-            await client.from("comments").insert({
-                page_id: PAGE_ID,
-                parent_id: null,
-                user_name: name,
-                content: text
-            });
-
-            document.getElementById("commentText").value = "";
-            currentPage = 0;
-            await loadCommentsPage(true);
         });
 
-        async function postReply(parentId, text) {
-            const name = document.getElementById("displayName").value.trim();
-            const content = text.trim();
+        topLevelComments.forEach(c => {
+            const node = renderCommentNode(c, childrenMap);
+            commentsListEl.appendChild(node);
+        });
+    }
 
-            if (!name || !content) {
-                alert("Enter a name (top box) and some reply text.");
-                return;
-            }
+    function renderCommentNode(comment, childrenMap) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "comment-item";
 
-            await client.from("comments").insert({
-                page_id: PAGE_ID,
-                parent_id: parentId,
-                user_name: name,
-                content: content
+        const header = document.createElement("div");
+        header.className = "comment-header";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "comment-name";
+        nameEl.textContent = comment.user_name;
+
+        const metaEl = document.createElement("div");
+        metaEl.className = "comment-meta";
+        metaEl.textContent = new Date(comment.created_at).toLocaleString();
+
+        header.appendChild(nameEl);
+        header.appendChild(metaEl);
+
+        const bodyEl = document.createElement("div");
+        bodyEl.innerHTML = `<p>${escapeHtml(comment.content).replace(/\n/g, "<br>")}</p>`;
+
+        const actions = document.createElement("div");
+        actions.className = "comment-actions";
+
+        const scoreInfo = votesMap[comment.id] || { score: 0, myVote: 0 };
+
+        const upBtn = document.createElement("button");
+        upBtn.className = "vote-btn";
+        upBtn.textContent = "▲";
+        if (scoreInfo.myVote === 1) upBtn.classList.add("active");
+        upBtn.addEventListener("click", () => handleVote(comment.id, 1));
+
+        const scoreEl = document.createElement("span");
+        scoreEl.className = "score";
+        scoreEl.textContent = scoreInfo.score;
+
+        const downBtn = document.createElement("button");
+        downBtn.className = "vote-btn";
+        downBtn.textContent = "▼";
+        if (scoreInfo.myVote === -1) downBtn.classList.add("active");
+        downBtn.addEventListener("click", () => handleVote(comment.id, -1));
+
+        const replyLink = document.createElement("span");
+        replyLink.className = "reply-link";
+        replyLink.textContent = "Reply";
+        replyLink.addEventListener("click", () => toggleReplyBox(comment.id, wrapper));
+
+        actions.appendChild(upBtn);
+        actions.appendChild(scoreEl);
+        actions.appendChild(downBtn);
+        actions.appendChild(replyLink);
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(bodyEl);
+        wrapper.appendChild(actions);
+
+        const children = childrenMap[comment.id] || [];
+        if (children.length > 0) {
+            const childrenContainer = document.createElement("div");
+            childrenContainer.className = "children";
+            children.forEach(child => {
+                const childNode = renderCommentNode(child, childrenMap);
+                childrenContainer.appendChild(childNode);
             });
-
-            await loadCommentsPage(true);
+            wrapper.appendChild(childrenContainer);
         }
 
-        async function handleVote(commentId, type) {
+        return wrapper;
+    }
+
+    function toggleReplyBox(commentId, parentEl) {
+        let existing = parentEl.querySelector(".reply-box");
+        if (existing) {
+            existing.remove();
+            return;
+        }
+
+        const box = document.createElement("div");
+        box.className = "reply-box";
+
+        const textarea = document.createElement("textarea");
+        textarea.rows = 3;
+        textarea.placeholder = "Write a reply...";
+
+        const btn = document.createElement("button");
+        btn.textContent = "Post reply";
+        btn.addEventListener("click", () => postReply(commentId, textarea.value));
+
+        box.appendChild(textarea);
+        box.appendChild(btn);
+        parentEl.appendChild(box);
+    }
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
+    postRootBtn.addEventListener("click", async () => {
+        const name = document.getElementById("displayName").value.trim();
+        const text = document.getElementById("commentText").value.trim();
+
+        if (!name || !text) {
+            alert("Please enter a name and a comment.");
+            return;
+        }
+
+        const { error } = await client.from("comments").insert({
+            page_id: PAGE_ID,
+            parent_id: null,
+            user_name: name,
+            content: text
+        });
+
+        if (error) {
+            console.error("Error inserting root comment:", error);
+            alert("Failed to post comment.");
+            return;
+        }
+
+        document.getElementById("commentText").value = "";
+        currentPage = 0;
+        await loadCommentsPage(true);
+    });
+
+    async function postReply(parentId, text) {
+        const name = document.getElementById("displayName").value.trim();
+        const content = text.trim();
+
+        if (!name || !content) {
+            alert("Enter a name (top box) and some reply text.");
+            return;
+        }
+
+        const { error } = await client.from("comments").insert({
+            page_id: PAGE_ID,
+            parent_id: parentId,
+            user_name: name,
+            content: content
+        });
+
+        if (error) {
+            console.error("Error inserting reply:", error);
+            alert("Failed to post reply.");
+            return;
+        }
+
+        await loadCommentsPage(true);
+    }
+
+    async function handleVote(commentId, type) {
+        try {
             const current = votesMap[commentId] || { score: 0, myVote: 0 };
 
             if (current.myVote === type) {
-                await client
+                const { error } = await client
                     .from("comment_votes")
                     .delete()
                     .match({ comment_id: commentId, voter_hash: voterId });
+
+                if (error) {
+                    console.error("Error removing vote:", error);
+                }
             } else {
-                await client
+                const { error } = await client
                     .from("comment_votes")
                     .upsert(
                         {
@@ -507,6 +544,25 @@
                         },
                         { onConflict: "comment_id,voter_hash" }
                     );
+
+                if (error) {
+                    console.error("Error upserting vote:", error);
+                }
             }
 
-            await
+            await loadCommentsPage(true);
+        } catch (err) {
+            console.error("Unexpected error in handleVote:", err);
+        }
+    }
+
+    loadMoreBtn.addEventListener("click", async () => {
+        currentPage++;
+        await loadCommentsPage(false);
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+        loadCommentsPage(true);
+    });
+</script>
+</body></html>
