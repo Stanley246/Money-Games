@@ -333,7 +333,7 @@
         <!--    <a href="#">Home</a>
             <a href="#games">Games</a>-->
             <a href="about.html" target="_blank">About</a>
-           <!-- <a href="#" id="openLeaderboard">Leaderboard</a>-->
+            <a href="#" id="openLeaderboard">Leaderboard</a>
             <a href="#" id="openMission">Daily Mission</a>
             <a href="comments.html" target="_blank">Comments</a>
             <a href="contributors.html" target="_blank">Contributors</a>
@@ -492,6 +492,47 @@
             <p class="reward-meta" id="missionHint"></p>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadLeaderboard() {
+    const { data } = await db
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(20);
+
+    renderLeaderboard(data);
+}
+
+function renderLeaderboard(rows) {
+    const box = document.getElementById("openleaderboard");
+    box.innerHTML = "";
+
+    rows.forEach((row, i) => {
+        const div = document.createElement("div");
+        div.className = "leader-row";
+        div.innerHTML = `
+            <span>${i + 1}. ${row.player_name}</span>
+            <span>${row.score}</span>
+        `;
+        box.appendChild(div);
+    });
+}
+
+// realtime updates
+db.channel("leaderboard")
+  .on("postgres_changes", { event: "INSERT", schema: "public", table: "leaderboard" }, loadLeaderboard)
+  .on("postgres_changes", { event: "UPDATE", schema: "public", table: "leaderboard" }, loadLeaderboard)
+  .subscribe();
+
+loadLeaderboard();
+</script>
 
 <script>
 /* AUTH + UI ELEMENTS */
