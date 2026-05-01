@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Side Hustle Tycoon</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: #e5e7eb;
+    }
+    header {
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #020617, #111827);
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    header span {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    main {
+      display: grid;
+      grid-template-columns: 320px 1fr 320px;
+      gap: 10px;
+      padding: 10px;
+      height: calc(100vh - 54px);
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+    }
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .stat {
+      background: #020617;
+      border-radius: 6px;
+      padding: 6px 8px;
+      border: 1px solid #111827;
+      min-width: 120px;
+      flex: 1;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .stat-sub {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .big-money {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .btn {
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 7px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn:hover {
+      background: #1f2937;
+      border-color: #4b5563;
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.3);
+    }
+    .btn:active {
+      transform: scale(0.97);
+      box-shadow: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #16a34a;
+      color: #022c22;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      border-color: #22c55e;
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: #1f2937;
+    }
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      border-color: #b91c1c;
+      color: #fee2e2;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #020617;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #a3e635);
+      transition: width 0.25s ease-out;
+    }
+    .progress-bar-inner-alt {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #a855f7);
+      transition: width 0.25s ease-out;
+    }
+    .click-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .click-button {
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      border: 2px solid #22c55e;
+      background: radial-gradient(circle at 30% 20%, #22c55e 0, #16a34a 40%, #14532d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ecfdf5;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 40px rgba(34, 197, 94, 0.4);
+      transition: transform 0.05s, box-shadow 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+    .click-button:hover {
+      box-shadow: 0 0 60px rgba(34, 197, 94, 0.7);
+    }
+    .click-button:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+    }
+    .click-button span {
+      pointer-events: none;
+    }
+    .floating-text {
+      position: absolute;
+      font-size: 12px;
+      font-weight: 600;
+      color: #bbf7d0;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(0);
+      animation: floatUp 0.7s ease-out forwards;
+      text-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 6px 4px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+    .tab.active {
+      background: #111827;
+      border-color: #4b5563;
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+    .tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      font-size: 13px;
+    }
+    .list-item {
+      border-radius: 6px;
+      border: 1px solid #111827;
+      background: #020617;
+      padding: 6px 8px;
+      margin-bottom: 6px;
+    }
+    .list-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .list-item-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .list-item-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .list-item-actions {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+    .badge-good {
+      border-color: #16a34a;
+      color: #4ade80;
+    }
+    .badge-info {
+      border-color: #0ea5e9;
+      color: #7dd3fc;
+    }
+    .badge-bad {
+      border-color: #b91c1c;
+      color: #fecaca;
+    }
+    .log {
+      flex: 1;
+      overflow-y: auto;
+      font-size: 12px;
+      padding-right: 4px;
+    }
+    .log-entry {
+      border-bottom: 1px dashed #111827;
+      padding: 3px 0;
+    }
+    .log-entry span.time {
+      color: #6b7280;
+      font-size: 11px;
+      margin-right: 4px;
+    }
+    .log-entry span.text {
+      color: #e5e7eb;
+    }
+    .log-entry.positive span.text {
+      color: #4ade80;
+    }
+    .log-entry.negative span.text {
+      color: #fca5a5;
+    }
+    .log-entry.info span.text {
+      color: #7dd3fc;
+    }
+    .howto {
+      font-size: 12px;
+      color: #d1d5db;
+      line-height: 1.4;
+    }
+    .howto ul {
+      padding-left: 18px;
+      margin: 4px 0 8px;
+    }
+    .howto li {
+      margin-bottom: 2px;
+    }
+    .section-title {
+      margin-top: 8px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .input-row {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    input[type="number"] {
+      background: #020617;
+      border: 1px solid #111827;
+      border-radius: 4px;
+      padding: 4px 6px;
+      color: #e5e7eb;
+      font-size: 12px;
+      width: 100%;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4b5563;
+    }
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
+      }
+      .panel {
+        max-height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Side Hustle Tycoon</h1>
+    <span>Turn tiny gigs into a money empire</span>
+  </div>
+  <div>
+    <span id="playerNameHeader"></span>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: Core stats -->
+  <section class="panel">
+    <h2>Profile & Progress</h2>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Cash</div>
+        <div class="stat-value big-money" id="stat-cash">$0</div>
+        <div class="stat-sub">Earn from taps, gigs, and passive income.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Income / sec</div>
+        <div class="stat-value" id="stat-ips">$0</div>
+        <div class="stat-sub">Passive income from your hustles.</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Tap Value</div>
+        <div class="stat-value" id="stat-tap">$1</div>
+        <div class="stat-sub">How much each click earns.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Prestige Level</div>
+        <div class="stat-value" id="stat-prestige">0</div>
+        <div class="stat-sub">Resets for permanent multipliers.</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Total Earned</div>
+        <div class="stat-value" id="stat-total">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Goal Progress</div>
+        <div class="stat-value" id="stat-goal">$0 / $1M</div>
+        <div class="progress-bar">
+          <div class="progress-bar-inner" id="bar-goal"></div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Hustle Rank</div>
+        <div class="stat-value" id="stat-rank">Rookie</div>
+        <div class="stat-sub" id="stat-rank-sub">Just getting started.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value" id="stat-streak">0</div>
+        <div class="stat-sub">Keep tapping to maintain streak bonus.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CENTER: Clicker -->
+  <section class="panel">
+    <h2>Tap to Hustle</h2>
+    <div class="click-area">
+      <button class="click-button" id="btn-tap">
+        <span>Hustle</span>
+      </button>
+      <div class="section-title">Quick Actions</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn btn-primary btn-sm" id="btn-boost">30s Income Boost</button>
+        <button class="btn btn-ghost btn-sm" id="btn-save">Save</button>
+        <button class="btn btn-ghost btn-sm" id="btn-load">Load</button>
+        <button class="btn btn-danger btn-sm" id="btn-hard-reset">Hard Reset</button>
+      </div>
+      <div class="section-title">Active Boost</div>
+      <div class="stat" style="max-width:260px;">
+        <div class="stat-label">Boost Timer</div>
+        <div class="stat-value" id="stat-boost">Inactive</div>
+        <div class="progress-bar">
+          <div class="progress-bar-inner-alt" id="bar-boost"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Upgrades, log, how-to -->
+  <section class="panel">
+    <h2>Upgrades & Log</h2>
+    <div class="tabs">
+      <div class="tab active" data-tab="upgrades">Upgrades</div>
+      <div class="tab" data-tab="gigs">Gigs</div>
+      <div class="tab" data-tab="prestige">Prestige</div>
+      <div class="tab" data-tab="log">Log</div>
+      <div class="tab" data-tab="howto">How to Play</div>
+    </div>
+
+    <div class="tab-content" id="tab-upgrades">
+      <div class="list-item">
+        <div class="list-item-header">
+          <div>
+            <div class="list-item-title">Tap Upgrades</div>
+            <div class="list-item-sub">Increase how much each tap earns.</div>
+          </div>
+          <span class="badge badge-info">Active</span>
+        </div>
+      </div>
+      <div id="upgrade-list"></div>
+    </div>
+
+    <div class="tab-content" id="tab-gigs" style="display:none;">
+      <div class="list-item">
+        <div class="list-item-header">
+          <div>
+            <div class="list-item-title">Side Gigs</div>
+            <div class="list-item-sub">Buy passive income streams that pay every second.</div>
+          </div>
+        </div>
+      </div>
+      <div id="gig-list"></div>
+    </div>
+
+    <div class="tab-content" id="tab-prestige" style="display:none;">
+      <div class="list-item">
+        <div class="list-item-header">
+          <div class="list-item-title">Prestige Reset</div>
+          <span class="badge badge-good">Long‑term</span>
+        </div>
+        <div class="list-item-sub">
+          Reset your cash, upgrades, and gigs to gain permanent multipliers. The more you’ve earned overall, the more prestige you gain.
+        </div>
+        <div class="list-item-sub" id="prestige-info"></div>
+        <div class="list-item-actions">
+          <button class="btn btn-danger btn-sm" id="btn-prestige">Prestige Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-log" style="display:none;">
+      <div class="log" id="log"></div>
+    </div>
+
+    <div class="tab-content" id="tab-howto" style="display:none;">
+      <div class="howto">
+        <p><strong>Goal:</strong> Build up your side hustles, unlock upgrades, and eventually prestige to become a true money tycoon.</p>
+        <ul>
+          <li><strong>Tap to Hustle:</strong> Click the big button to earn instant cash. Tap upgrades increase this amount.</li>
+          <li><strong>Side Gigs:</strong> Buy gigs like freelancing, online shops, or rental income. They pay you automatically every second.</li>
+          <li><strong>Upgrades:</strong> Each upgrade has a cost and a level. Higher levels give more power but cost more.</li>
+          <li><strong>Boosts:</strong> Use the 30‑second income boost to temporarily multiply your earnings.</li>
+          <li><strong>Prestige:</strong> Once you’ve earned enough total money, you can reset for permanent multipliers that make future runs much faster.</li>
+          <li><strong>Streaks:</strong> Keep tapping regularly to maintain a streak bonus that slightly boosts your tap value.</li>
+          <li><strong>Save & Load:</strong> Use the buttons to store your progress in your browser and come back later.</li>
+        </ul>
+        <p>Experiment with different strategies: rush tap upgrades, stack passive gigs, or prestige early and often. The loop is designed to feel snappy and addictive.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Start overlay -->
+<div id="overlay-start" style="position:fixed;inset:0;background:rgba(15,23,42,0.96);display:flex;align-items:center;justify-content:center;z-index:50;">
+  <div style="background:#020617;border-radius:10px;border:1px solid #1f2937;padding:16px 18px;width:420px;max-width:90vw;">
+    <h3 style="margin:0 0 6px;font-size:16px;">Welcome to Side Hustle Tycoon</h3>
+    <p style="margin:0 0 10px;font-size:13px;color:#d1d5db;">
+      Start with nothing but hustle and build a chain of money‑making side gigs. Enter your name to begin.
+    </p>
+    <div class="input-row">
+      <input type="text" id="input-player-name" placeholder="Your name" />
+    </div>
+    <p style="font-size:11px;color:#6b7280;margin:4px 0 10px;">
+      This is a fictional money game for fun and learning. It does not represent real financial advice.
+    </p>
+    <div style="display:flex;justify-content:flex-end;gap:6px;">
+      <button class="btn btn-ghost btn-sm" id="btn-skip-name">Skip</button>
+      <button class="btn btn-primary btn-sm" id="btn-start">Start Hustling</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Utility =====
+  function fmtMoney(v) {
+    if (!isFinite(v)) return "$0";
+    if (v >= 1e12) return (v / 1e12).toFixed(2) + "T";
+    if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+    if (v >= 1e6) return (v / 1e6).toFixed(2) + "M";
+    if (v >= 1e3) return (v / 1e3).toFixed(2) + "K";
+    return "$" + Math.floor(v).toLocaleString("en-US");
+  }
+  function fmtFullMoney(v) {
+    return "$" + Math.floor(v).toLocaleString("en-US");
+  }
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  // ===== Game Data =====
+  const goalAmount = 1_000_000;
+
+  const Upgrades = [
+    {
+      id: "betterKeyboard",
+      name: "Mechanical Keyboard",
+      desc: "Type faster, earn more per tap.",
+      baseCost: 50,
+      costMult: 1.15,
+      baseBonus: 1,
+    },
+    {
+      id: "productivityApps",
+      name: "Productivity Apps",
+      desc: "Automate boring tasks, boost tap value.",
+      baseCost: 250,
+      costMult: 1.18,
+      baseBonus: 3,
+    },
+    {
+      id: "personalBrand",
+      name: "Personal Brand",
+      desc: "Your name carries weight. Big tap boost.",
+      baseCost: 2_000,
+      costMult: 1.2,
+      baseBonus: 10,
+    },
+    {
+      id: "microCourses",
+      name: "Micro‑Courses",
+      desc: "Sell quick lessons, each tap is worth more.",
+      baseCost: 10_000,
+      costMult: 1.22,
+      baseBonus: 30,
+    },
+    {
+      id: "automationSuite",
+      name: "Automation Suite",
+      desc: "Scripts and bots multiply your tap output.",
+      baseCost: 50_000,
+      costMult: 1.25,
+      baseBonus: 100,
+    },
+  ];
+
+  const Gigs = [
+    {
+      id: "freelanceWriting",
+      name: "Freelance Writing",
+      desc: "Write articles for clients.",
+      baseCost: 100,
+      costMult: 1.16,
+      baseIncome: 1,
+    },
+    {
+      id: "onlineStore",
+      name: "Online Store",
+      desc: "Sell digital products while you sleep.",
+      baseCost: 1_000,
+      costMult: 1.18,
+      baseIncome: 8,
+    },
+    {
+      id: "affiliateBlog",
+      name: "Affiliate Blog",
+      desc: "Earn commissions from recommendations.",
+      baseCost: 5_000,
+      costMult: 1.2,
+      baseIncome: 30,
+    },
+    {
+      id: "rentalRoom",
+      name: "Rental Room",
+      desc: "Rent out a spare room for steady income.",
+      baseCost: 20_000,
+      costMult: 1.22,
+      baseIncome: 120,
+    },
+    {
+      id: "microSaaS",
+      name: "Micro SaaS",
+      desc: "A tiny software product with recurring revenue.",
+      baseCost: 100_000,
+      costMult: 1.25,
+      baseIncome: 600,
+    },
+  ];
+
+  const RankThresholds = [
+    { name: "Rookie", min: 0, desc: "Just getting started." },
+    { name: "Hustler", min: 5_000, desc: "You’re making it work." },
+    { name: "Grinder", min: 50_000, desc: "Multiple gigs, serious effort." },
+    { name: "Operator", min: 250_000, desc: "Systems and leverage in place." },
+    { name: "Tycoon", min: 1_000_000, desc: "Your side hustles are an empire." },
+  ];
+
+  // ===== Game State =====
+  const Game = {
+    playerName: "Player",
+    cash: 0,
+    tapBase: 1,
+    tapBonus: 0,
+    tapMultiplier: 1,
+    totalEarned: 0,
+    prestige: 0,
+    prestigeMultiplier: 1,
+    upgrades: {},
+    gigs: {},
+    incomePerSec: 0,
+    lastTick: performance.now(),
+    boostActive: false,
+    boostRemaining: 0,
+    boostMultiplier: 1,
+    streak: 0,
+    streakTimer: 0,
+    streakMaxGap: 10_000, // 10 seconds
+  };
+
+  // ===== DOM =====
+  const elPlayerNameHeader = document.getElementById("playerNameHeader");
+  const elStatCash = document.getElementById("stat-cash");
+  const elStatIPS = document.getElementById("stat-ips");
+  const elStatTap = document.getElementById("stat-tap");
+  const elStatPrestige = document.getElementById("stat-prestige");
+  const elStatTotal = document.getElementById("stat-total");
+  const elStatGoal = document.getElementById("stat-goal");
+  const elBarGoal = document.getElementById("bar-goal");
+  const elStatRank = document.getElementById("stat-rank");
+  const elStatRankSub = document.getElementById("stat-rank-sub");
+  const elStatStreak = document.getElementById("stat-streak");
+  const elBtnTap = document.getElementById("btn-tap");
+  const elBtnBoost = document.getElementById("btn-boost");
+  const elBtnSave = document.getElementById("btn-save");
+  const elBtnLoad = document.getElementById("btn-load");
+  const elBtnHardReset = document.getElementById("btn-hard-reset");
+  const elStatBoost = document.getElementById("stat-boost");
+  const elBarBoost = document.getElementById("bar-boost");
+  const elUpgradeList = document.getElementById("upgrade-list");
+  const elGigList = document.getElementById("gig-list");
+  const elPrestigeInfo = document.getElementById("prestige-info");
+  const elLog = document.getElementById("log");
+  const elTabs = document.querySelectorAll(".tab");
+  const elTabUpgrades = document.getElementById("tab-upgrades");
+  const elTabGigs = document.getElementById("tab-gigs");
+  const elTabPrestige = document.getElementById("tab-prestige");
+  const elTabLog = document.getElementById("tab-log");
+  const elTabHowto = document.getElementById("tab-howto");
+  const elOverlayStart = document.getElementById("overlay-start");
+  const elInputPlayerName = document.getElementById("input-player-name");
+  const elBtnStart = document.getElementById("btn-start");
+  const elBtnSkipName = document.getElementById("btn-skip-name");
+
+  // ===== Log =====
+  function addLog(text, tone = "info") {
+    const div = document.createElement("div");
+    div.className = "log-entry " + tone;
+    const time = new Date().toLocaleTimeString();
+    div.innerHTML = `<span class="time">[${time}]</span><span class="text">${text}</span>`;
+    elLog.prepend(div);
+  }
+
+  // ===== Rank =====
+  function updateRank() {
+    let current = RankThresholds[0];
+    for (const r of RankThresholds) {
+      if (Game.totalEarned >= r.min) current = r;
+    }
+    elStatRank.textContent = current.name;
+    elStatRankSub.textContent = current.desc;
+  }
+
+  // ===== Rendering =====
+  function computeTapValue() {
+    const base = Game.tapBase + Game.tapBonus;
+    const mult = Game.tapMultiplier * Game.prestigeMultiplier;
+    const streakMult = 1 + Math.min(Game.streak, 50) * 0.01;
+    return base * mult * streakMult;
+  }
+
+  function computeIncomePerSec() {
+    let ips = 0;
+    for (const gig of Gigs) {
+      const level = Game.gigs[gig.id] || 0;
+      if (level > 0) {
+        ips += gig.baseIncome * level;
+      }
+    }
+    ips *= Game.prestigeMultiplier;
+    if (Game.boostActive) ips *= Game.boostMultiplier;
+    Game.incomePerSec = ips;
+  }
+
+  function renderStats() {
+    computeIncomePerSec();
+    const tapValue = computeTapValue();
+    elPlayerNameHeader.textContent = Game.playerName;
+    elStatCash.textContent = fmtFullMoney(Game.cash);
+    elStatIPS.textContent = fmtMoney(Game.incomePerSec) + "/s";
+    elStatTap.textContent = fmtMoney(tapValue);
+    elStatPrestige.textContent = Game.prestige;
+    elStatTotal.textContent = fmtFullMoney(Game.totalEarned);
+    elStatGoal.textContent = fmtFullMoney(Game.totalEarned) + " / " + fmtFullMoney(goalAmount);
+    const goalProgress = clamp(Game.totalEarned / goalAmount, 0, 1);
+    elBarGoal.style.width = goalProgress * 100 + "%";
+    elStatStreak.textContent = Game.streak;
+    updateRank();
+  }
+
+  function renderBoost() {
+    if (!Game.boostActive) {
+      elStatBoost.textContent = "Inactive";
+      elBarBoost.style.width = "0%";
+      return;
+    }
+    elStatBoost.textContent = Game.boostRemaining.toFixed(1) + "s x" + Game.boostMultiplier.toFixed(1);
+    const pct = clamp(Game.boostRemaining / 30, 0, 1);
+    elBarBoost.style.width = pct * 100 + "%";
+  }
+
+  function renderUpgrades() {
+    elUpgradeList.innerHTML = "";
+    Upgrades.forEach((upg) => {
+      const level = Game.upgrades[upg.id] || 0;
+      const cost = upg.baseCost * Math.pow(upg.costMult, level);
+      const bonus = upg.baseBonus * (level + 1);
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.innerHTML = `
+        <div class="list-item-header">
+          <div>
+            <div class="list-item-title">${upg.name} (Lv. ${level})</div>
+            <div class="list-item-sub">${upg.desc}</div>
+          </div>
+          <span class="badge badge-info">Tap +${fmtMoney(upg.baseBonus)}</span>
+        </div>
+        <div class="list-item-sub">
+          Next level adds <strong>${fmtMoney(upg.baseBonus)}</strong> tap value (total from this: ${fmtMoney(bonus)}).
+        </div>
+        <div class="list-item-actions">
+          <button class="btn btn-sm" data-upgrade="${upg.id}">
+            Buy for ${fmtFullMoney(cost)}
+          </button>
+        </div>
+      `;
+      elUpgradeList.appendChild(div);
+    });
+  }
+
+  function renderGigs() {
+    elGigList.innerHTML = "";
+    Gigs.forEach((gig) => {
+      const level = Game.gigs[gig.id] || 0;
+      const cost = gig.baseCost * Math.pow(gig.costMult, level);
+      const income = gig.baseIncome * (level + 1) * Game.prestigeMultiplier;
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.innerHTML = `
+        <div class="list-item-header">
+          <div>
+            <div class="list-item-title">${gig.name} (Lv. ${level})</div>
+            <div class="list-item-sub">${gig.desc}</div>
+          </div>
+          <span class="badge badge-good">+${fmtMoney(gig.baseIncome)}/s</span>
+        </div>
+        <div class="list-item-sub">
+          Next level adds <strong>${fmtMoney(gig.baseIncome)}</strong>/s (total from this: ${fmtMoney(income)}/s).
+        </div>
+        <div class="list-item-actions">
+          <button class="btn btn-sm" data-gig="${gig.id}">
+            Buy for ${fmtFullMoney(cost)}
+          </button>
+        </div>
+      `;
+      elGigList.appendChild(div);
+    });
+  }
+
+  function renderPrestige() {
+    const potentialPrestige = Math.floor(Math.sqrt(Game.totalEarned / 1_000_000));
+    const next = potentialPrestige > Game.prestige ? potentialPrestige - Game.prestige : 0;
+    const mult = 1 + Game.prestige * 0.2;
+    elPrestigeInfo.innerHTML = `
+      Current prestige: <strong>${Game.prestige}</strong><br/>
+      Current permanent multiplier: <strong>x${mult.toFixed(1)}</strong><br/>
+      Total earned so far: <strong>${fmtFullMoney(Game.totalEarned)}</strong><br/>
+      If you prestige now, you gain <strong>${next}</strong> new prestige levels.
+    `;
+  }
+
+  function renderAll() {
+    renderStats();
+    renderBoost();
+    renderUpgrades();
+    renderGigs();
+    renderPrestige();
+  }
+
+  // ===== Tabs =====
+  elTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      elTabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      const name = tab.getAttribute("data-tab");
+      elTabUpgrades.style.display = name === "upgrades" ? "block" : "none";
+      elTabGigs.style.display = name === "gigs" ? "block" : "none";
+      elTabPrestige.style.display = name === "prestige" ? "block" : "none";
+      elTabLog.style.display = name === "log" ? "block" : "none";
+      elTabHowto.style.display = name === "howto" ? "block" : "none";
+    });
+  });
+
+  // ===== Tap Handling =====
+  function spawnFloatingText(amount) {
+    const rect = elBtnTap.getBoundingClientRect();
+    const x = Math.random() * rect.width * 0.6 + rect.width * 0.2;
+    const y = Math.random() * rect.height * 0.6 + rect.height * 0.2;
+    const span = document.createElement("span");
+    span.className = "floating-text";
+    span.textContent = "+" + fmtMoney(amount);
+    span.style.left = x + "px";
+    span.style.top = y + "px";
+    elBtnTap.appendChild(span);
+    setTimeout(() => {
+      span.remove();
+    }, 700);
+  }
+
+  elBtnTap.addEventListener("click", () => {
+    const tapValue = computeTapValue();
+    Game.cash += tapValue;
+    Game.totalEarned += tapValue;
+    spawnFloatingText(tapValue);
+    Game.streak += 1;
+    Game.streakTimer = performance.now();
+    renderAll();
+  });
+
+  // ===== Upgrade & Gig Buying =====
+  elUpgradeList.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-upgrade]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-upgrade");
+    const upg = Upgrades.find((u) => u.id === id);
+    const level = Game.upgrades[id] || 0;
+    const cost = upg.baseCost * Math.pow(upg.costMult, level);
+    if (Game.cash < cost) {
+      addLog("Not enough cash for " + upg.name + ".", "negative");
+      return;
+    }
+    Game.cash -= cost;
+    Game.upgrades[id] = level + 1;
+    Game.tapBonus += upg.baseBonus;
+    addLog("Bought " + upg.name + " (Lv. " + (level + 1) + ").", "positive");
+    renderAll();
+  });
+
+  elGigList.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-gig]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-gig");
+    const gig = Gigs.find((g) => g.id === id);
+    const level = Game.gigs[id] || 0;
+    const cost = gig.baseCost * Math.pow(gig.costMult, level);
+    if (Game.cash < cost) {
+      addLog("Not enough cash for " + gig.name + ".", "negative");
+      return;
+    }
+    Game.cash -= cost;
+    Game.gigs[id] = level + 1;
+    addLog("Upgraded " + gig.name + " to Lv. " + (level + 1) + ".", "positive");
+    renderAll();
+  });
+
+  // ===== Boost =====
+  elBtnBoost.addEventListener("click", () => {
+    if (Game.boostActive) {
+      addLog("Boost already active.", "info");
+      return;
+    }
+    const cost = 500;
+    if (Game.cash < cost) {
+      addLog("You need at least " + fmtFullMoney(cost) + " to activate a boost.", "negative");
+      return;
+    }
+    Game.cash -= cost;
+    Game.boostActive = true;
+    Game.boostRemaining = 30;
+    Game.boostMultiplier = 2 + Game.prestige * 0.2;
+    addLog("Income boost activated for 30 seconds!", "positive");
+    renderAll();
+  });
+
+  // ===== Prestige =====
+  document.getElementById("btn-prestige").addEventListener("click", () => {
+    const potentialPrestige = Math.floor(Math.sqrt(Game.totalEarned / 1_000_000));
+    const gain = potentialPrestige - Game.prestige;
+    if (gain <= 0) {
+      addLog("You need to earn more before prestiging.", "info");
+      return;
+    }
+    if (!confirm("Prestige will reset your progress but grant " + gain + " prestige levels. Continue?")) return;
+    Game.prestige = potentialPrestige;
+    Game.prestigeMultiplier = 1 + Game.prestige * 0.2;
+    Game.cash = 0;
+    Game.tapBase = 1;
+    Game.tapBonus = 0;
+    Game.upgrades = {};
+    Game.gigs = {};
+    Game.incomePerSec = 0;
+    Game.boostActive = false;
+    Game.boostRemaining = 0;
+    Game.boostMultiplier = 1;
+    Game.streak = 0;
+    Game.streakTimer = 0;
+    addLog("Prestige reset complete. New prestige level: " + Game.prestige + ".", "positive");
+    renderAll();
+  });
+
+  // ===== Save / Load =====
+  const SAVE_KEY = "side_hustle_tycoon_save";
+
+  function saveGame() {
+    const data = JSON.stringify(Game);
+    localStorage.setItem(SAVE_KEY, data);
+    addLog("Game saved.", "info");
+  }
+
+  function loadGame() {
+    const data = localStorage.getItem(SAVE_KEY);
+    if (!data) {
+      addLog("No save found.", "info");
+      return;
+    }
+    try {
+      const obj = JSON.parse(data);
+      Object.assign(Game, obj);
+      addLog("Game loaded.", "info");
+      renderAll();
+    } catch (e) {
+      addLog("Failed to load save.", "negative");
+    }
+  }
+
+  elBtnSave.addEventListener("click", saveGame);
+  elBtnLoad.addEventListener("click", loadGame);
+
+  elBtnHardReset.addEventListener("click", () => {
+    if (!confirm("Hard reset will erase all progress, including prestige. Continue?")) return;
+    localStorage.removeItem(SAVE_KEY);
+    location.reload();
+  });
+
+  // ===== Main Loop =====
+  function tick(now) {
+    const dt = now - Game.lastTick;
+    Game.lastTick = now;
+
+    // Passive income
+    computeIncomePerSec();
+    const income = (Game.incomePerSec * dt) / 1000;
+    if (income > 0) {
+      Game.cash += income;
+      Game.totalEarned += income;
+    }
+
+    // Boost timer
+    if (Game.boostActive) {
+      Game.boostRemaining -= dt / 1000;
+      if (Game.boostRemaining <= 0) {
+        Game.boostActive = false;
+        Game.boostRemaining = 0;
+        Game.boostMultiplier = 1;
+        addLog("Boost expired.", "info");
+      }
+    }
+
+    // Streak decay
+    if (Game.streak > 0 && now - Game.streakTimer > Game.streakMaxGap) {
+      Game.streak = 0;
+    }
+
+    renderStats();
+    renderBoost();
+
+    requestAnimationFrame(tick);
+  }
+
+  // ===== Start Overlay =====
+  function startGameWithName(name) {
+    Game.playerName = name || "Player";
+    elOverlayStart.style.display = "none";
+    addLog("Welcome, " + Game.playerName + "! Start tapping to build your empire.", "info");
+    renderAll();
+    Game.lastTick = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  elBtnStart.addEventListener("click", () => {
+    const name = elInputPlayerName.value.trim();
+    startGameWithName(name);
+  });
+
+  elBtnSkipName.addEventListener("click", () => {
+    startGameWithName("Player");
+  });
+
+  // ===== Initial Render =====
+  renderAll();
+</script>
+</body>
+</html>
