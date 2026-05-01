@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Offshore Empire: Vaults & Vessels</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:radial-gradient(circle at top,#050816 0,#02030a 55%,#000 100%);
+  color:#e8ecff;
+}
+h1{
+  text-align:center;
+  margin:10px 0 2px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  font-size:22px;
+  color:#dbe4ff;
+  text-shadow:0 0 18px rgba(91,157,255,.7);
+}
+#subtitle{
+  text-align:center;
+  font-size:13px;
+  color:#9aa2d8;
+  margin-bottom:10px;
+}
+#shell{
+  max-width:1400px;
+  margin:0 auto;
+  padding:10px 14px 18px;
+  display:grid;
+  grid-template-columns:260px minmax(0,1.6fr) 320px;
+  gap:10px;
+}
+.panel{
+  background:radial-gradient(circle at top left,#15182c 0,#050712 60%,#02030a 100%);
+  border-radius:12px;
+  border:1px solid #2f3656;
+  box-shadow:0 18px 40px rgba(0,0,0,.7);
+  padding:9px 10px;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+.panel-title{
+  font-size:14px;
+  font-weight:650;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#b5c6ff;
+  margin-bottom:3px;
+}
+.panel-subtitle{
+  font-size:11px;
+  color:#8b93d0;
+  margin-bottom:6px;
+}
+.section-title{
+  font-size:12px;
+  font-weight:650;
+  color:#b5c6ff;
+  margin:7px 0 4px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.stat-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:2px;
+}
+.stat-label{color:#9aa2d8}
+.stat-value{font-variant-numeric:tabular-nums}
+.small{font-size:11px;color:#9aa2d8}
+.btn{
+  background:linear-gradient(135deg,#4b8dff,#2f63d0);
+  border:none;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:550;
+  letter-spacing:.03em;
+  transition:.08s;
+  box-shadow:0 10px 26px rgba(75,141,255,.45);
+  white-space:nowrap;
+}
+.btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 16px 32px rgba(75,141,255,.6);
+  background:linear-gradient(135deg,#5b9dff,#3a6fe0);
+}
+.btn:active{
+  transform:translateY(0);
+  box-shadow:0 6px 16px rgba(0,0,0,.6);
+}
+.btn.secondary{
+  background:radial-gradient(circle at top,#343b63 0,#252b4a 60%,#181c33 100%);
+  box-shadow:0 8px 20px rgba(0,0,0,.55);
+}
+.btn.small{padding:4px 9px;font-size:11px}
+.card{
+  background:radial-gradient(circle at top left,#262f57 0,#151a33 55%,#101426 100%);
+  border-radius:9px;
+  border:1px solid #323a5a;
+  padding:6px 7px;
+  margin-bottom:5px;
+  font-size:11px;
+  box-shadow:0 12px 30px rgba(0,0,0,.6);
+}
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:2px;
+}
+.card-title{font-size:12px;font-weight:600;color:#dbe4ff}
+.card-sub{font-size:10px;color:#9aa2d8}
+.card-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:2px;
+}
+#fleetList,#vaultList,#routesList,#upgradesList,#achievementsList,#log{
+  flex:1;
+  overflow-y:auto;
+  padding-right:3px;
+  margin-top:4px;
+}
+#log{
+  font-size:10px;
+  border-radius:8px;
+  background:rgba(5,7,18,.7);
+  border:1px solid #252b45;
+  padding:5px;
+  white-space:pre-line;
+}
+.achieved{
+  border-color:#5ae08c;
+  box-shadow:0 0 12px rgba(90,224,140,.7);
+}
+.tab-row{
+  display:flex;
+  gap:5px;
+  margin-bottom:4px;
+}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:3px 0;
+  border-radius:999px;
+  font-size:11px;
+  cursor:pointer;
+  border:1px solid #323a5a;
+  background:radial-gradient(circle at top,#15182c 0,#050712 80%);
+  color:#9aa2d8;
+}
+.tab.active{
+  background:linear-gradient(135deg,#4b8dff,#2f63d0);
+  color:#fff;
+  border-color:#4b8dff;
+  box-shadow:0 10px 26px rgba(75,141,255,.45);
+}
+#introOverlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at top,#1b2335 0,#050712 55%,#02030a 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+}
+#introInner{
+  width:360px;
+  max-width:90vw;
+  background:radial-gradient(circle at top left,#15182c 0,#050712 60%,#02030a 100%);
+  border-radius:14px;
+  border:1px solid #323a5a;
+  box-shadow:0 22px 50px rgba(0,0,0,.8);
+  padding:16px 16px 14px;
+  text-align:center;
+}
+#introInner h1{font-size:19px;margin-bottom:5px}
+#introInner p{font-size:12px;color:#9aa2d8;margin:3px 0}
+#empireNameInput{
+  width:100%;
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid #323a5a;
+  background:#050712;
+  color:#e6ebff;
+  font-size:12px;
+  margin-top:6px;
+}
+#winModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+  background:rgba(0,0,0,.7);
+}
+#winModalInner{
+  width:360px;
+  max-width:90vw;
+  background:radial-gradient(circle at top left,#15182c 0,#050712 60%,#02030a 100%);
+  border-radius:16px;
+  border:1px solid #4b8dff;
+  box-shadow:0 26px 60px rgba(0,0,0,.9);
+  padding:16px 16px 14px;
+  text-align:center;
+}
+#winModalInner h1{
+  font-size:20px;
+  margin-bottom:5px;
+  letter-spacing:.16em;
+}
+.highlight{font-size:13px;color:#5ae08c;margin-bottom:5px}
+</style>
+</head>
+<body>
+<div id="introOverlay">
+  <div id="introInner">
+    <h1>OFFSHORE EMPIRE</h1>
+    <p>Build a hidden network of ships, vaults, and routes to move and multiply money across the globe.</p>
+    <p>Name your offshore empire:</p>
+    <input id="empireNameInput" type="text" placeholder="e.g. Azure Tide Holdings">
+    <button id="startGameBtn" class="btn" style="width:100%;margin-top:9px;">Launch the Fleet</button>
+    <p style="margin-top:8px;font-size:10px;color:#9aa2d8;">
+      Timer only runs while this tab is active. Reaching the final wealth target is a long‑haul operation.
+    </p>
+  </div>
+</div>
+
+<h1 id="pageTitle">OFFSHORE EMPIRE: VAULTS & VESSELS</h1>
+<div id="subtitle">Command ships, offshore vaults, and secret routes to reach a hidden net worth of $5T.</div>
+
+<div id="shell">
+  <!-- LEFT: HUD -->
+  <div class="panel">
+    <div class="panel-title" id="empireTitle">Empire Status</div>
+    <div class="panel-subtitle">Wealth, risk, and tempo</div>
+
+    <div class="stat-row"><span class="stat-label">Liquid Cash</span><span class="stat-value" id="cashStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Fleet Value</span><span class="stat-value" id="fleetValStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Vault Value</span><span class="stat-value" id="vaultValStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Route Value</span><span class="stat-value" id="routeValStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Hidden Net Worth</span><span class="stat-value" id="netWorthStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Target</span><span class="stat-value">$5T</span></div>
+
+    <div class="stat-row"><span class="stat-label">Income / sec</span><span class="stat-value" id="incomeStat">$0</span></div>
+    <div class="stat-row"><span class="stat-label">Detection Risk</span><span class="stat-value" id="riskStat">Low</span></div>
+    <div class="stat-row"><span class="stat-label">Reputation</span><span class="stat-value" id="repStat">Neutral</span></div>
+    <div class="stat-row"><span class="stat-label">Active Time</span><span class="stat-value" id="timerDisplay">00:00</span></div>
+
+    <div class="section-title">Direct Actions</div>
+    <div class="card">
+      <div class="card-row">
+        <span class="small">Quick Arbitrage (fast cash, +risk)</span>
+        <button id="arbBtn" class="btn secondary small">Arbitrage</button>
+      </div>
+      <div class="card-row">
+        <span class="small">Legal Front Shuffle (-risk, small cost)</span>
+        <button id="frontBtn" class="btn secondary small">Front Shuffle</button>
+      </div>
+      <div class="card-row">
+        <span class="small">Media Whisper (+rep, cost)</span>
+        <button id="mediaBtn" class="btn secondary small">Media Whisper</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE: MAIN BOARD -->
+  <div class="panel">
+    <div class="panel-title">Operations Board</div>
+    <div class="panel-subtitle">Fleet, vaults, and routes</div>
+
+    <div class="tab-row">
+      <div id="tabFleet" class="tab active">Fleet</div>
+      <div id="tabVaults" class="tab">Vaults</div>
+      <div id="tabRoutes" class="tab">Routes</div>
+    </div>
+
+    <div id="fleetSection">
+      <div class="section-title">Ships & Vessels</div>
+      <div id="fleetList"></div>
+    </div>
+
+    <div id="vaultSection" style="display:none;">
+      <div class="section-title">Offshore Vaults</div>
+      <div id="vaultList"></div>
+    </div>
+
+    <div id="routesSection" style="display:none;">
+      <div class="section-title">Secret Routes</div>
+      <div id="routesList"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: UPGRADES / ACHIEVEMENTS / LOG -->
+  <div class="panel">
+    <div class="panel-title">Strategy & History</div>
+    <div class="panel-subtitle">Upgrades, milestones, and events</div>
+
+    <div class="section-title">Upgrades</div>
+    <div id="upgradesList"></div>
+
+    <div class="section-title">Achievements</div>
+    <div id="achievementsList"></div>
+
+    <div class="section-title">Event Log</div>
+    <div id="log"></div>
+  </div>
+</div>
+
+<div id="winModal">
+  <div id="winModalInner">
+    <h1>OFFSHORE OVERLORD</h1>
+    <div class="highlight">Your hidden net worth surpassed $5,000,000,000,000.</div>
+    <div id="winTimeText" class="small" style="margin-bottom:5px;"></div>
+    <p class="small">Your empire is woven into every current and ledger. You may continue or restart a new network.</p>
+    <div style="display:flex;gap:7px;justify-content:center;margin-top:9px;">
+      <button id="winContinueBtn" class="btn secondary small">Continue</button>
+      <button id="winRestartBtn" class="btn small">Restart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WIN_GOAL = 5_000_000_000_000;
+
+let cash = 2_000_000;
+let fleetValue = 0;
+let vaultValue = 0;
+let routeValue = 0;
+let incomePerSec = 0;
+
+let risk = 0.1;
+let reputation = 0; // -100..100
+
+let gameStarted = false;
+let gameWon = false;
+
+let activePlaySeconds = 0;
+let lastActiveTimestamp = null;
+let tabActive = true;
+
+let fleetIncomeMult = 1;
+let vaultIncomeMult = 1;
+let routeIncomeMult = 1;
+let riskMitigation = 0;
+let valuationMult = 1;
+
+let arbCount = 0;
+let frontCount = 0;
+let mediaCount = 0;
+
+const fleet = [
+  { id:"trawler", name:"Coastal Trawler", baseCost:300_000, cost:300_000, owned:0, baseIncome:800, risk:0.01 },
+  { id:"freighter", name:"Bulk Freighter", baseCost:1_000_000, cost:1_000_000, owned:0, baseIncome:4_000, risk:0.02 },
+  { id:"reefer", name:"Reefer Vessel", baseCost:2_500_000, cost:2_500_000, owned:0, baseIncome:9_000, risk:0.025 },
+  { id:"ro_ro", name:"Ro‑Ro Carrier", baseCost:4_000_000, cost:4_000_000, owned:0, baseIncome:15_000, risk:0.03 },
+  { id:"container", name:"Container Ship", baseCost:7_000_000, cost:7_000_000, owned:0, baseIncome:28_000, risk:0.035 },
+  { id:"ultra", name:"Ultra Large Container Vessel", baseCost:12_000_000, cost:12_000_000, owned:0, baseIncome:50_000, risk:0.04 },
+  { id:"yacht", name:"Discreet Superyacht", baseCost:9_000_000, cost:9_000_000, owned:0, baseIncome:22_000, risk:0.03 }
+];
+
+const vaults = [
+  { id:"isle", name:"Island Safety Deposit Hub", baseCost:5_000_000, cost:5_000_000, owned:0, baseIncome:10_000, risk:0.01 },
+  { id:"bunker", name:"Subterranean Bunker Vault", baseCost:8_000_000, cost:8_000_000, owned:0, baseIncome:18_000, risk:0.015 },
+  { id:"freeport", name:"Art Freeport Warehouse", baseCost:10_000_000, cost:10_000_000, owned:0, baseIncome:25_000, risk:0.02 },
+  { id:"crypto", name:"Cold Storage Crypto Vault", baseCost:12_000_000, cost:12_000_000, owned:0, baseIncome:32_000, risk:0.025 },
+  { id:"gold", name:"Offshore Gold Repository", baseCost:15_000_000, cost:15_000_000, owned:0, baseIncome:40_000, risk:0.03 }
+];
+
+const routes = [
+  { id:"atlantic", name:"North Atlantic Corridor", baseCost:6_000_000, cost:6_000_000, owned:0, baseIncome:14_000, risk:0.02 },
+  { id:"pacific", name:"Pacific Triangle", baseCost:7_500_000, cost:7_500_000, owned:0, baseIncome:18_000, risk:0.025 },
+  { id:"med", name:"Mediterranean Loop", baseCost:9_000_000, cost:9_000_000, owned:0, baseIncome:22_000, risk:0.03 },
+  { id:"arctic", name:"Arctic Shortcut", baseCost:11_000_000, cost:11_000_000, owned:0, baseIncome:30_000, risk:0.04 },
+  { id:"shadow", name:"Shadow Archipelago Chain", baseCost:14_000_000, cost:14_000_000, owned:0, baseIncome:40_000, risk:0.05 }
+];
+
+const upgrades = [
+  { id:"shell_web", name:"Shell Company Web", desc:"+15% income, +small risk.", cost:20_000_000, applied:false, apply(){fleetIncomeMult*=1.1;vaultIncomeMult*=1.1;routeIncomeMult*=1.1;risk+=0.03;} },
+  { id:"legal_team", name:"Elite Legal Team", desc:"-25% effective risk.", cost:25_000_000, applied:false, apply(){riskMitigation+=0.25;} },
+  { id:"routing_ai", name:"Routing AI", desc:"+20% route income.", cost:30_000_000, applied:false, apply(){routeIncomeMult*=1.2;} },
+  { id:"vault_insulation", name:"Vault Insulation", desc:"+20% vault income, -risk.", cost:28_000_000, applied:false, apply(){vaultIncomeMult*=1.2;risk-=0.02;} },
+  { id:"fleet_automation", name:"Fleet Automation", desc:"+25% fleet income.", cost:35_000_000, applied:false, apply(){fleetIncomeMult*=1.25;} },
+  { id:"whisper_network", name:"Whisper Network", desc:"+valuation multiplier, +rep.", cost:40_000_000, applied:false, apply(){valuationMult*=1.1;reputation+=10;} }
+];
+
+const achievements = [
+  { id:"first_ship", name:"First Hull in the Water", desc:"Acquire your first vessel.", achieved:false },
+  { id:"first_vault", name:"First Vault Secured", desc:"Acquire your first vault.", achieved:false },
+  { id:"first_route", name:"First Route Charted", desc:"Acquire your first route.", achieved:false },
+  { id:"hundred_million", name:"Nine‑Digit Shadow", desc:"Reach $100M hidden net worth.", achieved:false },
+  { id:"billion", name:"Billion in the Dark", desc:"Reach $1B hidden net worth.", achieved:false },
+  { id:"trillion", name:"Trillion Below the Surface", desc:"Reach $1T hidden net worth.", achieved:false },
+  { id:"arb20", name:"Arb Maestro", desc:"Perform 20 arbitrage actions.", achieved:false },
+  { id:"front15", name:"Front Juggler", desc:"Perform 15 front shuffles.", achieved:false },
+  { id:"media25", name:"Whispered Legend", desc:"Perform 25 media whispers.", achieved:false }
+];
+
+const cashStat = document.getElementById("cashStat");
+const fleetValStat = document.getElementById("fleetValStat");
+const vaultValStat = document.getElementById("vaultValStat");
+const routeValStat = document.getElementById("routeValStat");
+const netWorthStat = document.getElementById("netWorthStat");
+const incomeStat = document.getElementById("incomeStat");
+const riskStat = document.getElementById("riskStat");
+const repStat = document.getElementById("repStat");
+const timerDisplay = document.getElementById("timerDisplay");
+
+const fleetList = document.getElementById("fleetList");
+const vaultList = document.getElementById("vaultList");
+const routesList = document.getElementById("routesList");
+const upgradesList = document.getElementById("upgradesList");
+const achievementsList = document.getElementById("achievementsList");
+const logEl = document.getElementById("log");
+
+const tabFleet = document.getElementById("tabFleet");
+const tabVaults = document.getElementById("tabVaults");
+const tabRoutes = document.getElementById("tabRoutes");
+const fleetSection = document.getElementById("fleetSection");
+const vaultSection = document.getElementById("vaultSection");
+const routesSection = document.getElementById("routesSection");
+
+const arbBtn = document.getElementById("arbBtn");
+const frontBtn = document.getElementById("frontBtn");
+const mediaBtn = document.getElementById("mediaBtn");
+
+const introOverlay = document.getElementById("introOverlay");
+const startGameBtn = document.getElementById("startGameBtn");
+const empireNameInput = document.getElementById("empireNameInput");
+const empireTitle = document.getElementById("empireTitle");
+const pageTitle = document.getElementById("pageTitle");
+
+const winModal = document.getElementById("winModal");
+const winTimeText = document.getElementById("winTimeText");
+const winContinueBtn = document.getElementById("winContinueBtn");
+const winRestartBtn = document.getElementById("winRestartBtn");
+
+function formatMoney(v){
+  if(v>=1e12) return "$"+(v/1e12).toFixed(2)+"T";
+  if(v>=1e9) return "$"+(v/1e9).toFixed(2)+"B";
+  if(v>=1e6) return "$"+(v/1e6).toFixed(2)+"M";
+  if(v>=1e3) return "$"+(v/1e3).toFixed(2)+"K";
+  return "$"+v.toFixed(0);
+}
+function formatTime(sec){
+  const m=Math.floor(sec/60);
+  const s=sec%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function log(msg){
+  const t=new Date().toLocaleTimeString();
+  logEl.textContent=`[${t}] ${msg}\n`+logEl.textContent;
+}
+function effectiveRisk(){
+  return Math.max(0,risk*(1-riskMitigation));
+}
+function repLabel(){
+  if(reputation<-40) return "Notorious";
+  if(reputation<-10) return "Questionable";
+  if(reputation<20) return "Neutral";
+  if(reputation<50) return "Trusted";
+  return "Mythic";
+}
+
+function computeFleetValue(){
+  let v=0;
+  fleet.forEach(f=>{v+=f.baseCost*0.8*f.owned;});
+  return v;
+}
+function computeVaultValue(){
+  let v=0;
+  vaults.forEach(vlt=>{v+=vlt.baseCost*1.1*vlt.owned;});
+  return v;
+}
+function computeRouteValue(){
+  let v=0;
+  routes.forEach(r=>{v+=r.baseCost*1.2*r.owned;});
+  return v;
+}
+function computeNetWorth(){
+  fleetValue = computeFleetValue();
+  vaultValue = computeVaultValue();
+  routeValue = computeRouteValue();
+  const base = cash + fleetValue + vaultValue + routeValue;
+  const repFactor = 1 + reputation/200;
+  return base*valuationMult*repFactor;
+}
+
+function updateStats(){
+  const net = computeNetWorth();
+  cashStat.textContent = formatMoney(cash);
+  fleetValStat.textContent = formatMoney(fleetValue);
+  vaultValStat.textContent = formatMoney(vaultValue);
+  routeValStat.textContent = formatMoney(routeValue);
+  netWorthStat.textContent = formatMoney(net);
+  incomeStat.textContent = formatMoney(incomePerSec);
+  const er = effectiveRisk();
+  riskStat.textContent = er<0.15?"Low":er<0.4?"Elevated":"Critical";
+  repStat.textContent = repLabel();
+  timerDisplay.textContent = formatTime(activePlaySeconds);
+
+  if(!gameWon && net>=WIN_GOAL){
+    triggerWin();
+  }
+  checkAchievements();
+}
+
+function renderFleet(){
+  fleetList.innerHTML="";
+  fleet.forEach(f=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const header=document.createElement("div");
+    header.className="card-header";
+    const title=document.createElement("div");
+    title.className="card-title";
+    title.textContent=f.name;
+    const sub=document.createElement("div");
+    sub.className="card-sub";
+    sub.textContent=`Owned: ${f.owned}`;
+    header.appendChild(title);
+    header.appendChild(sub);
+    card.appendChild(header);
+
+    const row1=document.createElement("div");
+    row1.className="card-row";
+    row1.innerHTML=`<span>Cost: ${formatMoney(f.cost)}</span><span>Income: ${formatMoney(f.baseIncome)}/sec</span>`;
+    card.appendChild(row1);
+
+    const row2=document.createElement("div");
+    row2.className="card-row";
+    row2.innerHTML=`<span>Risk: ${(f.risk*100).toFixed(1)}%</span><span>Value: ${formatMoney(f.baseCost*0.8*f.owned)}</span>`;
+    card.appendChild(row2);
+
+    const row3=document.createElement("div");
+    row3.className="card-row";
+    const btn=document.createElement("button");
+    btn.className="btn secondary small";
+    btn.textContent="Acquire";
+    btn.onclick=()=>{
+      if(!gameStarted) return;
+      const price=f.cost;
+      if(cash>=price){
+        cash-=price;
+        f.owned+=1;
+        f.cost=f.baseCost*Math.pow(1.25,f.owned);
+        risk+=f.risk*0.4;
+        log(`Acquired ${f.name} for ${formatMoney(price)}.`);
+        updateStats();
+        renderFleet();
+      }
+    };
+    row3.appendChild(document.createElement("span"));
+    row3.appendChild(btn);
+    card.appendChild(row3);
+
+    fleetList.appendChild(card);
+  });
+}
+
+function renderVaults(){
+  vaultList.innerHTML="";
+  vaults.forEach(vlt=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const header=document.createElement("div");
+    header.className="card-header";
+    const title=document.createElement("div");
+    title.className="card-title";
+    title.textContent=vlt.name;
+    const sub=document.createElement("div");
+    sub.className="card-sub";
+    sub.textContent=`Sites: ${vlt.owned}`;
+    header.appendChild(title);
+    header.appendChild(sub);
+    card.appendChild(header);
+
+    const row1=document.createElement("div");
+    row1.className="card-row";
+    row1.innerHTML=`<span>Cost: ${formatMoney(vlt.cost)}</span><span>Income: ${formatMoney(vlt.baseIncome)}/sec</span>`;
+    card.appendChild(row1);
+
+    const row2=document.createElement("div");
+    row2.className="card-row";
+    row2.innerHTML=`<span>Risk: ${(vlt.risk*100).toFixed(1)}%</span><span>Value: ${formatMoney(vlt.baseCost*1.1*vlt.owned)}</span>`;
+    card.appendChild(row2);
+
+    const row3=document.createElement("div");
+    row3.className="card-row";
+    const btn=document.createElement("button");
+    btn.className="btn secondary small";
+    btn.textContent="Secure";
+    btn.onclick=()=>{
+      if(!gameStarted) return;
+      const price=vlt.cost;
+      if(cash>=price){
+        cash-=price;
+        vlt.owned+=1;
+        vlt.cost=vlt.baseCost*Math.pow(1.3,vlt.owned);
+        risk+=vlt.risk*0.2;
+        log(`Secured new ${vlt.name} for ${formatMoney(price)}.`);
+        updateStats();
+        renderVaults();
+      }
+    };
+    row3.appendChild(document.createElement("span"));
+    row3.appendChild(btn);
+    card.appendChild(row3);
+
+    vaultList.appendChild(card);
+  });
+}
+
+function renderRoutes(){
+  routesList.innerHTML="";
+  routes.forEach(r=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const header=document.createElement("div");
+    header.className="card-header";
+    const title=document.createElement("div");
+    title.className="card-title";
+    title.textContent=r.name;
+    const sub=document.createElement("div");
+    sub.className="card-sub";
+    sub.textContent=`Links: ${r.owned}`;
+    header.appendChild(title);
+    header.appendChild(sub);
+    card.appendChild(header);
+
+    const row1=document.createElement("div");
+    row1.className="card-row";
+    row1.innerHTML=`<span>Cost: ${formatMoney(r.cost)}</span><span>Income: ${formatMoney(r.baseIncome)}/sec</span>`;
+    card.appendChild(row1);
+
+    const row2=document.createElement("div");
+    row2.className="card-row";
+    row2.innerHTML=`<span>Risk: ${(r.risk*100).toFixed(1)}%</span><span>Value: ${formatMoney(r.baseCost*1.2*r.owned)}</span>`;
+    card.appendChild(row2);
+
+    const row3=document.createElement("div");
+    row3.className="card-row";
+    const btn=document.createElement("button");
+    btn.className="btn secondary small";
+    btn.textContent="Chart";
+    btn.onclick=()=>{
+      if(!gameStarted) return;
+      const price=r.cost;
+      if(cash>=price){
+        cash-=price;
+        r.owned+=1;
+        r.cost=r.baseCost*Math.pow(1.35,r.owned);
+        risk+=r.risk*0.3;
+        log(`Charted ${r.name} for ${formatMoney(price)}.`);
+        updateStats();
+        renderRoutes();
+      }
+    };
+    row3.appendChild(document.createElement("span"));
+    row3.appendChild(btn);
+    card.appendChild(row3);
+
+    routesList.appendChild(card);
+  });
+}
+
+function renderUpgrades(){
+  upgradesList.innerHTML="";
+  upgrades.forEach(u=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const header=document.createElement("div");
+    header.className="card-header";
+    const title=document.createElement("div");
+    title.className="card-title";
+    title.textContent=u.name;
+    const sub=document.createElement("div");
+    sub.className="card-sub";
+    sub.textContent=u.desc;
+    header.appendChild(title);
+    header.appendChild(sub);
+    card.appendChild(header);
+
+    const row=document.createElement("div");
+    row.className="card-row";
+    const costSpan=document.createElement("span");
+    costSpan.textContent="Cost: "+formatMoney(u.cost);
+    const btn=document.createElement("button");
+    btn.className="btn secondary small";
+    btn.textContent=u.applied?"Purchased":"Buy";
+    btn.disabled=u.applied;
+    btn.onclick=()=>{
+      if(!gameStarted) return;
+      if(u.applied) return;
+      if(cash<u.cost) return;
+      cash-=u.cost;
+      u.applied=true;
+      u.apply();
+      log(`Upgrade purchased: ${u.name}.`);
+      updateStats();
+      renderUpgrades();
+    };
+    row.appendChild(costSpan);
+    row.appendChild(btn);
+    card.appendChild(row);
+
+    upgradesList.appendChild(card);
+  });
+}
+
+function renderAchievements(){
+  achievementsList.innerHTML="";
+  achievements.forEach(a=>{
+    const card=document.createElement("div");
+    card.className="card"+(a.achieved?" achieved":"");
+
+    const header=document.createElement("div");
+    header.className="card-header";
+    const title=document.createElement("div");
+    title.className="card-title";
+    title.textContent=a.name;
+    const sub=document.createElement("div");
+    sub.className="card-sub";
+    sub.textContent=a.desc;
+    header.appendChild(title);
+    header.appendChild(sub);
+    card.appendChild(header);
+
+    const row=document.createElement("div");
+    row.className="card-row";
+    const status=document.createElement("span");
+    status.textContent=a.achieved?"Unlocked":"Locked";
+    row.appendChild(status);
+    card.appendChild(row);
+
+    achievementsList.appendChild(card);
+  });
+}
+
+function unlockAchievement(id){
+  const a=achievements.find(x=>x.id===id);
+  if(a && !a.achieved){
+    a.achieved=true;
+    log(`Achievement unlocked: ${a.name}`);
+    renderAchievements();
+  }
+}
+
+function checkAchievements(){
+  const net=computeNetWorth();
+  const fleetUnits=fleet.reduce((s,x)=>s+x.owned,0);
+  const vaultUnits=vaults.reduce((s,x)=>s+x.owned,0);
+  const routeUnits=routes.reduce((s,x)=>s+x.owned,0);
+
+  if(fleetUnits>=1) unlockAchievement("first_ship");
+  if(vaultUnits>=1) unlockAchievement("first_vault");
+  if(routeUnits>=1) unlockAchievement("first_route");
+  if(net>=100_000_000) unlockAchievement("hundred_million");
+  if(net>=1_000_000_000) unlockAchievement("billion");
+  if(net>=1_000_000_000_000) unlockAchievement("trillion");
+  if(arbCount>=20) unlockAchievement("arb20");
+  if(frontCount>=15) unlockAchievement("front15");
+  if(mediaCount>=25) unlockAchievement("media25");
+}
+
+function computeIncome(){
+  let fInc=0;
+  fleet.forEach(f=>{fInc+=f.baseIncome*f.owned;});
+  let vInc=0;
+  vaults.forEach(v=>{vInc+=v.baseIncome*v.owned;});
+  let rInc=0;
+  routes.forEach(r=>{rInc+=r.baseIncome*r.owned;});
+
+  fInc*=fleetIncomeMult;
+  vInc*=vaultIncomeMult;
+  rInc*=routeIncomeMult;
+
+  return fInc+vInc+rInc;
+}
+
+function tickEconomy(){
+  if(!gameStarted || !tabActive) return;
+
+  incomePerSec = computeIncome();
+  cash+=incomePerSec;
+
+  const er=effectiveRisk();
+  if(Math.random()<er*0.01){
+    const loss=Math.min(cash*0.05,10_000_000);
+    cash-=loss;
+    reputation-=3;
+    log(`Minor investigation caused a temporary loss of ${formatMoney(loss)}.`);
+  }
+  if(Math.random()<er*0.002){
+    const loss=Math.min(cash*0.15,50_000_000);
+    cash-=loss;
+    reputation-=10;
+    risk+=0.05;
+    log(`Major crackdown hit part of your network. You lost ${formatMoney(loss)}.`);
+  }
+
+  reputation=Math.max(-100,Math.min(100,reputation));
+  updateStats();
+}
+
+function tickTimer(){
+  if(!gameStarted) return;
+  if(tabActive){
+    if(lastActiveTimestamp===null) lastActiveTimestamp=Date.now();
+    const now=Date.now();
+    const delta=Math.floor((now-lastActiveTimestamp)/1000);
+    if(delta>0){
+      activePlaySeconds+=delta;
+      lastActiveTimestamp=now;
+    }
+  }else{
+    lastActiveTimestamp=null;
+  }
+  updateStats();
+}
+
+arbBtn.onclick=()=>{
+  if(!gameStarted) return;
+  const base=500_000+Math.random()*1_000_000;
+  const bonus=computeIncome()*5;
+  const amount=base+bonus;
+  cash+=amount;
+  risk+=0.03;
+  arbCount+=1;
+  log(`Quick arbitrage yielded ${formatMoney(amount)} but raised detection risk.`);
+  updateStats();
+};
+
+frontBtn.onclick=()=>{
+  if(!gameStarted) return;
+  const cost=400_000;
+  if(cash<cost){
+    log("Not enough cash to reshuffle legal fronts.");
+    return;
+  }
+  cash-=cost;
+  risk=Math.max(0,risk-0.05);
+  frontCount+=1;
+  log("Legal fronts reshuffled. Detection risk eased slightly.");
+  updateStats();
+};
+
+mediaBtn.onclick=()=>{
+  if(!gameStarted) return;
+  const cost=700_000;
+  if(cash<cost){
+    log("Not enough cash to orchestrate a media whisper.");
+    return;
+  }
+  cash-=cost;
+  reputation+=4;
+  mediaCount+=1;
+  log("Media whisper improved your perceived legitimacy.");
+  updateStats();
+};
+
+tabFleet.onclick=()=>{
+  tabFleet.classList.add("active");
+  tabVaults.classList.remove("active");
+  tabRoutes.classList.remove("active");
+  fleetSection.style.display="";
+  vaultSection.style.display="none";
+  routesSection.style.display="none";
+};
+tabVaults.onclick=()=>{
+  tabVaults.classList.add("active");
+  tabFleet.classList.remove("active");
+  tabRoutes.classList.remove("active");
+  fleetSection.style.display="none";
+  vaultSection.style.display="";
+  routesSection.style.display="none";
+};
+tabRoutes.onclick=()=>{
+  tabRoutes.classList.add("active");
+  tabFleet.classList.remove("active");
+  tabVaults.classList.remove("active");
+  fleetSection.style.display="none";
+  vaultSection.style.display="none";
+  routesSection.style.display="";
+};
+
+document.addEventListener("visibilitychange",()=>{
+  tabActive=document.visibilityState==="visible";
+});
+
+function triggerWin(){
+  gameWon=true;
+  winTimeText.textContent="Time to $5T hidden net worth: "+formatTime(activePlaySeconds);
+  winModal.style.display="flex";
+  log("Your offshore empire now spans every ocean and ledger.");
+}
+
+winContinueBtn.onclick=()=>{winModal.style.display="none";};
+winRestartBtn.onclick=()=>{location.reload();};
+
+startGameBtn.onclick=()=>{
+  const name=empireNameInput.value.trim();
+  if(name){
+    empireTitle.textContent=name;
+    pageTitle.textContent=name.toUpperCase();
+  }
+  introOverlay.style.display="none";
+  document.getElementById("shell").style.display="grid";
+  gameStarted=true;
+  lastActiveTimestamp=Date.now();
+  log("Your first accounts are opened and your first hull leaves the harbor.");
+  updateStats();
+};
+
+function init(){
+  updateStats();
+  renderFleet();
+  renderVaults();
+  renderRoutes();
+  renderUpgrades();
+  renderAchievements();
+  log("Name your offshore empire and launch the fleet when ready.");
+}
+init();
+
+setInterval(tickEconomy,1000);
+setInterval(tickTimer,1000);
+</script>
+</body>
+</html>
