@@ -284,6 +284,23 @@
             text-shadow: 0 0 10px var(--accent);
             margin: 10px 0;
         }
+          .leaderboardBtn {
+            display: block;
+            margin: 10px auto 30px auto;
+            padding: 10px 22px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            background: linear-gradient(135deg, #00eaff, #7b61ff);
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(0,234,255,0.6);
+            cursor: pointer;
+        }
+
+        .leaderboardBtn:hover {
+            filter: brightness(1.05);
+        }
 
         .reward-meta {
             font-size: 14px;
@@ -333,7 +350,7 @@
         <!--    <a href="#">Home</a>
             <a href="#games">Games</a>-->
             <a href="about.html" target="_blank">About</a>
-            <a href="#" id="openLeaderboard">Leaderboard</a>
+            <!--<a href="#" id="openLeaderboard">Leaderboard</a>-->
             <a href="#" id="openMission">Daily Mission</a>
             <a href="comments.html" target="_blank">Comments</a>
             <a href="contributors.html" target="_blank">Contributors</a>
@@ -351,7 +368,7 @@
     <!-- GAME SECTION -->
     <section id="games" class="games-section">
         <h2 class="games-title">Available Games</h2>
-        <a href="#" id="openLeaderboard" class="xxx">Leaderboard</a>
+        <button id="openLeaderboard" class="leaderboardBtn">Leaderboard</button>
         <div class="game-grid">
 
             <a class="game-card" href="race_to_a_billion.html" target="_blank">
