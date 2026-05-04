@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -372,6 +373,52 @@
   </style>
 </head>
 <body>
+  <nav class="game-nav">
+    <h1>Money Games</h1>
+  <div>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
+     <!--  <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>-->
+       
+    </div>
+</nav>
+
+<style>
+    .game-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .game-nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .game-nav a {
+        color: #fff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .game-nav a:hover {
+        color: #00eaff;
+    }
+</style>
 <header>
   <div>
     <h1>Side Hustle Tycoon</h1>
@@ -417,7 +464,7 @@
       </div>
       <div class="stat">
         <div class="stat-label">Goal Progress</div>
-        <div class="stat-value" id="stat-goal">$0 / $1M</div>
+        <div class="stat-value" id="stat-goal">$0 / $1B</div>
         <div class="progress-bar">
           <div class="progress-bar-inner" id="bar-goal"></div>
         </div>
@@ -433,6 +480,13 @@
         <div class="stat-label">Streak</div>
         <div class="stat-value" id="stat-streak">0</div>
         <div class="stat-sub">Keep tapping to maintain streak bonus.</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-label">Time</div>
+        <div class="stat-value" id="stat-time">0:00</div>
+        <div class="stat-sub">Active play time.</div>
       </div>
     </div>
   </section>
@@ -556,6 +610,16 @@
   </div>
 </div>
 
+<!-- Win overlay -->
+<div id="overlay-win" style="position:fixed;inset:0;background:rgba(15,23,42,0.96);display:none;align-items:center;justify-content:center;z-index:60;">
+  <div style="background:#020617;border-radius:10px;border:1px solid #1f2937;padding:16px 18px;width:420px;max-width:90vw;text-align:center;">
+    <h3 style="margin:0 0 6px;font-size:16px;">You Reached $1B!</h3>
+    <p style="margin:0 0 10px;font-size:13px;color:#d1d5db;">
+      Final time: <span id="win-time"></span>
+    </p>
+  </div>
+</div>
+
 <script>
   // ===== Utility =====
   function fmtMoney(v) {
@@ -572,9 +636,19 @@
   function clamp(v, min, max) {
     return Math.max(min, Math.min(max, v));
   }
+  function fmtTime(seconds) {
+    const total = Math.floor(seconds);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    if (h > 0) {
+      return h + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+    return m + ":" + String(s).padStart(2, "0");
+  }
 
   // ===== Game Data =====
-  const goalAmount = 1_000_000;
+  const goalAmount = 1_000_000_000;
 
   const Upgrades = [
     {
@@ -667,7 +741,7 @@
     { name: "Hustler", min: 5_000, desc: "You’re making it work." },
     { name: "Grinder", min: 50_000, desc: "Multiple gigs, serious effort." },
     { name: "Operator", min: 250_000, desc: "Systems and leverage in place." },
-    { name: "Tycoon", min: 1_000_000, desc: "Your side hustles are an empire." },
+    { name: "Tycoon", min: 1_000_000_000, desc: "Your side hustles are an empire." },
   ];
 
   // ===== Game State =====
@@ -690,6 +764,9 @@
     streak: 0,
     streakTimer: 0,
     streakMaxGap: 10_000, // 10 seconds
+    elapsedTime: 0,
+    isActive: true,
+    isWon: false,
   };
 
   // ===== DOM =====
@@ -704,6 +781,7 @@
   const elStatRank = document.getElementById("stat-rank");
   const elStatRankSub = document.getElementById("stat-rank-sub");
   const elStatStreak = document.getElementById("stat-streak");
+  const elStatTime = document.getElementById("stat-time");
   const elBtnTap = document.getElementById("btn-tap");
   const elBtnBoost = document.getElementById("btn-boost");
   const elBtnSave = document.getElementById("btn-save");
@@ -725,6 +803,8 @@
   const elInputPlayerName = document.getElementById("input-player-name");
   const elBtnStart = document.getElementById("btn-start");
   const elBtnSkipName = document.getElementById("btn-skip-name");
+  const elOverlayWin = document.getElementById("overlay-win");
+  const elWinTime = document.getElementById("win-time");
 
   // ===== Log =====
   function addLog(text, tone = "info") {
@@ -779,6 +859,7 @@
     const goalProgress = clamp(Game.totalEarned / goalAmount, 0, 1);
     elBarGoal.style.width = goalProgress * 100 + "%";
     elStatStreak.textContent = Game.streak;
+    elStatTime.textContent = fmtTime(Game.elapsedTime);
     updateRank();
   }
 
@@ -902,6 +983,7 @@
   }
 
   elBtnTap.addEventListener("click", () => {
+    if (Game.isWon) return;
     const tapValue = computeTapValue();
     Game.cash += tapValue;
     Game.totalEarned += tapValue;
@@ -913,6 +995,7 @@
 
   // ===== Upgrade & Gig Buying =====
   elUpgradeList.addEventListener("click", (e) => {
+    if (Game.isWon) return;
     const btn = e.target.closest("button[data-upgrade]");
     if (!btn) return;
     const id = btn.getAttribute("data-upgrade");
@@ -920,7 +1003,7 @@
     const level = Game.upgrades[id] || 0;
     const cost = upg.baseCost * Math.pow(upg.costMult, level);
     if (Game.cash < cost) {
-      addLog("Not enough cash for " + upg.name + ".", "negative");
+      addLog("Not enough cash for " + upg.name + ".", "negative"); 
       return;
     }
     Game.cash -= cost;
@@ -931,6 +1014,7 @@
   });
 
   elGigList.addEventListener("click", (e) => {
+    if (Game.isWon) return;
     const btn = e.target.closest("button[data-gig]");
     if (!btn) return;
     const id = btn.getAttribute("data-gig");
@@ -949,6 +1033,7 @@
 
   // ===== Boost =====
   elBtnBoost.addEventListener("click", () => {
+    if (Game.isWon) return;
     if (Game.boostActive) {
       addLog("Boost already active.", "info");
       return;
@@ -968,6 +1053,7 @@
 
   // ===== Prestige =====
   document.getElementById("btn-prestige").addEventListener("click", () => {
+    if (Game.isWon) return;
     const potentialPrestige = Math.floor(Math.sqrt(Game.totalEarned / 1_000_000));
     const gain = potentialPrestige - Game.prestige;
     if (gain <= 0) {
@@ -988,6 +1074,8 @@
     Game.boostMultiplier = 1;
     Game.streak = 0;
     Game.streakTimer = 0;
+    Game.elapsedTime = 0;
+    Game.isWon = false;
     addLog("Prestige reset complete. New prestige level: " + Game.prestige + ".", "positive");
     renderAll();
   });
@@ -1010,6 +1098,8 @@
     try {
       const obj = JSON.parse(data);
       Object.assign(Game, obj);
+      Game.isActive = true;
+      Game.lastTick = performance.now();
       addLog("Game loaded.", "info");
       renderAll();
     } catch (e) {
@@ -1026,10 +1116,30 @@
     location.reload();
   });
 
+  // ===== Visibility / Pause =====
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      Game.isActive = false;
+    } else {
+      Game.isActive = true;
+      Game.lastTick = performance.now();
+    }
+  }
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
   // ===== Main Loop =====
   function tick(now) {
+    if (!Game.isActive || Game.isWon) {
+      Game.lastTick = now;
+      requestAnimationFrame(tick);
+      return;
+    }
+
     const dt = now - Game.lastTick;
     Game.lastTick = now;
+
+    // Active play time
+    Game.elapsedTime += dt / 1000;
 
     // Passive income
     computeIncomePerSec();
@@ -1055,6 +1165,14 @@
       Game.streak = 0;
     }
 
+    // Win condition
+    if (!Game.isWon && Game.totalEarned >= goalAmount) {
+      Game.isWon = true;
+      elOverlayWin.style.display = "flex";
+      elWinTime.textContent = fmtTime(Game.elapsedTime);
+      addLog("You reached $1B! Final time: " + fmtTime(Game.elapsedTime) + ".", "positive");
+    }
+
     renderStats();
     renderBoost();
 
@@ -1065,6 +1183,9 @@
   function startGameWithName(name) {
     Game.playerName = name || "Player";
     elOverlayStart.style.display = "none";
+    Game.elapsedTime = 0;
+    Game.isWon = false;
+    Game.isActive = true;
     addLog("Welcome, " + Game.playerName + "! Start tapping to build your empire.", "info");
     renderAll();
     Game.lastTick = performance.now();
