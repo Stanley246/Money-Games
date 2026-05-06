@@ -759,6 +759,85 @@
     <canvas id="chartModalCanvas"></canvas>
   </div>
 </div>
+  <script>
+const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+if (user) {
+    document.getElementById("playerName").value = user.username;
+    document.getElementById("playerName").readOnly = true;
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Save user accounts locally
+function registerUser(email, username, password) {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    if (users.find(u => u.email === email)) {
+        alert("Email already exists");
+        return false;
+    }
+
+    const newUser = { email, username, password };
+    users.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    return true;
+}
+
+// Login
+function loginUser(email, password) {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (!user) {
+        alert("Incorrect email or password");
+        return false;
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    return true;
+}
+
+// Get current user
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser") || "null");
+}
+
+// Save game progress
+function saveProgress(gameName, data) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const key = `progress_${user.username}_${gameName}`;
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Load game progress
+function loadProgress(gameName) {
+    const user = getCurrentUser();
+    if (!user) return null;
+
+    const key = `progress_${user.username}_${gameName}`;
+    return JSON.parse(localStorage.getItem(key) || "null");
+}
+</script>
+
 <script>
 // Disable right-click
 document.addEventListener("contextmenu", e => e.preventDefault());
