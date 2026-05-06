@@ -1,506 +1,435 @@
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comments – Money Games</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comments – Money Games</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
 
-        :root {
-            --bg: radial-gradient(circle at top, #0a0f24, #000);
-            --text: #fff;
-            --accent: #00eaff;
-            --card-bg: rgba(255,255,255,0.05);
-            --card-border: rgba(0,234,255,0.3);
-        }
+    :root {
+        --bg: radial-gradient(circle at top, #0a0f24, #000);
+        --text: #fff;
+        --accent: #00eaff;
+        --card-bg: rgba(255,255,255,0.05);
+        --card-border: rgba(0,234,255,0.3);
+    }
 
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Roboto', sans-serif;
-        }
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Roboto', sans-serif;
+    }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
 
-        nav h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            letter-spacing: 3px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
-        }
+    nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent);
+    }
 
-        nav a {
-            color: var(--text);
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
+    nav a {
+        color: var(--text);
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
 
-        nav a:hover {
-            color: var(--accent);
-        }
+    nav a:hover {
+        color: var(--accent);
+    }
 
-        h2 {
-            font-family: 'Orbitron', sans-serif;
-            text-align: center;
-            margin-top: 40px;
-            font-size: 40px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
-        }
+    h2 {
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+        margin-top: 40px;
+        font-size: 40px;
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent);
+    }
 
-        .explain-box {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            text-align: center;
-            font-size: 18px;
-            line-height: 1.6;
-            box-shadow: 0 0 15px rgba(0,234,255,0.2);
-        }
+    .explain-box {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        text-align: center;
+        font-size: 18px;
+        line-height: 1.6;
+        box-shadow: 0 0 15px rgba(0,234,255,0.2);
+    }
 
-        .comment-box {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,234,255,0.2);
-        }
+    .comment-box {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,234,255,0.2);
+    }
 
-        .comment-box input, .comment-box textarea {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--accent);
-            background: rgba(255,255,255,0.1);
-            color: var(--text);
-            font-size: 16px;
-        }
+    .comment-box input, .comment-box textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: rgba(255,255,255,0.1);
+        color: var(--text);
+        font-size: 16px;
+    }
 
-        .comment-box button {
-            margin-top: 15px;
-            padding: 12px 20px;
-            background: var(--accent);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            font-size: 18px;
-        }
+    .comment-box button {
+        margin-top: 15px;
+        padding: 12px 20px;
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        font-size: 18px;
+    }
 
-        #commentsList {
-            max-width: 900px;
-            margin: 20px auto;
-        }
+    #commentsList {
+        max-width: 900px;
+        margin: 20px auto;
+    }
 
-        .comment-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(0,234,255,0.3);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-        }
+    .comment-item {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(0,234,255,0.3);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
 
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
 
-        .comment-name {
-            color: var(--accent);
-            font-weight: bold;
-        }
+    .comment-name {
+        color: var(--accent);
+        font-weight: bold;
+    }
 
-        .comment-meta {
-            font-size: 12px;
-            opacity: 0.7;
-        }
+    .comment-meta {
+        font-size: 12px;
+        opacity: 0.7;
+    }
 
-        .comment-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            font-size: 14px;
-        }
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 14px;
+    }
 
-        .vote-btn {
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: var(--accent);
-            font-size: 14px;
-        }
+    .vote-btn {
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: var(--accent);
+        font-size: 14px;
+    }
 
-        .vote-btn.active {
-            color: #ffdd00;
-        }
+    .vote-btn.active {
+        color: #ffdd00;
+    }
 
-        .score {
-            min-width: 30px;
-            text-align: center;
-        }
+    .score {
+        min-width: 30px;
+        text-align: center;
+    }
 
-        .reply-link {
-            cursor: pointer;
-            color: var(--accent);
-            font-size: 13px;
-        }
+    .reply-link {
+        cursor: pointer;
+        color: var(--accent);
+        font-size: 13px;
+    }
 
-        .reply-box {
-            margin-top: 10px;
-        }
+    .reply-box {
+        margin-top: 10px;
+    }
 
-        .reply-box textarea {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid var(--accent);
-            background: rgba(255,255,255,0.05);
-            color: var(--text);
-            font-size: 14px;
-        }
+    .reply-box textarea {
+        width: 100%;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: rgba(255,255,255,0.05);
+        color: var(--text);
+        font-size: 14px;
+    }
 
-        .reply-box button {
-            margin-top: 6px;
-            padding: 6px 12px;
-            background: var(--accent);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            font-size: 14px;
-        }
+    .reply-box button {
+        margin-top: 6px;
+        padding: 6px 12px;
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        font-size: 14px;
+    }
 
-        .children {
-            margin-left: 20px;
-            margin-top: 8px;
-            border-left: 1px solid rgba(0,234,255,0.2);
-            padding-left: 10px;
-        }
+    .children {
+        margin-left: 20px;
+        margin-top: 8px;
+        border-left: 1px solid rgba(0,234,255,0.2);
+        padding-left: 10px;
+    }
 
-        .load-more {
-            display: block;
-            margin: 20px auto 40px;
-            padding: 10px 20px;
-            background: var(--accent);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            font-size: 16px;
-        }
-    </style>
+    .load-more {
+        display: block;
+        margin: 20px auto 40px;
+        padding: 10px 20px;
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        font-size: 16px;
+    }
+</style>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-    <nav>
-        <h1>Money Games</h1>
-        <div>
-            <a href="index.html" target="_blank">Home</a>
-            <a href="index.html#games" target="_blank">Games</a>
-            <a href="about.html" target="_blank">About</a>
-            <a href="cuntributors.html" target="_blank">Contributors</a>
-            <a href="comments.html">Comments</a>
-        </div>
-    </nav>
-
-    <h2>Community Comments</h2>
-
-    <div class="explain-box">
-        Feel free to leave a comment below.  
-        Share ideas, feedback, game suggestions, or just say hi.  
-        Newest threads appear at the top. Replies are threaded.
+<nav>
+    <h1>Money Games</h1>
+    <div>
+        <a href="index.html" target="_blank">Home</a>
+        <a href="index.html#games" target="_blank">Games</a>
+        <a href="about.html" target="_blank">About</a>
+        <a href="cuntributors.html" target="_blank">Contributors</a>
+        <a href="comments.html">Comments</a>
     </div>
+</nav>
 
-    <div class="comment-box">
-        <input id="displayName" placeholder="Name to display">
-        <textarea id="commentText" placeholder="Write your comment..." rows="4"></textarea>
-        <button id="postRootBtn">Post Comment</button>
-    </div>
+<h2>Community Comments</h2>
 
-    <div id="commentsList"></div>
-    <button id="loadMoreBtn" class="load-more">Load more</button>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div class="explain-box">
+    Feel free to leave a comment below.<br>
+    Share ideas, feedback, game suggestions, or just say hi.<br>
+    Newest threads appear at the top. Replies are threaded.
+</div>
+
+<div class="comment-box">
+    <input id="displayName" placeholder="Name to display">
+    <textarea id="commentText" placeholder="Write your comment..." rows="4"></textarea>
+    <button id="postRootBtn">Post Comment</button>
+</div>
+
+<div id="commentsList"></div>
+<button id="loadMoreBtn" class="load-more">Load more</button>
+
 <script>
-    const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-    const SUPABASE_ANON_KEY = "YOUR_REAL_ANON_KEY_HERE"; // keep as-is in your real file
+const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
 
-    const PAGE_ID = "comments-page";
-    const PAGE_SIZE = 5;
+const PAGE_ID = "comments-page";
+const PAGE_SIZE = 5;
 
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let currentPage = 0;
-    let topLevelComments = [];
-    let allReplies = [];
-    let votesMap = {};
+let currentPage = 0;
+let topLevel = [];
+let replies = [];
+let votes = {};
 
-    let voterId = localStorage.getItem("mg_voter_id");
-    if (!voterId) {
-        voterId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
-        localStorage.setItem("mg_voter_id", voterId);
+let voterId = localStorage.getItem("mg_voter_id");
+if (!voterId) {
+    voterId = crypto.randomUUID();
+    localStorage.setItem("mg_voter_id", voterId);
+}
+
+const commentsListEl = document.getElementById("commentsList");
+const loadMoreBtn = document.getElementById("loadMoreBtn");
+const postRootBtn = document.getElementById("postRootBtn");
+
+async function loadComments(initial = false) {
+    const from = currentPage * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    const { data: parents, error: pErr } = await client
+        .from("comments")
+        .select("*")
+        .eq("page_id", PAGE_ID)
+        .is("parent_id", null)
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+    if (pErr) {
+        console.error(pErr);
+        return;
     }
 
-    const commentsListEl = document.getElementById("commentsList");
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
-    const postRootBtn = document.getElementById("postRootBtn");
+    if (initial) topLevel = parents || [];
+    else topLevel = topLevel.concat(parents || []);
 
-    async function loadCommentsPage(initial = false) {
-        try {
-            const from = currentPage * PAGE_SIZE;
-            const to = from + PAGE_SIZE - 1;
+    const { data: replyRows, error: rErr } = await client
+        .from("comments")
+        .select("*")
+        .eq("page_id", PAGE_ID)
+        .not("parent_id", "is", null)
+        .order("created_at", { ascending: true });
 
-            const { data: parents, error: parentsError } = await client
-                .from("comments")
-                .select("*")
-                .eq("page_id", PAGE_ID)
-                .is("parent_id", null)
-                .order("created_at", { ascending: false })
-                .range(from, to);
+    if (rErr) {
+        console.error(rErr);
+        return;
+    }
 
-            if (parentsError) {
-                console.error("Error loading parent comments:", parentsError);
-                return;
-            }
+    replies = replyRows || [];
 
-            if (initial) topLevelComments = parents || [];
-            else topLevelComments = topLevelComments.concat(parents || []);
+    const ids = [...topLevel, ...replies].map(c => c.id);
+    if (ids.length > 0) {
+        const { data: voteRows, error: vErr } = await client
+            .from("comment_votes")
+            .select("*")
+            .in("comment_id", ids);
 
-            const { data: replies, error: repliesError } = await client
-                .from("comments")
-                .select("*")
-                .eq("page_id", PAGE_ID)
-                .not("parent_id", "is", null)
-                .order("created_at", { ascending: true });
+        if (vErr) console.error(vErr);
+        else buildVotes(voteRows || []);
+    } else {
+        votes = {};
+    }
 
-            if (repliesError) {
-                console.error("Error loading replies:", repliesError);
-                return;
-            }
+    renderTree();
 
-            allReplies = replies || [];
+    if (!parents || parents.length < PAGE_SIZE) {
+        loadMoreBtn.style.display = "none";
+    } else {
+        loadMoreBtn.style.display = "block";
+    }
+}
 
-            const allIds = [...topLevelComments, ...allReplies].map(c => c.id);
+function buildVotes(rows) {
+    votes = {};
+    rows.forEach(v => {
+        if (!votes[v.comment_id]) votes[v.comment_id] = { score: 0, myVote: 0 };
+        votes[v.comment_id].score += v.vote_type;
+        if (v.voter_hash === voterId) votes[v.comment_id].myVote = v.vote_type;
+    });
+}
 
-            if (allIds.length > 0) {
-                const { data: votes, error: votesError } = await client
-                    .from("comment_votes")
-                    .select("*")
-                    .in("comment_id", allIds);
+function renderTree() {
+    commentsListEl.innerHTML = "";
 
-                if (votesError) {
-                    console.error("Error loading votes:", votesError);
-                } else {
-                    buildVotesMap(votes || []);
-                }
-            } else {
-                votesMap = {};
-            }
-
-            renderCommentsTree();
-
-            if (!parents || parents.length < PAGE_SIZE) {
-                loadMoreBtn.style.display = "none";
-            } else {
-                loadMoreBtn.style.display = "block";
-            }
-        } catch (err) {
-            console.error("Unexpected error loading comments:", err);
+    const children = {};
+    [...topLevel, ...replies].forEach(c => {
+        if (c.parent_id) {
+            if (!children[c.parent_id]) children[c.parent_id] = [];
+            children[c.parent_id].push(c);
         }
-    }
-
-    function buildVotesMap(votes) {
-        votesMap = {};
-        votes.forEach(v => {
-            if (!votesMap[v.comment_id]) {
-                votesMap[v.comment_id] = { score: 0, myVote: 0 };
-            }
-            votesMap[v.comment_id].score += v.vote_type;
-            if (v.voter_hash === voterId) {
-                votesMap[v.comment_id].myVote = v.vote_type;
-            }
-        });
-    }
-
-    function renderCommentsTree() {
-        commentsListEl.innerHTML = "";
-
-        const childrenMap = {};
-        [...topLevelComments, ...allReplies].forEach(c => {
-            if (c.parent_id) {
-                if (!childrenMap[c.parent_id]) childrenMap[c.parent_id] = [];
-                childrenMap[c.parent_id].push(c);
-            }
-        });
-
-        topLevelComments.forEach(c => {
-            const node = renderCommentNode(c, childrenMap);
-            commentsListEl.appendChild(node);
-        });
-    }
-
-    function renderCommentNode(comment, childrenMap) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "comment-item";
-
-        const header = document.createElement("div");
-        header.className = "comment-header";
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "comment-name";
-        nameEl.textContent = comment.user_name;
-
-        const metaEl = document.createElement("div");
-        metaEl.className = "comment-meta";
-        metaEl.textContent = new Date(comment.created_at).toLocaleString();
-
-        header.appendChild(nameEl);
-        header.appendChild(metaEl);
-
-        const bodyEl = document.createElement("div");
-        bodyEl.innerHTML = `<p>${escapeHtml(comment.content).replace(/\n/g, "<br>")}</p>`;
-
-        const actions = document.createElement("div");
-        actions.className = "comment-actions";
-
-        const scoreInfo = votesMap[comment.id] || { score: 0, myVote: 0 };
-
-        const upBtn = document.createElement("button");
-        upBtn.className = "vote-btn";
-        upBtn.textContent = "▲";
-        if (scoreInfo.myVote === 1) upBtn.classList.add("active");
-        upBtn.addEventListener("click", () => handleVote(comment.id, 1));
-
-        const scoreEl = document.createElement("span");
-        scoreEl.className = "score";
-        scoreEl.textContent = scoreInfo.score;
-
-        const downBtn = document.createElement("button");
-        downBtn.className = "vote-btn";
-        downBtn.textContent = "▼";
-        if (scoreInfo.myVote === -1) downBtn.classList.add("active");
-        downBtn.addEventListener("click", () => handleVote(comment.id, -1));
-
-        const replyLink = document.createElement("span");
-        replyLink.className = "reply-link";
-        replyLink.textContent = "Reply";
-        replyLink.addEventListener("click", () => toggleReplyBox(comment.id, wrapper));
-
-        actions.appendChild(upBtn);
-        actions.appendChild(scoreEl);
-        actions.appendChild(downBtn);
-        actions.appendChild(replyLink);
-
-        wrapper.appendChild(header);
-        wrapper.appendChild(bodyEl);
-        wrapper.appendChild(actions);
-
-        const children = childrenMap[comment.id] || [];
-        if (children.length > 0) {
-            const childrenContainer = document.createElement("div");
-            childrenContainer.className = "children";
-            children.forEach(child => {
-                const childNode = renderCommentNode(child, childrenMap);
-                childrenContainer.appendChild(childNode);
-            });
-            wrapper.appendChild(childrenContainer);
-        }
-
-        return wrapper;
-    }
-
-    function toggleReplyBox(commentId, parentEl) {
-        let existing = parentEl.querySelector(".reply-box");
-        if (existing) {
-            existing.remove();
-            return;
-        }
-
-        const box = document.createElement("div");
-        box.className = "reply-box";
-
-        const textarea = document.createElement("textarea");
-        textarea.rows = 3;
-        textarea.placeholder = "Write a reply...";
-
-        const btn = document.createElement("button");
-        btn.textContent = "Post reply";
-        btn.addEventListener("click", () => postReply(commentId, textarea.value));
-
-        box.appendChild(textarea);
-        box.appendChild(btn);
-        parentEl.appendChild(box);
-    }
-
-    function escapeHtml(str) {
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
-    }
-
-    postRootBtn.addEventListener("click", async () => {
-        const name = document.getElementById("displayName").value.trim();
-        const text = document.getElementById("commentText").value.trim();
-
-        if (!name || !text) {
-            alert("Please enter a name and a comment.");
-            return;
-        }
-
-        const { error } = await client.from("comments").insert({
-            page_id: PAGE_ID,
-            parent_id: null,
-            user_name: name,
-            content: text
-        });
-
-        if (error) {
-            console.error("Error inserting root comment:", error);
-            alert("Failed to post comment.");
-            return;
-        }
-
-        document.getElementById("commentText").value = "";
-        currentPage = 0;
-        await loadCommentsPage(true);
     });
 
-    async function postReply(parentId, text) {
-        const name = document.getElementById("displayName").value.trim();
-        const content = text.trim();
+    topLevel.forEach(c => {
+        commentsListEl.appendChild(renderNode(c, children));
+    });
+}
 
-        if (!name || !content) {
-            alert("Enter a name (top box) and some reply text.");
+function renderNode(comment, childrenMap) {
+    const wrap = document.createElement("div");
+    wrap.className = "comment-item";
+
+    const scoreInfo = votes[comment.id] || { score: 0, myVote: 0 };
+
+    wrap.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-name">${comment.user_name}</span>
+            <span class="comment-meta">${new Date(comment.created_at).toLocaleString()}</span>
+        </div>
+        <div class="comment-text">${escapeHtml(comment.content).replace(/\n/g, "<br>")}</div>
+        <div class="comment-actions">
+            <button class="vote-btn up">▲</button>
+            <span class="score">${scoreInfo.score}</span>
+            <button class="vote-btn down">▼</button>
+            <span class="reply-link">Reply</span>
+        </div>
+    `;
+
+    const up = wrap.querySelector(".up");
+    const down = wrap.querySelector(".down");
+    const scoreEl = wrap.querySelector(".score");
+
+    if (scoreInfo.myVote === 1) up.classList.add("active");
+    if (scoreInfo.myVote === -1) down.classList.add("active");
+
+    up.onclick = () => handleVote(comment.id, 1);
+    down.onclick = () => handleVote(comment.id, -1);
+
+    wrap.querySelector(".reply-link").onclick = () => toggleReplyBox(comment.id, wrap);
+
+    const kids = childrenMap[comment.id] || [];
+    if (kids.length > 0) {
+        const childWrap = document.createElement("div");
+        childWrap.className = "children";
+        kids.forEach(k => childWrap.appendChild(renderNode(k, childrenMap)));
+        wrap.appendChild(childWrap);
+    }
+
+    return wrap;
+}
+
+function toggleReplyBox(parentId, el) {
+    const existing = el.querySelector(".reply-box");
+    if (existing) {
+        existing.remove();
+        return;
+    }
+
+    const box = document.createElement("div");
+    box.className = "reply-box";
+
+    const textarea = document.createElement("textarea");
+    textarea.rows = 3;
+    textarea.placeholder = "Write a reply...";
+
+    const btn = document.createElement("button");
+    btn.textContent = "Post reply";
+
+    btn.onclick = async () => {
+        const name = document.getElementById("displayName").value.trim();
+        const text = textarea.value.trim();
+        if (!name || !text) {
+            alert("Enter a name and reply text.");
             return;
         }
 
@@ -508,61 +437,94 @@
             page_id: PAGE_ID,
             parent_id: parentId,
             user_name: name,
-            content: content
+            content: text
         });
 
         if (error) {
-            console.error("Error inserting reply:", error);
+            console.error(error);
             alert("Failed to post reply.");
             return;
         }
 
-        await loadCommentsPage(true);
+        await loadComments(true);
+    };
+
+    box.appendChild(textarea);
+    box.appendChild(btn);
+    el.appendChild(box);
+}
+
+async function handleVote(commentId, type) {
+    const current = votes[commentId] || { myVote: 0 };
+
+    if (current.myVote === type) {
+        const { error } = await client
+            .from("comment_votes")
+            .delete()
+            .match({ comment_id: commentId, voter_hash: voterId });
+
+        if (error) console.error(error);
+    } else {
+        const { error } = await client
+            .from("comment_votes")
+            .upsert(
+                {
+                    comment_id: commentId,
+                    voter_hash: voterId,
+                    vote_type: type
+                },
+                { onConflict: "comment_id,voter_hash" }
+            );
+
+        if (error) console.error(error);
     }
 
-    async function handleVote(commentId, type) {
-        try {
-            const current = votesMap[commentId] || { score: 0, myVote: 0 };
+    await loadComments(true);
+}
 
-            if (current.myVote === type) {
-                const { error } = await client
-                    .from("comment_votes")
-                    .delete()
-                    .match({ comment_id: commentId, voter_hash: voterId });
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
 
-                if (error) {
-                    console.error("Error removing vote:", error);
-                }
-            } else {
-                const { error } = await client
-                    .from("comment_votes")
-                    .upsert(
-                        {
-                            comment_id: commentId,
-                            voter_hash: voterId,
-                            vote_type: type
-                        },
-                        { onConflict: "comment_id,voter_hash" }
-                    );
+postRootBtn.onclick = async () => {
+    const name = document.getElementById("displayName").value.trim();
+    const text = document.getElementById("commentText").value.trim();
 
-                if (error) {
-                    console.error("Error upserting vote:", error);
-                }
-            }
-
-            await loadCommentsPage(true);
-        } catch (err) {
-            console.error("Unexpected error in handleVote:", err);
-        }
+    if (!name || !text) {
+        alert("Please enter a name and a comment.");
+        return;
     }
 
-    loadMoreBtn.addEventListener("click", async () => {
-        currentPage++;
-        await loadCommentsPage(false);
+    const { error } = await client.from("comments").insert({
+        page_id: PAGE_ID,
+        parent_id: null,
+        user_name: name,
+        content: text
     });
 
-    window.addEventListener("DOMContentLoaded", () => {
-        loadCommentsPage(true);
-    });
+    if (error) {
+        console.error(error);
+        alert("Failed to post comment.");
+        return;
+    }
+
+    document.getElementById("commentText").value = "";
+    currentPage = 0;
+    await loadComments(true);
+};
+
+loadMoreBtn.onclick = async () => {
+    currentPage++;
+    await loadComments(false);
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+    loadComments(true);
+});
 </script>
-</body></html>
+
+</body>
+</html>
