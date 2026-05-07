@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,6 +226,13 @@
     #scrollSentinel {
         height: 40px;
     }
+
+    /* Safe text wrapping */
+    .comment-text {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -235,10 +243,9 @@
 <nav>
     <h1>Money Games</h1>
     <div>
-        <a href="index.html" target="_blank">Home</a>
-        <a href="index.html#games" target="_blank">Games</a>
-        <a href="about.html" target="_blank">About</a>
-        <a href="cuntributors.html" target="_blank">Contributors</a>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
         <a href="comments.html">Comments</a>
     </div>
 </nav>
@@ -248,7 +255,8 @@
 <div class="explain-box">
     Feel free to leave a comment below.<br>
     Share ideas, feedback, game suggestions, or just say hi.<br>
-    Newest threads appear at the top. Replies are threaded.
+    Newest threads appear at the top. Replies are threaded.<br>
+    Please keep it respectful – toxic or insulting comments are blocked.
 </div>
 
 <div class="comment-box">
@@ -261,6 +269,8 @@
 <div id="scrollSentinel"></div>
 
 <script>
+/* ------------------ CONFIG ------------------ */
+
 const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
 
@@ -287,6 +297,95 @@ const scrollSentinel = document.getElementById("scrollSentinel");
 
 let isLoading = false;
 let hasMore = true;
+
+/* ------------------ MODERATION ------------------ */
+
+const MAX_LINES = 20;
+const RATE_LIMIT_INTERVAL_MS = 30_000;
+const RATE_LIMIT_WINDOW_MS = 10 * 60_000;
+const RATE_LIMIT_MAX_IN_WINDOW = 10;
+
+function estimateToxicity(text) {
+    const toxicWords = [
+        "fuck","shit","bitch","asshole","bastard","cunt","slut","whore",
+        "retard","dick","pussy","fag","moron","idiot","stupid","loser",
+        "kill yourself","kys","hate you","disgusting","trash","garbage"
+    ];
+    const lower = text.toLowerCase();
+    let hits = 0;
+    toxicWords.forEach(w => {
+        if (lower.includes(w)) hits++;
+    });
+    const words = lower.split(/\s+/).filter(Boolean).length || 1;
+    return hits / words;
+}
+
+function validateComment(text) {
+    const bannedWords = [
+        "fuck","shit","bitch","asshole","bastard","cunt","slut","whore",
+        "retard","dick","pussy","fag","moron","idiot","stupid","loser"
+    ];
+
+    const lower = text.toLowerCase();
+
+    if (bannedWords.some(w => lower.includes(w))) {
+        return "Your comment contains banned or insulting language.";
+    }
+
+    const lines = text.split(/\r?\n/);
+    if (lines.length > MAX_LINES) {
+        return `Your comment is too long (maximum ${MAX_LINES} lines).`;
+    }
+
+    const toxicity = estimateToxicity(text);
+    if (toxicity >= 0.04) {
+        return "Your comment seems too toxic. Please rewrite it more respectfully.";
+    }
+
+    return null;
+}
+
+function checkRateLimit() {
+    const now = Date.now();
+
+    const lastTs = Number(localStorage.getItem("mg_last_comment_ts") || "0");
+    if (now - lastTs < RATE_LIMIT_INTERVAL_MS) {
+        const waitSec = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastTs)) / 1000);
+        return `You are commenting too fast. Please wait ${waitSec} seconds.`;
+    }
+
+    let windowStart = Number(localStorage.getItem("mg_comment_window_start") || "0");
+    let count = Number(localStorage.getItem("mg_comment_window_count") || "0");
+
+    if (now - windowStart > RATE_LIMIT_WINDOW_MS) {
+        windowStart = now;
+        count = 0;
+    }
+
+    if (count >= RATE_LIMIT_MAX_IN_WINDOW) {
+        return "You have posted a lot recently. Please take a short break before posting more.";
+    }
+
+    return null;
+}
+
+function registerCommentAttempt() {
+    const now = Date.now();
+    let windowStart = Number(localStorage.getItem("mg_comment_window_start") || "0");
+    let count = Number(localStorage.getItem("mg_comment_window_count") || "0");
+
+    if (now - windowStart > RATE_LIMIT_WINDOW_MS) {
+        windowStart = now;
+        count = 0;
+    }
+
+    count += 1;
+
+    localStorage.setItem("mg_last_comment_ts", String(now));
+    localStorage.setItem("mg_comment_window_start", String(windowStart));
+    localStorage.setItem("mg_comment_window_count", String(count));
+}
+/* ------------------ LOAD + RENDER COMMENTS ------------------ */
 
 async function loadComments(initial = false) {
     if (isLoading) return;
@@ -401,7 +500,7 @@ function renderNode(comment, childrenMap) {
             <span class="comment-name">${comment.user_name}</span>
             <span class="comment-meta">${formatDate(comment.created_at)}</span>
         </div>
-        <div class="comment-text">${escapeHtml(comment.content).replace(/\n/g, "<br>")}</div>
+        <div class="comment-text">${escapeHtml(comment.content)}</div>
         <div class="comment-actions">
             <button class="vote-btn up" aria-label="Thumbs up">👍</button>
             <span class="score">${scoreInfo.score}</span>
@@ -463,12 +562,25 @@ function toggleReplyBox(parentId, el) {
     btn.onclick = async () => {
         const name = document.getElementById("displayName").value.trim();
         const text = textarea.value.trim();
+
         if (!name || !text) {
             alert("Enter a name and reply text.");
             return;
         }
 
-        const { error } = await client
+        const rateError = checkRateLimit();
+        if (rateError) {
+            alert(rateError);
+            return;
+        }
+
+        const error = validateComment(text);
+        if (error) {
+            alert(error);
+            return;
+        }
+
+        const { error: dbErr } = await client
             .from("comments")
             .insert({
                 page_id: PAGE_ID,
@@ -477,12 +589,13 @@ function toggleReplyBox(parentId, el) {
                 content: text
             });
 
-        if (error) {
-            console.error(error);
+        if (dbErr) {
+            console.error(dbErr);
             alert("Failed to post reply.");
             return;
         }
 
+        registerCommentAttempt();
         await loadComments(true);
         commentBoxEl.classList.remove("dimmed");
     };
@@ -504,19 +617,16 @@ document.addEventListener("click", (e) => {
 async function handleVote(commentId, type) {
     const current = votes[commentId] || { myVote: 0 };
 
-    // Remove any existing vote from this device for this comment
     await client
         .from("comment_votes")
         .delete()
         .match({ comment_id: commentId, voter_hash: voterId });
 
-    // If user clicked the same vote again, just clear and reload
     if (current.myVote === type) {
         await loadComments(true);
         return;
     }
 
-    // Insert new vote
     const { error } = await client
         .from("comment_votes")
         .insert({
@@ -531,11 +641,13 @@ async function handleVote(commentId, type) {
 }
 
 function escapeHtml(str) {
-    return str
+    return String(str)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 }
+
+/* ------------------ POST ROOT COMMENT ------------------ */
 
 postRootBtn.onclick = async () => {
     const name = document.getElementById("displayName").value.trim();
@@ -546,7 +658,19 @@ postRootBtn.onclick = async () => {
         return;
     }
 
-    const { error } = await client
+    const rateError = checkRateLimit();
+    if (rateError) {
+        alert(rateError);
+        return;
+    }
+
+    const error = validateComment(text);
+    if (error) {
+        alert(error);
+        return;
+    }
+
+    const { error: dbErr } = await client
         .from("comments")
         .insert({
             page_id: PAGE_ID,
@@ -555,17 +679,20 @@ postRootBtn.onclick = async () => {
             content: text
         });
 
-    if (error) {
-        console.error(error);
+    if (dbErr) {
+        console.error(dbErr);
         alert("Failed to post comment.");
         return;
     }
 
+    registerCommentAttempt();
     document.getElementById("commentText").value = "";
     currentPage = 0;
     hasMore = true;
     await loadComments(true);
 };
+
+/* ------------------ INFINITE SCROLL ------------------ */
 
 const observer = new IntersectionObserver((entries) => {
     const entry = entries[0];
@@ -587,7 +714,6 @@ window.addEventListener("DOMContentLoaded", () => {
     loadComments(true);
 });
 </script>
-
 
 </body>
 </html>
