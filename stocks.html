@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Sim – Race to a Billion</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2340 0, #050712 55%, #02030a 100%);
+      color: #e6ebff;
+    }
+
+    .game-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .game-nav h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      letter-spacing: 3px;
+      color: #00eaff;
+      text-shadow: 0 0 10px #00eaff;
+    }
+    .game-nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .game-nav a:hover { color: #00eaff; }
+
+    #pageTitle {
+      text-align: center;
+      padding: 10px 0 4px 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #dbe4ff;
+      text-shadow: 0 0 18px rgba(91,157,255,0.7);
+    }
+
+    #app {
+      display: none;
+      grid-template-columns: 320px 1fr 1fr;
+      gap: 16px;
+      padding: 8px 16px 16px 16px;
+      height: calc(100vh - 52px);
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 16px;
+      border: 1.5px solid #2f3656;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.65);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .panel-title {
+      font-size: 20px;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #b5c6ff;
+    }
+    .panel-subtitle {
+      font-size: 13px;
+      color: #8b93d0;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #4b8dff, #2f63d0);
+      border: none;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 550;
+      letter-spacing: 0.03em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      box-shadow: 0 10px 26px rgba(75,141,255,0.45);
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(75,141,255,0.6);
+      background: linear-gradient(135deg, #5b9dff, #3a6fe0);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .btn.secondary {
+      background: radial-gradient(circle at top, #343b63 0, #252b4a 60%, #181c33 100%);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+    }
+    .btn.secondary:hover {
+      background: radial-gradient(circle at top, #3f4774 0, #2f3556 60%, #181c33 100%);
+    }
+    .btn.small {
+      padding: 5px 12px;
+      font-size: 13px;
+    }
+
+    .stat {
+      margin-bottom: 4px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .stat-label { color: #9aa2d8; }
+    .stat-value { font-variant-numeric: tabular-nums; font-weight: 500; }
+    .negative { color: #ff6b6b; }
+    .positive { color: #5ae08c; }
+    .small { font-size: 12px; color: #9aa2d8; }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 650;
+      color: #b5c6ff;
+      margin: 8px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #262f57 0, #151a33 55%, #101426 100%);
+      border-radius: 12px;
+      border: 1.5px solid #323a5a;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      box-shadow: 0 14px 32px rgba(0,0,0,0.6);
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    #stockList, #cryptoList {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-top: 4px;
+    }
+
+    .stock-row {
+      background: radial-gradient(circle at top left, #262f57 0, #151a33 55%, #101426 100%);
+      border-radius: 12px;
+      border: 1.5px solid #323a5a;
+      padding: 7px 9px;
+      margin-bottom: 7px;
+      font-size: 13px;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 1.6fr 1.4fr 1.6fr;
+      gap: 4px;
+      align-items: center;
+      transition: border 0.12s ease, background 0.12s ease, transform 0.08s ease, box-shadow 0.12s ease;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .stock-row:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.75);
+    }
+    .stock-row.selected {
+      background: radial-gradient(circle at top left, #31437a 0, #1a2140 55%, #101426 100%);
+      border-color: #5b9dff;
+      box-shadow: 0 20px 46px rgba(75,141,255,0.55);
+    }
+    .stock-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .pl-line {
+      font-size: 12px;
+      margin-top: 2px;
+      grid-column: 1 / 4;
+    }
+
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #1b2340 0, #050712 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    #introInner {
+      background: radial-gradient(circle at top, #1f2750 0, #050712 70%);
+      border-radius: 20px;
+      border: 1.5px solid #4b8dff;
+      padding: 24px 28px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 26px 70px rgba(0,0,0,0.85);
+      color: #e6ebff;
+      text-align: center;
+    }
+    #introInner h1 {
+      margin: 0 0 10px 0;
+      font-size: 26px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #introInner p {
+      margin: 4px 0 14px 0;
+      font-size: 14px;
+      color: #c3cffc;
+    }
+    #empireNameInput {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #323a5a;
+      background: #050712;
+      color: #e6ebff;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    #achievementsList {
+      margin-top: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+      padding-right: 4px;
+      font-size: 12px;
+    }
+    .achievement-item {
+      padding: 3px 6px;
+      border-radius: 8px;
+      background: rgba(75,141,255,0.12);
+      border: 1px solid rgba(75,141,255,0.4);
+      margin-bottom: 4px;
+      text-align: left;
+    }
+    .achievement-item span {
+      font-weight: 600;
+      color: #dbe4ff;
+    }
+
+    #eventBanner {
+      position: fixed;
+      left: 50%;
+      top: 12px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at top, #7b1f2a 0, #3b0b12 70%);
+      color: #ffe6ea;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid #ff6b6b;
+      font-size: 13px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+      display: none;
+      z-index: 8000;
+    }
+
+    #chartModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 5, 15, 0.65);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      z-index: 9000;
+    }
+    #chartModal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #chartModalInner {
+      width: min(1100px, 96vw);
+      height: 70vh;
+      background: radial-gradient(circle at top, #1b2340 0, #050712 70%);
+      border-radius: 20px 20px 0 0;
+      border: 1.5px solid #4b8dff;
+      box-shadow: 0 -18px 50px rgba(0,0,0,0.85);
+      padding: 14px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #chartModalTitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: #dbe4ff;
+    }
+    #chartModalInfo {
+      font-size: 12px;
+      color: #9aa2d8;
+    }
+    #chartModalCanvas {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      background: #050712;
+      border-radius: 10px;
+      border: 1px solid #252b45;
+      display: block;
+    }
+    #chartModalControlsLeft,
+    #chartModalControlsRight {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="game-nav">
+    <h1>Stock Sim</h1>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="index.html#games">Games</a>
+      <a href="about.html">About</a>
+      <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
+    </div>
+  </nav>
+
+  <div id="pageTitle">Stock Sim</div>
+
+  <div id="introOverlay">
+    <div id="introInner">
+      <h1>STOCK SIM</h1>
+      <p>Trade stocks and crypto, manage risk, and see how fast you can hit $1,000,000,000 net worth.</p>
+      <p style="margin-top:8px;">Name your fund:</p>
+      <input id="empireNameInput" type="text" placeholder="e.g. Alpha Capital">
+      <button id="startGameBtn" class="btn" style="width:100%; margin-top:8px;">Start</button>
+      <p style="margin-top:10px; font-size:11px; color:#9aa2d8;">
+        The game only runs while this tab is active. No idle trading in the background.
+      </p>
+    </div>
+  </div>
+
+  <div id="eventBanner"></div>
+
+  <div id="app">
+    <!-- LEFT PANEL -->
+    <div id="leftPanel" class="panel">
+      <div class="panel-header">
+        <div class="panel-title" id="playerTitle">Your Fund</div>
+        <div class="panel-subtitle">
+          Race to $1B • <span id="timerDisplay">00:00</span>
+        </div>
+      </div>
+
+      <div class="stat"><span class="stat-label">Cash</span><span class="stat-value" id="cashStat"></span></div>
+      <div class="stat"><span class="stat-label">Net Worth</span><span class="stat-value" id="netWorthStat"></span></div>
+      <div class="stat"><span class="stat-label">Income / sec</span><span class="stat-value" id="incomeStat"></span></div>
+      <div class="stat"><span class="stat-label">Dividend income</span><span class="stat-value" id="assetIncomeStat"></span></div>
+      <div class="stat"><span class="stat-label">Debt</span><span class="stat-value" id="debtStat"></span></div>
+
+      <div style="margin-top:10px;">
+        <div class="section-title">Stock/Crypto Buy Amount</div>
+        <input id="bulkBuyInput"
+               type="number"
+               min="1"
+               value="1"
+               style="width: 100%; padding: 6px; border-radius: 8px; background:#050712; color:#e6ebff; border:1px solid #323a5a;">
+        <div class="small" style="margin-top:4px;">This sets how many units you buy at once.</div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="section-title">Assets</div>
+        <div class="card" id="assetsSummaryCard">
+          <div class="card-row">
+            <span>Stock value</span>
+            <span id="assetStockValue"></span>
+          </div>
+          <div class="card-row">
+            <span>Crypto value</span>
+            <span id="assetCryptoValue"></span>
+          </div>
+          <div class="card-row">
+            <span>Dividend income / sec</span>
+            <span id="assetDividendIncome"></span>
+          </div>
+          <div class="card-row">
+            <span>Total assets</span>
+            <span id="assetTotalValue"></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="section-title">Bank & Credit</div>
+        <div class="stat">
+          <span class="stat-label">Interest</span>
+          <span class="stat-value" id="interestStat"></span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Eligible loan</span>
+          <span class="stat-value" id="eligibleLoanStat"></span>
+        </div>
+        <div class="small">Banks lend against your net worth and existing debt.</div>
+        <div style="margin-top: 10px;">
+          <input id="loanAmountInput" type="number" min="0" step="1000"
+                 style="width:100%; padding:7px 10px; border-radius:999px; border:1px solid #323a5a; background:#050712; color:#e6ebff; font-size:13px;"
+                 placeholder="Loan amount">
+          <button id="loanTakeBtn" class="btn secondary small" style="margin-top:6px; width:100%;">Take loan</button>
+        </div>
+        <div style="margin-top: 8px; display:flex; gap:8px;">
+          <button id="loanRepayBtn" class="btn secondary small" style="flex:1;">Repay $1,000</button>
+          <button id="loanRepayAllBtn" class="btn secondary small" style="flex:1;">Repay all</button>
+        </div>
+        <div class="small" id="loanHint" style="margin-top:8px;"></div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="section-title">Achievements</div>
+        <div id="achievementsList"></div>
+      </div>
+    </div>
+
+    <!-- STOCKS PANEL -->
+    <div id="stocksPanel" class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Stocks</div>
+        <div class="panel-subtitle">Dividends & growth</div>
+      </div>
+      <div id="stockList"></div>
+    </div>
+
+    <!-- CRYPTO PANEL -->
+    <div id="cryptoPanel" class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Crypto</div>
+        <div class="panel-subtitle">High risk, high reward</div>
+      </div>
+      <div id="cryptoList"></div>
+    </div>
+  </div>
+
+  <!-- WIN MODAL -->
+  <div id="winModal" style="position: fixed; inset: 0; background: rgba(3, 5, 15, 0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 9999;">
+    <div id="winModalGlow" style="position:absolute; inset:0; background: radial-gradient(circle at center, rgba(90,224,140,0.18) 0, transparent 55%); pointer-events:none;"></div>
+    <div id="winModalInner" style="position:relative; background: radial-gradient(circle at top, #1f2750 0, #050712 70%); border-radius: 20px; border: 1.5px solid #5b9dff; padding: 28px 32px; max-width: 480px; text-align: center; box-shadow: 0 26px 70px rgba(0,0,0,0.85); color: #e6ebff;">
+      <h1 style="margin:0 0 10px 0; font-size:32px; letter-spacing:0.08em; text-transform:uppercase;">YOU WON</h1>
+      <div class="highlight" style="font-size:18px; color:#5ae08c; margin-bottom:10px;">You hit $1,000,000,000 net worth.</div>
+      <div id="winTimeText" style="font-size:14px; color:#b7c5ff; margin-bottom:18px;"></div>
+      <p style="margin:0 0 18px 0; font-size:16px; color:#c3cffc;">You raced to a billion. Want to run it back or keep trading?</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+        <button id="winContinueBtn" class="btn secondary">Continue</button>
+        <button id="winRestartBtn" class="btn">Play again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART MODAL -->
+  <div id="chartModal">
+    <div id="chartModalInner">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div id="chartModalTitle"></div>
+        <button id="chartModalClose" class="btn secondary small">Close</button>
+      </div>
+      <div id="chartModalInfo"></div>
+      <canvas id="chartModalCanvas"></canvas>
+      <div style="display:flex; justify-content:space-between; margin-top:4px;">
+        <div id="chartModalControlsLeft"></div>
+        <div id="chartModalControlsRight"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // CORE STATE
+    let cash = 1000.0;
+    let debt = 0.0;
+
+    let incomePerSec = 0.0;
+    let incomeAssets = 0.0;
+
+    let interestRatePerMinute = 0.08;
+    let interestModifier = 0.0;
+
+    const WIN_NET_WORTH = 1_000_000_000;
+    let gameWon = false;
+
+    let gameStarted = false;
+    let elapsedSeconds = 0;
+    let activePlaySeconds = 0;
+    let lastActiveTimestamp = null;
+    let tabActive = true;
+
+    let empireName = "Your Fund";
+
+    let lastEventTime = 0;
+    const EVENT_MIN_INTERVAL = 45;
+    const EVENT_NET_WORTH_THRESHOLD = 40_000_000;
+    let eventMitigationFactor = 0.0; // no employees now, so only base
+
+    const stocks = [
+      { name: "NVDA", basePrice: 900, price: 900, vol: 0.045, divYield: 0.002, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "GOOG", basePrice: 140, price: 140, vol: 0.03, divYield: 0.005, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "AMZN", basePrice: 180, price: 180, vol: 0.035, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "INTC", basePrice: 35, price: 35, vol: 0.03, divYield: 0.03, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "AMD", basePrice: 160, price: 160, vol: 0.04, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "MSFT", basePrice: 420, price: 420, vol: 0.025, divYield: 0.01, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "META", basePrice: 500, price: 500, vol: 0.04, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "TSLA", basePrice: 200, price: 200, vol: 0.06, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "AAPL", basePrice: 190, price: 190, vol: 0.025, divYield: 0.005, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "NFLX", basePrice: 600, price: 600, vol: 0.05, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false }
+    ];
+
+    const cryptos = [
+      { name: "BTC", basePrice: 60000, price: 60000, vol: 0.08, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "ETH", basePrice: 3000, price: 3000, vol: 0.07, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "SOL", basePrice: 150, price: 150, vol: 0.09, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "XRP", basePrice: 0.6, price: 0.6, vol: 0.08, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "DOGE", basePrice: 0.2, price: 0.2, vol: 0.1, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "ADA", basePrice: 0.8, price: 0.8, vol: 0.08, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "BNB", basePrice: 400, price: 400, vol: 0.06, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "AVAX", basePrice: 50, price: 50, vol: 0.09, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "MATIC", basePrice: 1.2, price: 1.2, vol: 0.09, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false },
+      { name: "LINK", basePrice: 18, price: 18, vol: 0.08, divYield: 0.0, owned: 0, invested: 0, history: [], reinvest: false }
+    ];
+
+    stocks.forEach(s => { s.history = Array(120).fill(s.price); });
+    cryptos.forEach(c => { c.history = Array(120).fill(c.price); });
+
+    let selectedStockIndex = 0;
+    let selectedCryptoIndex = 0;
+    let chartContext = { type: "stock", index: 0 };
+
+    // Achievements (stock/crypto focused, many more)
+    const achievements = [
+      { id: "nw_10k", name: "First 10K", unlocked: false, check: () => netWorth() >= 10_000 },
+      { id: "nw_100k", name: "Six Figures", unlocked: false, check: () => netWorth() >= 100_000 },
+      { id: "nw_1m", name: "First Million", unlocked: false, check: () => netWorth() >= 1_000_000 },
+      { id: "nw_10m", name: "Eight Figures", unlocked: false, check: () => netWorth() >= 10_000_000 },
+      { id: "nw_100m", name: "Nine Zeros", unlocked: false, check: () => netWorth() >= 100_000_000 },
+      { id: "nw_1b", name: "Billionaire", unlocked: false, check: () => netWorth() >= 1_000_000_000 },
+
+      { id: "first_stock", name: "Market Entry", unlocked: false, check: () => stocks.some(s => s.owned > 0) },
+      { id: "first_crypto", name: "On-chain", unlocked: false, check: () => cryptos.some(c => c.owned > 0) },
+
+      { id: "stock_10_shares", name: "Stock Collector", unlocked: false, check: () => stocks.some(s => s.owned >= 10) },
+      { id: "stock_100_shares", name: "Stock Whale", unlocked: false, check: () => stocks.some(s => s.owned >= 100) },
+      { id: "crypto_10_coins", name: "Crypto Dabbler", unlocked: false, check: () => cryptos.some(c => c.owned >= 10) },
+      { id: "crypto_100_coins", name: "Crypto Whale", unlocked: false, check: () => cryptos.some(c => c.owned >= 100) },
+
+      { id: "dividend_100", name: "Dividend Drip", unlocked: false, check: () => totalDividendPerSec() >= 100 },
+      { id: "dividend_1000", name: "Dividend River", unlocked: false, check: () => totalDividendPerSec() >= 1000 },
+
+      { id: "all_stocks_owned", name: "Index Fund", unlocked: false, check: () => stocks.every(s => s.owned > 0) },
+      { id: "all_crypto_owned", name: "Altcoin Basket", unlocked: false, check: () => cryptos.every(c => c.owned > 0) },
+
+      { id: "no_debt_50k", name: "Debt Free Trader", unlocked: false, check: () => debt === 0 && netWorth() >= 50_000 },
+      { id: "leveraged", name: "Margin User", unlocked: false, check: () => debt > 0 },
+
+      { id: "stock_500k_value", name: "Equity Stack", unlocked: false, check: () => computeAssetValues().stockValue >= 500_000 },
+      { id: "crypto_500k_value", name: "Chain Stack", unlocked: false, check: () => computeAssetValues().cryptoValue >= 500_000 },
+
+      { id: "stock_10m_value", name: "Stock Titan", unlocked: false, check: () => computeAssetValues().stockValue >= 10_000_000 },
+      { id: "crypto_10m_value", name: "Crypto Titan", unlocked: false, check: () => computeAssetValues().cryptoValue >= 10_000_000 }
+    ];
+    const unlockedAchievements = [];
+
+    // DOM
+    const cashStat = document.getElementById("cashStat");
+    const netWorthStat = document.getElementById("netWorthStat");
+    const incomeStat = document.getElementById("incomeStat");
+    const assetIncomeStat = document.getElementById("assetIncomeStat");
+    const debtStat = document.getElementById("debtStat");
+    const interestStat = document.getElementById("interestStat");
+    const eligibleLoanStat = document.getElementById("eligibleLoanStat");
+    const loanHint = document.getElementById("loanHint");
+
+    const assetStockValue = document.getElementById("assetStockValue");
+    const assetCryptoValue = document.getElementById("assetCryptoValue");
+    const assetDividendIncome = document.getElementById("assetDividendIncome");
+    const assetTotalValue = document.getElementById("assetTotalValue");
+
+    const achievementsListEl = document.getElementById("achievementsList");
+
+    const loanAmountInput = document.getElementById("loanAmountInput");
+    const loanTakeBtn = document.getElementById("loanTakeBtn");
+    const loanRepayBtn = document.getElementById("loanRepayBtn");
+    const loanRepayAllBtn = document.getElementById("loanRepayAllBtn");
+
+    const stockListEl = document.getElementById("stockList");
+    const cryptoListEl = document.getElementById("cryptoList");
+
+    const introOverlay = document.getElementById("introOverlay");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const empireNameInput = document.getElementById("empireNameInput");
+    const playerTitle = document.getElementById("playerTitle");
+    const timerDisplay = document.getElementById("timerDisplay");
+
+    const eventBanner = document.getElementById("eventBanner");
+
+    const winModal = document.getElementById("winModal");
+    const winRestartBtn = document.getElementById("winRestartBtn");
+    const winContinueBtn = document.getElementById("winContinueBtn");
+    const winTimeText = document.getElementById("winTimeText");
+
+    const chartModal = document.getElementById("chartModal");
+    const chartModalCanvas = document.getElementById("chartModalCanvas");
+    const chartModalTitle = document.getElementById("chartModalTitle");
+    const chartModalInfo = document.getElementById("chartModalInfo");
+    const chartModalClose = document.getElementById("chartModalClose");
+    const chartModalControlsLeft = document.getElementById("chartModalControlsLeft");
+    const chartModalControlsRight = document.getElementById("chartModalControlsRight");
+    const chartCtx = chartModalCanvas.getContext("2d");
+
+    const bulkBuyInput = document.getElementById("bulkBuyInput");
+
+    function formatMoney(v) {
+      if (Math.abs(v) >= 1_000_000_000) return (v / 1_000_000_000).toFixed(2) + "B";
+      if (Math.abs(v) >= 1_000_000) return (v / 1_000_000).toFixed(2) + "M";
+      if (Math.abs(v) >= 1_000) return (v / 1_000).toFixed(2) + "K";
+      return v.toFixed(2);
+    }
+
+    function netWorth() {
+      const { stockValue, cryptoValue } = computeAssetValues();
+      return cash + stockValue + cryptoValue - debt;
+    }
+
+    function computeAssetValues() {
+      const stockValue = stocks.reduce((sum, s) => sum + s.owned * s.price, 0);
+      const cryptoValue = cryptos.reduce((sum, c) => sum + c.owned * c.price, 0);
+      return { stockValue, cryptoValue };
+    }
+
+    function getDividendPerSec(asset) {
+      if (asset.owned <= 0 || asset.divYield <= 0) return 0;
+      const yearly = asset.price * asset.divYield * asset.owned;
+      // 1/4 of annual dividends per second (same as original logic)
+      return yearly / 4;
+    }
+
+    function totalDividendPerSec() {
+      let total = 0;
+      stocks.forEach(s => total += getDividendPerSec(s));
+      cryptos.forEach(c => total += getDividendPerSec(c));
+      return total;
+    }
+
+    function recalcIncome() {
+      incomeAssets = totalDividendPerSec();
+      incomePerSec = incomeAssets;
+    }
+
+    function eligibleLoan() {
+      const nw = netWorth();
+      if (nw <= 0) return 0;
+      if (debt >= 50_000_000) return 0;
+      if (debt > nw * 0.6) return 0;
+      const maxTotal = nw * 0.5;
+      return Math.max(0, maxTotal - debt);
+    }
+
+    function updateAssetsSummary() {
+      const { stockValue, cryptoValue } = computeAssetValues();
+      const divIncome = totalDividendPerSec();
+      assetStockValue.textContent = "$" + formatMoney(stockValue);
+      assetCryptoValue.textContent = "$" + formatMoney(cryptoValue);
+      assetDividendIncome.textContent = "$" + formatMoney(divIncome);
+      assetTotalValue.textContent = "$" + formatMoney(stockValue + cryptoValue);
+    }
+
+    function updateStats() {
+      cashStat.textContent = "$" + formatMoney(cash);
+      netWorthStat.textContent = "$" + formatMoney(netWorth());
+      incomeStat.textContent = "$" + formatMoney(incomePerSec);
+      assetIncomeStat.textContent = "$" + formatMoney(incomeAssets);
+      debtStat.textContent = "$" + formatMoney(debt);
+      debtStat.className = "stat-value" + (debt > 0 ? " negative" : "");
+      const effRate = Math.max(0, interestRatePerMinute + interestModifier);
+      interestStat.textContent = (effRate * 100).toFixed(1) + "% / min";
+      eligibleLoanStat.textContent = "$" + formatMoney(eligibleLoan());
+      updateAssetsSummary();
+    }
+
+    function showWinModal() {
+      if (gameWon) return;
+      gameWon = true;
+      winTimeText.textContent = "Time to $1B: " + formatTime(elapsedSeconds);
+      winModal.style.display = "flex";
+    }
+
+    function checkWin() {
+      if (!gameWon && netWorth() >= WIN_NET_WORTH) {
+        unlockAchievementById("nw_1b");
+        showWinModal();
+      }
+    }
+
+    function takeLoan(amount) {
+      if (amount <= 0) return;
+      const eligible = eligibleLoan();
+      if (eligible <= 0) {
+        loanHint.textContent = "Bank: Your leverage is too high. Pay down debt first.";
+        return;
+      }
+      const granted = Math.min(amount, eligible);
+      if (granted <= 0) {
+        loanHint.textContent = "Bank: You're already at your credit limit.";
+        return;
+      }
+      cash += granted;
+      debt += granted;
+      loanHint.textContent = "Bank: Granted loan of $" + formatMoney(granted) + ".";
+    }
+
+    function repayLoan(amount) {
+      const pay = Math.min(amount, cash, debt);
+      if (pay <= 0) {
+        loanHint.textContent = "You need cash to repay.";
+        return;
+      }
+      cash -= pay;
+      debt -= pay;
+      loanHint.textContent = "Repaid $" + formatMoney(pay) + ". Remaining debt: $" + formatMoney(debt) + ".";
+    }
+
+    function applyInterest() {
+      const effRate = Math.max(0, interestRatePerMinute + interestModifier);
+      if (debt <= 0 || effRate <= 0) return;
+      const perSec = effRate / 60;
+      debt += debt * perSec;
+    }
+
+    function updateAssetsPrices(arr) {
+      arr.forEach(a => {
+        const baseVol = a.vol;
+        const vol = baseVol * 4;
+        const change = (Math.random() * 2 - 1) * vol;
+        let newPrice = a.price * (1 + change);
+        const floor = a.basePrice * 0.25;
+        const cap = a.basePrice * 4;
+        if (newPrice < floor) newPrice = floor;
+        if (newPrice > cap) newPrice = cap;
+        a.price = newPrice;
+        a.history.push(newPrice);
+        if (a.history.length > 300) a.history.shift();
+      });
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function unlockAchievementById(id) {
+      const ach = achievements.find(a => a.id === id);
+      if (!ach || ach.unlocked) return;
+      ach.unlocked = true;
+      unlockedAchievements.push(ach);
+      renderAchievements();
+      showEventBanner("Achievement unlocked: " + ach.name);
+    }
+
+    function checkAchievements() {
+      achievements.forEach(a => {
+        if (!a.unlocked && a.check()) {
+          unlockAchievementById(a.id);
+        }
+      });
+    }
+
+    function renderAchievements() {
+      achievementsListEl.innerHTML = "";
+      unlockedAchievements.forEach((a, idx) => {
+        const div = document.createElement("div");
+        div.className = "achievement-item";
+        div.innerHTML = `<span>${idx + 1}.</span> ${a.name}`;
+        achievementsListEl.appendChild(div);
+      });
+    }
+
+    function showEventBanner(text) {
+      eventBanner.textContent = text;
+      eventBanner.style.display = "block";
+      setTimeout(() => {
+        eventBanner.style.display = "none";
+      }, 4000);
+    }
+
+    function maybeTriggerEvent() {
+      const now = Math.floor(elapsedSeconds);
+      if (netWorth() < EVENT_NET_WORTH_THRESHOLD) return;
+      if (now - lastEventTime < EVENT_MIN_INTERVAL) return;
+      if (Math.random() < 0.25) {
+        lastEventTime = now;
+        const roll = Math.random();
+        const mitigation = 1 - eventMitigationFactor;
+        if (roll < 0.4) {
+          stocks.forEach(s => s.price *= (0.7 + 0.3 * mitigation));
+          cryptos.forEach(c => c.price *= (0.7 + 0.3 * mitigation));
+          showEventBanner("Market crash! Your diversification softened the blow.");
+        } else if (roll < 0.7) {
+          const fineBase = Math.min(cash * 0.3, 5_000_000);
+          const fine = fineBase * mitigation;
+          cash -= fine;
+          showEventBanner("Regulatory fine: You paid $" + formatMoney(fine) + ".");
+        } else {
+          stocks.forEach(s => s.price *= 1.25);
+          showEventBanner("Tech boom! Stocks surged ~25%.");
+        }
+      }
+    }
+
+    function renderStocksList() {
+      stockListEl.innerHTML = "";
+      stocks.forEach((a, idx) => {
+        const row = document.createElement("div");
+        const isSelected = idx === selectedStockIndex;
+        row.className = "stock-row" + (isSelected ? " selected" : "");
+        row.onclick = (e) => {
+          if (e.target.tagName.toLowerCase() === "button") return;
+          selectedStockIndex = idx;
+          renderStocksList();
+        };
+
+        const col1 = document.createElement("div");
+        const divText = a.divYield > 0
+          ? `Div yield: ${(a.divYield * 100).toFixed(2)}%`
+          : "No dividend";
+        col1.innerHTML = `<div>${a.name}</div><div class="small">${divText}</div>`;
+
+        const perSec = getDividendPerSec(a);
+        const col2 = document.createElement("div");
+        col2.innerHTML =
+          `<div>Owned: ${a.owned.toFixed(3)}</div>` +
+          `<div class="small">Div: $${formatMoney(perSec)}/sec</div>`;
+
+        const col3 = document.createElement("div");
+        col3.className = "stock-buttons";
+
+        const buyBtn = document.createElement("button");
+        buyBtn.className = "btn secondary small";
+        buyBtn.textContent = "Buy $" + a.price.toFixed(0);
+        buyBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          const qty = parseFloat(bulkBuyInput.value) || 1;
+          const totalCost = a.price * qty;
+          if (cash >= totalCost) {
+            cash -= totalCost;
+            a.owned += qty;
+            a.invested += totalCost;
+            recalcIncome();
+            updateStats();
+            renderStocksList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        const sellBtn = document.createElement("button");
+        sellBtn.className = "btn secondary small";
+        sellBtn.textContent = "Sell";
+        sellBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          if (a.owned > 0) {
+            const qty = 1;
+            const avgCost = a.invested / a.owned;
+            a.owned -= qty;
+            a.invested -= avgCost;
+            cash += a.price * qty;
+            recalcIncome();
+            updateStats();
+            renderStocksList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        col3.appendChild(buyBtn);
+        col3.appendChild(sellBtn);
+
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+
+        const value = a.owned * a.price;
+        const pl = value - a.invested;
+        const plDiv = document.createElement("div");
+        plDiv.className = "pl-line";
+        let plClass = "";
+        if (pl > 0.01) plClass = "positive";
+        else if (pl < -0.01) plClass = "negative";
+        plDiv.innerHTML =
+          `<span class="small">Invested: $${formatMoney(a.invested)}</span><br>` +
+          `<span class="small">P/L: <span class="${plClass}">$${formatMoney(pl)}</span></span>`;
+        row.appendChild(plDiv);
+
+        const chartBtnRow = document.createElement("div");
+        chartBtnRow.style.gridColumn = "1 / 4";
+        chartBtnRow.style.marginTop = "4px";
+        chartBtnRow.style.display = "flex";
+        chartBtnRow.style.justifyContent = "space-between";
+        chartBtnRow.style.gap = "6px";
+
+        const leftControls = document.createElement("div");
+        leftControls.style.display = "flex";
+        leftControls.style.gap = "6px";
+
+        const viewBtn = document.createElement("button");
+        viewBtn.className = "btn small";
+        viewBtn.textContent = "View chart";
+        viewBtn.onclick = (e) => {
+          e.stopPropagation();
+          selectedStockIndex = idx;
+          openChartModal("stock", idx);
+        };
+
+        const sellAllBtn = document.createElement("button");
+        sellAllBtn.className = "btn secondary small";
+        sellAllBtn.textContent = "Sell all";
+        sellAllBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          if (a.owned > 0) {
+            cash += a.owned * a.price;
+            a.owned = 0;
+            a.invested = 0;
+            recalcIncome();
+            updateStats();
+            renderStocksList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        leftControls.appendChild(viewBtn);
+        leftControls.appendChild(sellAllBtn);
+
+        const reinvestBtn = document.createElement("button");
+        reinvestBtn.className = "btn secondary small";
+        reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+        reinvestBtn.onclick = (e) => {
+          e.stopPropagation();
+          a.reinvest = !a.reinvest;
+          reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+        };
+
+        chartBtnRow.appendChild(leftControls);
+        chartBtnRow.appendChild(reinvestBtn);
+
+        row.appendChild(chartBtnRow);
+
+        stockListEl.appendChild(row);
+      });
+    }
+
+    function renderCryptoList() {
+      cryptoListEl.innerHTML = "";
+      cryptos.forEach((a, idx) => {
+        const row = document.createElement("div");
+        const isSelected = idx === selectedCryptoIndex;
+        row.className = "stock-row" + (isSelected ? " selected" : "");
+        row.onclick = (e) => {
+          if (e.target.tagName.toLowerCase() === "button") return;
+          selectedCryptoIndex = idx;
+          renderCryptoList();
+        };
+
+        const col1 = document.createElement("div");
+        col1.innerHTML = `<div>${a.name}</div><div class="small">Vol: ${(a.vol * 100).toFixed(1)}%</div>`;
+
+        const perSec = getDividendPerSec(a);
+        const col2 = document.createElement("div");
+        col2.innerHTML =
+          `<div>Owned: ${a.owned.toFixed(3)}</div>` +
+          `<div class="small">Yield: $${formatMoney(perSec)}/sec</div>`;
+
+        const col3 = document.createElement("div");
+        col3.className = "stock-buttons";
+
+        const buyBtn = document.createElement("button");
+        buyBtn.className = "btn secondary small";
+        buyBtn.textContent = "Buy $" + a.price.toFixed(0);
+        buyBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          const qty = parseFloat(bulkBuyInput.value) || 1;
+          const totalCost = a.price * qty;
+          if (cash >= totalCost) {
+            cash -= totalCost;
+            a.owned += qty;
+            a.invested += totalCost;
+            recalcIncome();
+            updateStats();
+            renderCryptoList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        const sellBtn = document.createElement("button");
+        sellBtn.className = "btn secondary small";
+        sellBtn.textContent = "Sell";
+        sellBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          if (a.owned > 0) {
+            const qty = 1;
+            const avgCost = a.invested / a.owned;
+            a.owned -= qty;
+            a.invested -= avgCost;
+            cash += a.price * qty;
+            recalcIncome();
+            updateStats();
+            renderCryptoList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        col3.appendChild(buyBtn);
+        col3.appendChild(sellBtn);
+
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+
+        const value = a.owned * a.price;
+        const pl = value - a.invested;
+        const plDiv = document.createElement("div");
+        plDiv.className = "pl-line";
+        let plClass = "";
+        if (pl > 0.01) plClass = "positive";
+        else if (pl < -0.01) plClass = "negative";
+        plDiv.innerHTML =
+          `<span class="small">Invested: $${formatMoney(a.invested)}</span><br>` +
+          `<span class="small">P/L: <span class="${plClass}">$${formatMoney(pl)}</span></span>`;
+        row.appendChild(plDiv);
+
+        const chartBtnRow = document.createElement("div");
+        chartBtnRow.style.gridColumn = "1 / 4";
+        chartBtnRow.style.marginTop = "4px";
+        chartBtnRow.style.display = "flex";
+        chartBtnRow.style.justifyContent = "space-between";
+        chartBtnRow.style.gap = "6px";
+
+        const leftControls = document.createElement("div");
+        leftControls.style.display = "flex";
+        leftControls.style.gap = "6px";
+
+        const viewBtn = document.createElement("button");
+        viewBtn.className = "btn small";
+        viewBtn.textContent = "View chart";
+        viewBtn.onclick = (e) => {
+          e.stopPropagation();
+          selectedCryptoIndex = idx;
+          openChartModal("crypto", idx);
+        };
+
+        const sellAllBtn = document.createElement("button");
+        sellAllBtn.className = "btn secondary small";
+        sellAllBtn.textContent = "Sell all";
+        sellAllBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (!gameStarted) return;
+          if (a.owned > 0) {
+            cash += a.owned * a.price;
+            a.owned = 0;
+            a.invested = 0;
+            recalcIncome();
+            updateStats();
+            renderCryptoList();
+            checkAchievements();
+            checkWin();
+          }
+        };
+
+        leftControls.appendChild(viewBtn);
+        leftControls.appendChild(sellAllBtn);
+
+        const reinvestBtn = document.createElement("button");
+        reinvestBtn.className = "btn secondary small";
+        reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+        reinvestBtn.onclick = (e) => {
+          e.stopPropagation();
+          a.reinvest = !a.reinvest;
+          reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+        };
+
+        chartBtnRow.appendChild(leftControls);
+        chartBtnRow.appendChild(reinvestBtn);
+
+        row.appendChild(chartBtnRow);
+
+        cryptoListEl.appendChild(row);
+      });
+    }
+
+    function resizeChartCanvas() {
+      chartModalCanvas.width = chartModalCanvas.clientWidth;
+      chartModalCanvas.height = chartModalCanvas.clientHeight;
+    }
+
+    window.addEventListener("resize", () => {
+      if (chartModal.classList.contains("open")) {
+        resizeChartCanvas();
+        renderChartModal();
+      }
+    });
+
+    function renderChartModal() {
+      const arr = chartContext.type === "stock" ? stocks : cryptos;
+      const idx = chartContext.index;
+      const a = arr[idx];
+      const history = a.history;
+      const ctx = chartCtx;
+      const w = chartModalCanvas.width;
+      const h = chartModalCanvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+      if (history.length < 2) return;
+
+      const windowSize = Math.min(220, history.length);
+      const data = history.slice(history.length - windowSize);
+      let maxP = Math.max(...data);
+      let minP = Math.min(...data);
+      if (maxP === minP) maxP += 1;
+
+      const padding = 18;
+      const chartW = w - padding * 2;
+      const chartH = h - padding * 2;
+
+      ctx.strokeStyle = "#1a2138";
+      ctx.lineWidth = 1;
+      const gridLines = 5;
+      for (let i = 0; i <= gridLines; i++) {
+        const y = padding + (i / gridLines) * chartH;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(padding + chartW, y);
+        ctx.stroke();
+      }
+      for (let i = 0; i <= gridLines; i++) {
+        const x = padding + (i / gridLines) * chartW;
+        ctx.beginPath();
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, padding + chartH);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "#252b45";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(padding, padding);
+      ctx.lineTo(padding, padding + chartH);
+      ctx.lineTo(padding + chartW, padding + chartH);
+      ctx.stroke();
+
+      const points = [];
+      for (let i = 0; i < data.length; i++) {
+        const x = padding + (i / (data.length - 1)) * chartW;
+        const y = padding + chartH - ((data[i] - minP) / (maxP - minP)) * chartH;
+        points.push({ x, y });
+      }
+
+      const rising = data[data.length - 1] >= data[0];
+      ctx.strokeStyle = rising ? "#5ae08c" : "#ff6b6b";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+
+      chartModalTitle.textContent = `${a.name} — ${chartContext.type === "stock" ? "Stock" : "Crypto"} Price`;
+      const perSec = getDividendPerSec(a);
+      chartModalInfo.textContent =
+        `Price: $${a.price.toFixed(2)} • Range: $${minP.toFixed(2)}–$${maxP.toFixed(2)} • Yield: $${formatMoney(perSec)}/sec`;
+
+      chartModalControlsLeft.innerHTML = "";
+      chartModalControlsRight.innerHTML = "";
+
+      const buyBtn = document.createElement("button");
+      buyBtn.className = "btn secondary small";
+      buyBtn.textContent = "Buy $" + a.price.toFixed(0);
+      buyBtn.onclick = () => {
+        if (!gameStarted) return;
+        const qty = parseFloat(bulkBuyInput.value) || 1;
+        const totalCost = a.price * qty;
+        if (cash >= totalCost) {
+          cash -= totalCost;
+          a.owned += qty;
+          a.invested += totalCost;
+          recalcIncome();
+          updateStats();
+          renderStocksList();
+          renderCryptoList();
+          renderChartModal();
+          checkAchievements();
+          checkWin();
+        }
+      };
+
+      const sellBtn = document.createElement("button");
+      sellBtn.className = "btn secondary small";
+      sellBtn.textContent = "Sell";
+      sellBtn.onclick = () => {
+        if (!gameStarted) return;
+        if (a.owned > 0) {
+          const qty = 1;
+          const avgCost = a.invested / a.owned;
+          a.owned -= qty;
+          a.invested -= avgCost;
+          cash += a.price * qty;
+          recalcIncome();
+          updateStats();
+          renderStocksList();
+          renderCryptoList();
+          renderChartModal();
+          checkAchievements();
+          checkWin();
+        }
+      };
+
+      const sellAllBtn = document.createElement("button");
+      sellAllBtn.className = "btn secondary small";
+      sellAllBtn.textContent = "Sell all";
+      sellAllBtn.onclick = () => {
+        if (!gameStarted) return;
+        if (a.owned > 0) {
+          cash += a.owned * a.price;
+          a.owned = 0;
+          a.invested = 0;
+          recalcIncome();
+          updateStats();
+          renderStocksList();
+          renderCryptoList();
+          renderChartModal();
+          checkAchievements();
+          checkWin();
+        }
+      };
+
+      const reinvestBtn = document.createElement("button");
+      reinvestBtn.className = "btn secondary small";
+      reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+      reinvestBtn.onclick = () => {
+        a.reinvest = !a.reinvest;
+        reinvestBtn.textContent = a.reinvest ? "Reinvest: ON" : "Reinvest: OFF";
+      };
+
+      chartModalControlsLeft.appendChild(buyBtn);
+      chartModalControlsLeft.appendChild(sellBtn);
+      chartModalControlsLeft.appendChild(sellAllBtn);
+      chartModalControlsRight.appendChild(reinvestBtn);
+    }
+
+    function openChartModal(type, index) {
+      chartContext.type = type;
+      chartContext.index = index;
+      chartModal.classList.add("open");
+      resizeChartCanvas();
+      renderChartModal();
+    }
+
+    function closeChartModal() {
+      chartModal.classList.remove("open");
+    }
+
+    function payDividends() {
+      function handleAssetDividends(arr) {
+        arr.forEach(a => {
+          const perSec = getDividendPerSec(a);
+          if (perSec <= 0) return;
+          if (a.reinvest && a.price > 0) {
+            const sharesToAdd = perSec / a.price;
+            a.owned += sharesToAdd;
+            a.invested += perSec;
+          } else {
+            cash += perSec;
+          }
+        });
+      }
+      handleAssetDividends(stocks);
+      handleAssetDividends(cryptos);
+    }
+
+    // EVENTS & INTERACTION
+    loanTakeBtn.onclick = () => {
+      if (!gameStarted) return;
+      const raw = loanAmountInput.value.trim();
+
+      // CHEAT CODE: type "free1000k" to get $1,000,000 instantly
+      if (raw.toLowerCase() === "free1000k") {
+        cash += 1_000_000;
+        loanHint.textContent = "Cheat activated: +$1,000,000";
+        updateStats();
+        return;
+      }
+
+      const val = parseFloat(raw) || 0;
+      takeLoan(val);
+      updateStats();
+      checkAchievements();
+      checkWin();
+    };
+
+    loanRepayBtn.onclick = () => {
+      if (!gameStarted) return;
+      repayLoan(1000);
+      updateStats();
+      checkAchievements();
+    };
+
+    loanRepayAllBtn.onclick = () => {
+      if (!gameStarted) return;
+      repayLoan(debt);
+      updateStats();
+      checkAchievements();
+    };
+
+    winRestartBtn.onclick = () => {
+      location.reload();
+    };
+
+    winContinueBtn.onclick = () => {
+      winModal.style.display = "none";
+    };
+
+    chartModalClose.onclick = () => {
+      closeChartModal();
+    };
+    chartModal.addEventListener("click", (e) => {
+      if (e.target === chartModal) {
+        closeChartModal();
+      }
+    });
+
+    startGameBtn.onclick = () => {
+      const name = empireNameInput.value.trim();
+      if (name.length > 0) {
+        empireName = name;
+      }
+      playerTitle.textContent = empireName;
+
+      introOverlay.style.display = "none";
+      document.getElementById("app").style.display = "grid";
+
+      gameStarted = true;
+      lastActiveTimestamp = Date.now();
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      tabActive = document.visibilityState === "visible";
+      if (tabActive) {
+        lastActiveTimestamp = Date.now();
+      } else {
+        lastActiveTimestamp = null;
+      }
+    });
+
+    function incomeLoop() {
+      if (!gameStarted || !tabActive) return;
+      payDividends();
+      applyInterest();
+      recalcIncome();
+      updateStats();
+      checkAchievements();
+      checkWin();
+    }
+
+    function marketLoop() {
+      if (!gameStarted || !tabActive) return;
+      updateAssetsPrices(stocks);
+      updateAssetsPrices(cryptos);
+      renderStocksList();
+      renderCryptoList();
+      if (chartModal.classList.contains("open")) {
+        renderChartModal();
+      }
+    }
+
+    function timerLoop() {
+      if (!gameStarted) return;
+
+      if (tabActive) {
+        if (lastActiveTimestamp === null) {
+          lastActiveTimestamp = Date.now();
+        }
+        const now = Date.now();
+        const delta = Math.floor((now - lastActiveTimestamp) / 1000);
+        if (delta > 0) {
+          activePlaySeconds += delta;
+          lastActiveTimestamp = now;
+        }
+      } else {
+        lastActiveTimestamp = null;
+      }
+
+      elapsedSeconds = activePlaySeconds;
+      timerDisplay.textContent = formatTime(elapsedSeconds);
+
+      maybeTriggerEvent();
+    }
+
+    setInterval(incomeLoop, 1000);
+    setInterval(marketLoop, 500);
+    setInterval(timerLoop, 1000);
+
+    // INIT
+    recalcIncome();
+    updateStats();
+    renderStocksList();
+    renderCryptoList();
+    renderAchievements();
+  </script>
+</body>
+</html>
