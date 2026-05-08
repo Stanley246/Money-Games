@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Trade Tycoon</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #07121f 0, #02050b 55%, #010308 100%);
+      color: #f4f5ff;
+    }
+    h1 {
+      text-align: center;
+      margin: 10px 0 4px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 22px;
+      color: #e4f0ff;
+      text-shadow: 0 0 18px rgba(91,157,255,0.7);
+    }
+    #subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #9aa2d8;
+      margin-bottom: 10px;
+    }
+    #app {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 16px;
+      display: none;
+      grid-template-columns: 1.1fr 1.1fr 0.9fr;
+      gap: 12px;
+    }
+    .panel {
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 12px;
+      border: 1px solid #2f3656;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #b5c6ff;
+      margin-bottom: 4px;
+    }
+    .panel-subtitle {
+      font-size: 12px;
+      color: #8b93d0;
+      margin-bottom: 6px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .stat-label { color: #9aa2d8; }
+    .stat-value { font-variant-numeric: tabular-nums; }
+    .positive { color: #5ae08c; }
+    .negative { color: #ff6b6b; }
+    .small { font-size: 12px; color: #9aa2d8; }
+
+    .btn {
+      background: linear-gradient(135deg, #4b8dff, #2f63d0);
+      border: none;
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: 0.03em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      box-shadow: 0 10px 26px rgba(75,141,255,0.45);
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(75,141,255,0.6);
+      background: linear-gradient(135deg, #5b9dff, #3a6fe0);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .btn.secondary {
+      background: radial-gradient(circle at top, #343b63 0, #252b4a 60%, #181c33 100%);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+    }
+    .btn.small {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 650;
+      color: #b5c6ff;
+      margin: 8px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #262f57 0, #151a33 55%, #101426 100%);
+      border-radius: 10px;
+      border: 1px solid #323a5a;
+      padding: 7px 9px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #dbe4ff;
+    }
+    .card-sub {
+      font-size: 11px;
+      color: #9aa2d8;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    #fleetList,
+    #portsList,
+    #contractsList,
+    #upgradesList,
+    #achievementsList,
+    #log {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 4px;
+    }
+
+    #log {
+      font-size: 11px;
+      border-radius: 8px;
+      background: rgba(5,7,18,0.7);
+      border: 1px solid #252b45;
+      padding: 6px;
+      white-space: pre-line;
+    }
+
+    .achieved {
+      border-color: #5ae08c;
+      box-shadow: 0 0 12px rgba(90,224,140,0.7);
+    }
+
+    #timerRow {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #9aa2d8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Tabs for middle panel */
+    .tab-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid #323a5a;
+      background: radial-gradient(circle at top, #15182c 0, #050712 80%);
+      color: #9aa2d8;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #4b8dff, #2f63d0);
+      color: #fff;
+      border-color: #4b8dff;
+      box-shadow: 0 10px 26px rgba(75,141,255,0.45);
+    }
+
+    /* Intro overlay */
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #1b2335 0, #050712 55%, #02030a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    #introInner {
+      width: 360px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 14px;
+      border: 1px solid #323a5a;
+      box-shadow: 0 22px 50px rgba(0,0,0,0.8);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #introInner h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    #introInner p {
+      font-size: 13px;
+      color: #9aa2d8;
+      margin: 4px 0;
+    }
+    #companyNameInput {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #323a5a;
+      background: #050712;
+      color: #e6ebff;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* Win modal */
+    #winModal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      background: rgba(0,0,0,0.7);
+    }
+    #winModalInner {
+      position: relative;
+      width: 360px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 16px;
+      border: 1px solid #4b8dff;
+      box-shadow: 0 26px 60px rgba(0,0,0,0.9);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #winModalInner h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+      letter-spacing: 0.16em;
+    }
+    .highlight {
+      font-size: 14px;
+      color: #5ae08c;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="introOverlay">
+    <div id="introInner">
+      <h1>GLOBAL TRADE TYCOON</h1>
+      <p>Start with a single freighter and build a trillion‑dollar logistics empire.</p>
+      <p style="margin-top:8px;">Name your company:</p>
+      <input id="companyNameInput" type="text" placeholder="e.g. Atlas Shipping Group">
+      <button id="startGameBtn" class="btn" style="width:100%; margin-top:10px;">Launch Company</button>
+      <p style="margin-top:10px; font-size:11px; color:#9aa2d8;">
+        Timer only runs while this tab is active. No idle progress in the background.
+      </p>
+    </div>
+  </div>
+
+  <h1 id="pageTitle">GLOBAL TRADE TYCOON</h1>
+  <div id="subtitle">Own ships, ports, and contracts. Optimize routes and chase a trillion‑dollar valuation.</div>
+
+  <div id="app">
+    <!-- LEFT: OVERVIEW -->
+    <div class="panel">
+      <div class="panel-title" id="companyTitle">Company Overview</div>
+      <div class="panel-subtitle">Cash, valuation, and performance</div>
+
+      <div class="stat-row">
+        <span class="stat-label">Cash</span>
+        <span class="stat-value" id="cashStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Fleet Value</span>
+        <span class="stat-value" id="fleetValueStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Port Assets</span>
+        <span class="stat-value" id="portValueStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Net Worth</span>
+        <span class="stat-value" id="netWorthStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Target Net Worth</span>
+        <span class="stat-value" id="targetStat">$1T</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Revenue / sec</span>
+        <span class="stat-value" id="revStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Costs / sec</span>
+        <span class="stat-value" id="costStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Profit / sec</span>
+        <span class="stat-value" id="profitStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Reputation</span>
+        <span class="stat-value" id="repStat">50</span>
+      </div>
+
+      <div id="timerRow">
+        <span>Active Time</span>
+        <span id="timerDisplay">00:00</span>
+      </div>
+
+      <div class="section-title">Manual Deals</div>
+      <div class="card">
+        <div class="card-row">
+          <span class="small">Close spot freight deal (+cash, +rep)</span>
+          <button id="dealBtn" class="btn secondary small">Close Deal</button>
+        </div>
+        <div class="card-row">
+          <span class="small">Issue corporate bonds (+cash, +debt)</span>
+          <button id="bondBtn" class="btn secondary small">Issue Bonds</button>
+        </div>
+        <div class="card-row">
+          <span class="small">Share buyback (+net worth, -cash)</span>
+          <button id="buybackBtn" class="btn secondary small">Buy Back Shares</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE: FLEET / PORTS / CONTRACTS -->
+    <div class="panel">
+      <div class="panel-title">Operations</div>
+      <div class="panel-subtitle">Fleet, ports, and trade contracts</div>
+
+      <div class="tab-row">
+        <div id="tabFleet" class="tab active">Fleet</div>
+        <div id="tabPorts" class="tab">Ports</div>
+        <div id="tabContracts" class="tab">Contracts</div>
+      </div>
+
+      <div id="fleetSection">
+        <div class="section-title">Fleet</div>
+        <div id="fleetList"></div>
+      </div>
+
+      <div id="portsSection" style="display:none;">
+        <div class="section-title">Port Investments</div>
+        <div id="portsList"></div>
+      </div>
+
+      <div id="contractsSection" style="display:none;">
+        <div class="section-title">Trade Contracts</div>
+        <div id="contractsList"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: UPGRADES / ACHIEVEMENTS / LOG -->
+    <div class="panel">
+      <div class="panel-title">Strategy</div>
+      <div class="panel-subtitle">Upgrades, milestones, and events</div>
+
+      <div class="section-title">Upgrades</div>
+      <div id="upgradesList"></div>
+
+      <div class="section-title">Achievements</div>
+      <div id="achievementsList"></div>
+
+      <div class="section-title">Event Log</div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <div id="winModal">
+    <div id="winModalInner">
+      <h1>EMPIRE COMPLETE</h1>
+      <div class="highlight">You reached a net worth of $1,000,000,000,000.</div>
+      <div id="winTimeText" class="small" style="margin-bottom:6px;"></div>
+      <p class="small">Your shipping empire spans the globe. Keep playing or restart a new company.</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+        <button id="winContinueBtn" class="btn secondary small">Continue</button>
+        <button id="winRestartBtn" class="btn small">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ======= CORE STATE =======
+    const WIN_NET_WORTH = 1_000_000_000_000;
+
+    let cash = 1_000_000;
+    let debt = 0;
+    let reputation = 50;
+
+    let revenuePerSec = 0;
+    let costPerSec = 0;
+
+    let gameStarted = false;
+    let gameWon = false;
+
+    let activePlaySeconds = 0;
+    let lastActiveTimestamp = null;
+    let tabActive = true;
+
+    let autoRouteOptimization = false;
+    let fuelEfficiencyBonus = 0;
+    let portThroughputBonus = 0;
+    let contractMarginBonus = 0;
+
+    // ======= DATA =======
+    const fleet = [
+      {
+        id: "feeder",
+        name: "Feeder Vessel",
+        baseCost: 500_000,
+        cost: 500_000,
+        owned: 1,
+        baseRevenue: 3_000,
+        baseCostPerSec: 1_000,
+        capacity: 1,
+        region: "Regional"
+      },
+      {
+        id: "panamax",
+        name: "Panamax Container Ship",
+        baseCost: 5_000_000,
+        cost: 5_000_000,
+        owned: 0,
+        baseRevenue: 25_000,
+        baseCostPerSec: 7_000,
+        capacity: 4,
+        region: "Intercontinental"
+      },
+      {
+        id: "ultra",
+        name: "Ultra Large Container Vessel",
+        baseCost: 40_000_000,
+        cost: 40_000_000,
+        owned: 0,
+        baseRevenue: 180_000,
+        baseCostPerSec: 40_000,
+        capacity: 12,
+        region: "Global"
+      },
+      {
+        id: "bulk",
+        name: "Bulk Carrier",
+        baseCost: 8_000_000,
+        cost: 8_000_000,
+        owned: 0,
+        baseRevenue: 40_000,
+        baseCostPerSec: 10_000,
+        capacity: 6,
+        region: "Commodities"
+      },
+      {
+        id: "lng",
+        name: "LNG Tanker",
+        baseCost: 25_000_000,
+        cost: 25_000_000,
+        owned: 0,
+        baseRevenue: 120_000,
+        baseCostPerSec: 30_000,
+        capacity: 8,
+        region: "Energy"
+      }
+    ];
+
+    const ports = [
+      {
+        id: "singapore",
+        name: "Port of Singapore",
+        baseCost: 20_000_000,
+        cost: 20_000_000,
+        owned: 0,
+        valuePerLevel: 20_000_000,
+        throughputBonus: 0.05,
+        revenueBonus: 0.05
+      },
+      {
+        id: "rotterdam",
+        name: "Port of Rotterdam",
+        baseCost: 30_000_000,
+        cost: 30_000_000,
+        owned: 0,
+        valuePerLevel: 30_000_000,
+        throughputBonus: 0.07,
+        revenueBonus: 0.06
+      },
+      {
+        id: "la",
+        name: "Port of Los Angeles",
+        baseCost: 25_000_000,
+        cost: 25_000_000,
+        owned: 0,
+        valuePerLevel: 25_000_000,
+        throughputBonus: 0.06,
+        revenueBonus: 0.05
+      },
+      {
+        id: "dubai",
+        name: "Jebel Ali (Dubai)",
+        baseCost: 35_000_000,
+        cost: 35_000_000,
+        owned: 0,
+        valuePerLevel: 35_000_000,
+        throughputBonus: 0.08,
+        revenueBonus: 0.07
+      }
+    ];
+
+    const contracts = [
+      {
+        id: "asia_europe",
+        name: "Asia–Europe Lane",
+        baseCost: 2_000_000,
+        cost: 2_000_000,
+        owned: 0,
+        baseRevenue: 30_000,
+        baseCostPerSec: 5_000,
+        volatility: 0.08
+      },
+      {
+        id: "transpacific",
+        name: "Trans‑Pacific Lane",
+        baseCost: 3_000_000,
+        cost: 3_000_000,
+        owned: 0,
+        baseRevenue: 45_000,
+        baseCostPerSec: 7_000,
+        volatility: 0.1
+      },
+      {
+        id: "intra_asia",
+        name: "Intra‑Asia Lane",
+        baseCost: 1_000_000,
+        cost: 1_000_000,
+        owned: 0,
+        baseRevenue: 15_000,
+        baseCostPerSec: 3_000,
+        volatility: 0.06
+      },
+      {
+        id: "latin_america",
+        name: "Latin America Lane",
+        baseCost: 1_500_000,
+        cost: 1_500_000,
+        owned: 0,
+        baseRevenue: 18_000,
+        baseCostPerSec: 3_500,
+        volatility: 0.07
+      }
+    ];
+
+    const upgrades = [
+      {
+        id: "fuel_hedging",
+        name: "Fuel Hedging Desk",
+        desc: "Reduces fleet operating costs by 15%.",
+        cost: 5_000_000,
+        applied: false,
+        apply() { fuelEfficiencyBonus += 0.15; }
+      },
+      {
+        id: "route_ai",
+        name: "AI Route Optimization",
+        desc: "Automatically optimizes routes (+10% revenue).",
+        cost: 8_000_000,
+        applied: false,
+        apply() { autoRouteOptimization = true; }
+      },
+      {
+        id: "port_cranes",
+        name: "Automated Cranes",
+        desc: "Ports generate +20% more revenue.",
+        cost: 10_000_000,
+        applied: false,
+        apply() { portThroughputBonus += 0.2; }
+      },
+      {
+        id: "dynamic_pricing",
+        name: "Dynamic Pricing Engine",
+        desc: "Contracts earn +15% margin.",
+        cost: 12_000_000,
+        applied: false,
+        apply() { contractMarginBonus += 0.15; }
+      },
+      {
+        id: "global_brand",
+        name: "Global Brand Campaign",
+        desc: "+20 reputation, +5% revenue overall.",
+        cost: 15_000_000,
+        applied: false,
+        apply() { reputation += 20; contractMarginBonus += 0.05; }
+      }
+    ];
+
+    const achievements = [
+      { id: "first_ship", name: "First Hull in the Water", desc: "Own 3 ships.", achieved: false },
+      { id: "regional_player", name: "Regional Player", desc: "Reach net worth of $50M.", achieved: false },
+      { id: "global_carrier", name: "Global Carrier", desc: "Own 10 ships.", achieved: false },
+      { id: "port_mogul", name: "Port Mogul", desc: "Invest in 3 ports.", achieved: false },
+      { id: "lane_master", name: "Lane Master", desc: "Own all trade contracts.", achieved: false },
+      { id: "hundred_million", name: "Nine‑Digit Club", desc: "Reach net worth of $100M.", achieved: false },
+      { id: "billionaire", name: "Shipping Billionaire", desc: "Reach net worth of $1B.", achieved: false },
+      { id: "reputation_star", name: "Five‑Star Carrier", desc: "Reach reputation 90.", achieved: false },
+      { id: "debt_free", name: "Debt‑Free Deck", desc: "Have zero debt and net worth > $100M.", achieved: false },
+      { id: "deal_maker", name: "Deal Maker", desc: "Use the manual deal button 50 times.", achieved: false }
+    ];
+
+    let manualDealCount = 0;
+
+    // ======= DOM =======
+    const cashStat = document.getElementById("cashStat");
+    const fleetValueStat = document.getElementById("fleetValueStat");
+    const portValueStat = document.getElementById("portValueStat");
+    const netWorthStat = document.getElementById("netWorthStat");
+    const revStat = document.getElementById("revStat");
+    const costStat = document.getElementById("costStat");
+    const profitStat = document.getElementById("profitStat");
+    const repStat = document.getElementById("repStat");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const companyTitle = document.getElementById("companyTitle");
+    const pageTitle = document.getElementById("pageTitle");
+
+    const fleetListEl = document.getElementById("fleetList");
+    const portsListEl = document.getElementById("portsList");
+    const contractsListEl = document.getElementById("contractsList");
+    const upgradesListEl = document.getElementById("upgradesList");
+    const achievementsListEl = document.getElementById("achievementsList");
+    const logEl = document.getElementById("log");
+
+    const dealBtn = document.getElementById("dealBtn");
+    const bondBtn = document.getElementById("bondBtn");
+    const buybackBtn = document.getElementById("buybackBtn");
+
+    const introOverlay = document.getElementById("introOverlay");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const companyNameInput = document.getElementById("companyNameInput");
+
+    const winModal = document.getElementById("winModal");
+    const winTimeText = document.getElementById("winTimeText");
+    const winContinueBtn = document.getElementById("winContinueBtn");
+    const winRestartBtn = document.getElementById("winRestartBtn");
+
+    const tabFleet = document.getElementById("tabFleet");
+    const tabPorts = document.getElementById("tabPorts");
+    const tabContracts = document.getElementById("tabContracts");
+    const fleetSection = document.getElementById("fleetSection");
+    const portsSection = document.getElementById("portsSection");
+    const contractsSection = document.getElementById("contractsSection");
+
+    // ======= HELPERS =======
+    function formatNumber(v) {
+      if (v >= 1e12) return (v / 1e12).toFixed(2) + "T";
+      if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+      if (v >= 1e6) return (v / 1e6).toFixed(2) + "M";
+      if (v >= 1e3) return (v / 1e3).toFixed(2) + "K";
+      return v.toFixed(0);
+    }
+
+    function formatMoney(v) {
+      const sign = v < 0 ? "-" : "";
+      return sign + "$" + formatNumber(Math.abs(v));
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function log(msg) {
+      const time = new Date().toLocaleTimeString();
+      logEl.textContent = `[${time}] ${msg}\n` + logEl.textContent;
+    }
+
+    function computeFleetValue() {
+      let value = 0;
+      fleet.forEach(s => {
+        value += s.baseCost * s.owned;
+      });
+      return value;
+    }
+
+    function computePortValue() {
+      let value = 0;
+      ports.forEach(p => {
+        value += p.valuePerLevel * p.owned;
+      });
+      return value;
+    }
+
+    function computeNetWorth() {
+      return cash + computeFleetValue() + computePortValue() - debt;
+    }
+
+    // ======= ECONOMY =======
+    function computeEconomy() {
+      let rev = 0;
+      let cost = 0;
+
+      fleet.forEach(s => {
+        const baseRev = s.baseRevenue * s.owned;
+        const baseCost = s.baseCostPerSec * s.owned;
+        rev += baseRev;
+        cost += baseCost;
+      });
+
+      ports.forEach(p => {
+        const portRev = p.owned * 10_000;
+        const portCost = p.owned * 3_000;
+        rev += portRev;
+        cost += portCost;
+      });
+
+      contracts.forEach(c => {
+        const baseRev = c.baseRevenue * c.owned;
+        const baseCost = c.baseCostPerSec * c.owned;
+        rev += baseRev;
+        cost += baseCost;
+      });
+
+      let revenueMult = 1;
+      let costMult = 1;
+
+      if (autoRouteOptimization) revenueMult *= 1.1;
+      revenueMult *= (1 + portThroughputBonus + contractMarginBonus);
+      costMult *= (1 - fuelEfficiencyBonus);
+
+      rev *= revenueMult;
+      cost *= costMult;
+
+      const repBonus = (reputation - 50) * 0.002;
+      rev *= (1 + repBonus);
+
+      revenuePerSec = rev;
+      costPerSec = cost;
+
+      return { revenuePerSec, costPerSec, profitPerSec: rev - cost };
+    }
+
+    // ======= RENDER =======
+    function updateStats() {
+      const { revenuePerSec: r, costPerSec: c, profitPerSec: p } = computeEconomy();
+      revenuePerSec = r;
+      costPerSec = c;
+
+      const fleetValue = computeFleetValue();
+      const portValue = computePortValue();
+      const netWorth = computeNetWorth();
+
+      cashStat.textContent = formatMoney(cash);
+      fleetValueStat.textContent = formatMoney(fleetValue);
+      portValueStat.textContent = formatMoney(portValue);
+      netWorthStat.textContent = formatMoney(netWorth);
+      revStat.textContent = formatMoney(revenuePerSec);
+      costStat.textContent = formatMoney(costPerSec);
+      profitStat.textContent = formatMoney(p);
+      repStat.textContent = Math.round(reputation);
+
+      timerDisplay.textContent = formatTime(activePlaySeconds);
+
+      if (!gameWon && netWorth >= WIN_NET_WORTH) {
+        triggerWin();
+      }
+
+      checkAchievements();
+    }
+
+    function renderFleet() {
+      fleetListEl.innerHTML = "";
+      fleet.forEach(s => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = s.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Owned: ${s.owned} • Region: ${s.region}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        row1.innerHTML =
+          `<span>Revenue/ship: ${formatMoney(s.baseRevenue)}/sec</span><span>Cost/ship: ${formatMoney(s.baseCostPerSec)}/sec</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        row2.innerHTML =
+          `<span>Capacity: ${s.capacity} lanes</span><span>Total revenue: ${formatMoney(s.baseRevenue * s.owned)}/sec</span>`;
+        card.appendChild(row2);
+
+        const row3 = document.createElement("div");
+        row3.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Buy ship: " + formatMoney(s.cost);
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = "Purchase";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          if (cash >= s.cost) {
+            cash -= s.cost;
+            s.owned += 1;
+            s.cost = s.baseCost * Math.pow(1.18, s.owned);
+            log(`Purchased ${s.name}.`);
+            updateStats();
+            renderFleet();
+          }
+        };
+        row3.appendChild(costSpan);
+        row3.appendChild(btn);
+        card.appendChild(row3);
+
+        fleetListEl.appendChild(card);
+      });
+    }
+
+    function renderPorts() {
+      portsListEl.innerHTML = "";
+      ports.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = p.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Stake level: ${p.owned}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        row1.innerHTML =
+          `<span>Value/level: ${formatMoney(p.valuePerLevel)}</span><span>Revenue bonus: ${(p.revenueBonus * 100).toFixed(1)}%</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Invest: " + formatMoney(p.cost);
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = "Invest";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          if (cash >= p.cost) {
+            cash -= p.cost;
+            p.owned += 1;
+            p.cost = p.baseCost * Math.pow(1.22, p.owned);
+            portThroughputBonus += p.throughputBonus;
+            log(`Increased stake in ${p.name}.`);
+            updateStats();
+            renderPorts();
+          }
+        };
+        row2.appendChild(costSpan);
+        row2.appendChild(btn);
+        card.appendChild(row2);
+
+        portsListEl.appendChild(card);
+      });
+    }
+
+    function renderContracts() {
+      contractsListEl.innerHTML = "";
+      contracts.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = c.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Signed: ${c.owned}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        row1.innerHTML =
+          `<span>Revenue/contract: ${formatMoney(c.baseRevenue)}/sec</span><span>Cost/contract: ${formatMoney(c.baseCostPerSec)}/sec</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        row2.innerHTML =
+          `<span>Volatility: ${(c.volatility * 100).toFixed(1)}%</span><span>Total revenue: ${formatMoney(c.baseRevenue * c.owned)}/sec</span>`;
+        card.appendChild(row2);
+
+        const row3 = document.createElement("div");
+        row3.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Sign contract: " + formatMoney(c.cost);
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = "Sign";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          if (cash >= c.cost) {
+            cash -= c.cost;
+            c.owned += 1;
+            c.cost = c.baseCost * Math.pow(1.2, c.owned);
+            log(`Signed ${c.name}.`);
+            updateStats();
+            renderContracts();
+          }
+        };
+        row3.appendChild(costSpan);
+        row3.appendChild(btn);
+        card.appendChild(row3);
+
+        contractsListEl.appendChild(card);
+      });
+    }
+
+    function renderUpgrades() {
+      upgradesListEl.innerHTML = "";
+      upgrades.forEach(u => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = u.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = u.desc;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row = document.createElement("div");
+        row.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Cost: " + formatMoney(u.cost);
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = u.applied ? "Purchased" : "Buy";
+        btn.disabled = u.applied;
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          if (u.applied) return;
+          if (cash < u.cost) return;
+          cash -= u.cost;
+          u.applied = true;
+          u.apply();
+          log(`Upgrade purchased: ${u.name}.`);
+          updateStats();
+          renderUpgrades();
+        };
+        row.appendChild(costSpan);
+        row.appendChild(btn);
+        card.appendChild(row);
+
+        upgradesListEl.appendChild(card);
+      });
+    }
+
+    function renderAchievements() {
+      achievementsListEl.innerHTML = "";
+      achievements.forEach(a => {
+        const card = document.createElement("div");
+        card.className = "card" + (a.achieved ? " achieved" : "");
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = a.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = a.desc;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row = document.createElement("div");
+        row.className = "card-row";
+        const status = document.createElement("span");
+        status.textContent = a.achieved ? "Unlocked" : "Locked";
+        row.appendChild(status);
+        card.appendChild(row);
+
+        achievementsListEl.appendChild(card);
+      });
+    }
+
+    // ======= ACHIEVEMENTS =======
+    function checkAchievements() {
+      const netWorth = computeNetWorth();
+      const totalShips = fleet.reduce((sum, s) => sum + s.owned, 0);
+      const portsOwned = ports.filter(p => p.owned > 0).length;
+      const allContractsOwned = contracts.every(c => c.owned > 0);
+
+      function unlock(id) {
+        const a = achievements.find(x => x.id === id);
+        if (a && !a.achieved) {
+          a.achieved = true;
+          log(`Achievement unlocked: ${a.name}`);
+          renderAchievements();
+        }
+      }
+
+      if (totalShips >= 3) unlock("first_ship");
+      if (netWorth >= 50_000_000) unlock("regional_player");
+      if (totalShips >= 10) unlock("global_carrier");
+      if (portsOwned >= 3) unlock("port_mogul");
+      if (allContractsOwned) unlock("lane_master");
+      if (netWorth >= 100_000_000) unlock("hundred_million");
+      if (netWorth >= 1_000_000_000) unlock("billionaire");
+      if (reputation >= 90) unlock("reputation_star");
+      if (debt === 0 && netWorth > 100_000_000) unlock("debt_free");
+      if (manualDealCount >= 50) unlock("deal_maker");
+    }
+
+    // ======= WIN =======
+    function triggerWin() {
+      gameWon = true;
+      winTimeText.textContent = "Time to $1T net worth: " + formatTime(activePlaySeconds);
+      winModal.style.display = "flex";
+      log("Your company has become a trillion‑dollar titan of global trade.");
+    }
+
+    // ======= LOOPS =======
+    function economyLoop() {
+      if (!gameStarted || !tabActive) return;
+
+      const { revenuePerSec: r, costPerSec: c, profitPerSec: p } = computeEconomy();
+      cash += p;
+
+      // Simple random market events on contracts
+      contracts.forEach(cn => {
+        if (cn.owned > 0 && Math.random() < 0.02) {
+          const shock = (Math.random() * 2 - 1) * cn.volatility;
+          cn.baseRevenue *= (1 + shock);
+          cn.baseRevenue = Math.max(1_000, cn.baseRevenue);
+          if (shock > 0) {
+            log(`${cn.name} spot rates surged, boosting revenue.`);
+          } else {
+            log(`${cn.name} spot rates softened, reducing revenue.`);
+          }
+        }
+      });
+
+      // Reputation drift
+      if (p > 0) reputation += 0.02;
+      else reputation -= 0.03;
+      reputation = Math.max(0, Math.min(100, reputation));
+
+      updateStats();
+    }
+
+    function timerLoop() {
+      if (!gameStarted) return;
+
+      if (tabActive) {
+        if (lastActiveTimestamp === null) {
+          lastActiveTimestamp = Date.now();
+        }
+        const now = Date.now();
+        const delta = Math.floor((now - lastActiveTimestamp) / 1000);
+        if (delta > 0) {
+          activePlaySeconds += delta;
+          lastActiveTimestamp = now;
+        }
+      } else {
+        lastActiveTimestamp = null;
+      }
+
+      updateStats();
+    }
+
+    setInterval(economyLoop, 1000);
+    setInterval(timerLoop, 1000);
+
+    document.addEventListener("visibilitychange", () => {
+      tabActive = document.visibilityState === "visible";
+    });
+
+    // ======= BUTTONS =======
+    dealBtn.onclick = () => {
+      if (!gameStarted) return;
+      const base = 100_000 + Math.random() * 150_000;
+      const bonus = (reputation - 50) * 2_000;
+      const amount = Math.max(50_000, base + bonus);
+      cash += amount;
+      reputation += 1;
+      manualDealCount += 1;
+      log(`Closed a spot freight deal for ${formatMoney(amount)}.`);
+      updateStats();
+    };
+
+    bondBtn.onclick = () => {
+      if (!gameStarted) return;
+      const amount = 5_000_000;
+      cash += amount;
+      debt += amount;
+      log(`Issued corporate bonds for ${formatMoney(amount)}. Debt increased.`);
+      updateStats();
+    };
+
+    buybackBtn.onclick = () => {
+      if (!gameStarted) return;
+      const amount = Math.min(cash * 0.25, 20_000_000);
+      if (amount <= 0) {
+        log("Not enough cash to buy back shares.");
+        return;
+      }
+      cash -= amount;
+      reputation += 2;
+      log(`Executed share buyback worth ${formatMoney(amount)}. Market loves it.`);
+      updateStats();
+    };
+
+    // Tabs
+    function setTab(tab) {
+      tabFleet.classList.remove("active");
+      tabPorts.classList.remove("active");
+      tabContracts.classList.remove("active");
+      fleetSection.style.display = "none";
+      portsSection.style.display = "none";
+      contractsSection.style.display = "none";
+
+      if (tab === "fleet") {
+        tabFleet.classList.add("active");
+        fleetSection.style.display = "";
+      } else if (tab === "ports") {
+        tabPorts.classList.add("active");
+        portsSection.style.display = "";
+      } else {
+        tabContracts.classList.add("active");
+        contractsSection.style.display = "";
+      }
+    }
+
+    tabFleet.onclick = () => setTab("fleet");
+    tabPorts.onclick = () => setTab("ports");
+    tabContracts.onclick = () => setTab("contracts");
+
+    // ======= INTRO & WIN CONTROLS =======
+    startGameBtn.onclick = () => {
+      const name = companyNameInput.value.trim();
+      if (name.length > 0) {
+        companyTitle.textContent = name;
+        pageTitle.textContent = name.toUpperCase();
+      }
+      introOverlay.style.display = "none";
+      document.getElementById("app").style.display = "grid";
+      gameStarted = true;
+      lastActiveTimestamp = Date.now();
+      updateStats();
+      log("Your first feeder vessel leaves port. The world is your market.");
+    };
+
+    winContinueBtn.onclick = () => {
+      winModal.style.display = "none";
+    };
+
+    winRestartBtn.onclick = () => {
+      location.reload();
+    };
+
+    // ======= INIT =======
+    updateStats();
+    renderFleet();
+    renderPorts();
+    renderContracts();
+    renderUpgrades();
+    renderAchievements();
+    log("Name your company to begin.");
+  </script>
+</body>
+</html>
