@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tropico Island Sim</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #13201b 0, #050b08 55%, #020504 100%);
+      color: #f4f5ff;
+    }
+    h1 {
+      text-align: center;
+      margin: 10px 0 4px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 22px;
+      color: #f5f0d0;
+      text-shadow: 0 0 18px rgba(255,230,140,0.7);
+    }
+    #subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #d0d7b0;
+      margin-bottom: 10px;
+    }
+    #app {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 16px;
+      display: none;
+      grid-template-columns: 1.1fr 1.1fr 0.9fr;
+      gap: 12px;
+    }
+    .panel {
+      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
+      border-radius: 12px;
+      border: 1px solid #3a5a46;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f5f0d0;
+      margin-bottom: 4px;
+    }
+    .panel-subtitle {
+      font-size: 12px;
+      color: #c0cf9a;
+      margin-bottom: 6px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .stat-label { color: #c0cf9a; }
+    .stat-value { font-variant-numeric: tabular-nums; }
+    .positive { color: #5ae08c; }
+    .negative { color: #ff6b6b; }
+    .small { font-size: 12px; color: #c0cf9a; }
+
+    .btn {
+      background: linear-gradient(135deg, #f0b14b, #d07a2f);
+      border: none;
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: 0.03em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      box-shadow: 0 10px 26px rgba(240,177,75,0.45);
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(240,177,75,0.6);
+      background: linear-gradient(135deg, #f5c05f, #e08a3a);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .btn.secondary {
+      background: radial-gradient(circle at top, #3b4f3f 0, #28352a 60%, #1a241d 100%);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+    }
+    .btn.small {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 650;
+      color: #f5f0d0;
+      margin: 8px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #28382f 0, #151f18 55%, #101a13 100%);
+      border-radius: 10px;
+      border: 1px solid #3a5a46;
+      padding: 7px 9px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fdf7d8;
+    }
+    .card-sub {
+      font-size: 11px;
+      color: #c0cf9a;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    #buildingsList,
+    #exportsList,
+    #edictsList,
+    #factionsList,
+    #log {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 4px;
+    }
+
+    #log {
+      font-size: 11px;
+      border-radius: 8px;
+      background: rgba(5,7,6,0.7);
+      border: 1px solid #2a3f31;
+      padding: 6px;
+      white-space: pre-line;
+    }
+
+    .edict-active {
+      border-color: #f0b14b;
+      box-shadow: 0 0 12px rgba(240,177,75,0.7);
+    }
+
+    #timerRow {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #c0cf9a;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Intro overlay */
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #13201b 0, #050b08 55%, #020504 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    #introInner {
+      width: 360px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
+      border-radius: 14px;
+      border: 1px solid #3a5a46;
+      box-shadow: 0 22px 50px rgba(0,0,0,0.8);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #introInner h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    #introInner p {
+      font-size: 13px;
+      color: #c0cf9a;
+      margin: 4px 0;
+    }
+    #islandNameInput {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #3a5a46;
+      background: #050b08;
+      color: #fdf7d8;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* Win modal */
+    #winModal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      background: rgba(0,0,0,0.7);
+    }
+    #winModalInner {
+      position: relative;
+      width: 360px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
+      border-radius: 16px;
+      border: 1px solid #f0b14b;
+      box-shadow: 0 26px 60px rgba(0,0,0,0.9);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #winModalInner h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+      letter-spacing: 0.16em;
+    }
+    .highlight {
+      font-size: 14px;
+      color: #5ae08c;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="introOverlay">
+    <div id="introInner">
+      <h1>TROPICO ISLAND SIM</h1>
+      <p>Rule your Caribbean island, export goods, balance factions, and stay in power.</p>
+      <p style="margin-top:8px;">Name your island:</p>
+      <input id="islandNameInput" type="text" placeholder="e.g. Isla Bonita">
+      <button id="startGameBtn" class="btn" style="width:100%; margin-top:10px;">Begin Reign</button>
+      <p style="margin-top:10px; font-size:11px; color:#c0cf9a;">
+        Timer only runs while this tab is active. No idle progress in the background.
+      </p>
+    </div>
+  </div>
+
+  <h1 id="pageTitle">TROPICO ISLAND SIM</h1>
+  <div id="subtitle">Grow exports, keep factions happy, and stash a fortune in your Swiss account.</div>
+
+  <div id="app">
+    <!-- LEFT: OVERVIEW -->
+    <div class="panel">
+      <div class="panel-title" id="islandTitle">Island Overview</div>
+      <div class="panel-subtitle">Economy, people, and power</div>
+
+      <div class="stat-row">
+        <span class="stat-label">Population</span>
+        <span class="stat-value" id="popStat">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Treasury</span>
+        <span class="stat-value" id="treasuryStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Swiss Account</span>
+        <span class="stat-value" id="swissStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Exports / sec</span>
+        <span class="stat-value" id="exportStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Upkeep / sec</span>
+        <span class="stat-value" id="upkeepStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Net / sec</span>
+        <span class="stat-value" id="netStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Overall Approval</span>
+        <span class="stat-value" id="approvalStat">50%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Rebel Threat</span>
+        <span class="stat-value" id="rebelStat">Low</span>
+      </div>
+
+      <div id="timerRow">
+        <span>Active Time</span>
+        <span id="timerDisplay">00:00</span>
+      </div>
+
+      <div class="section-title">Presidential Actions</div>
+      <div class="card">
+        <div class="card-row">
+          <span class="small">Deliver fiery speech (+approval, -Swiss)</span>
+          <button id="speechBtn" class="btn secondary small">Give Speech</button>
+        </div>
+        <div class="card-row">
+          <span class="small">Skim from treasury (+Swiss, -approval)</span>
+          <button id="skimBtn" class="btn secondary small">Skim Funds</button>
+        </div>
+        <div class="card-row">
+          <span class="small">Call foreign aid (+treasury, +foreign faction)</span>
+          <button id="aidBtn" class="btn secondary small">Request Aid</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE: BUILDINGS & EXPORTS -->
+    <div class="panel">
+      <div class="panel-title">Economy</div>
+      <div class="panel-subtitle">Plantations, mines, and tourism</div>
+
+      <div class="section-title">Production Buildings</div>
+      <div id="buildingsList"></div>
+
+      <div class="section-title">Export Overview</div>
+      <div id="exportsList"></div>
+    </div>
+
+    <!-- RIGHT: EDICTS, FACTIONS, LOG -->
+    <div class="panel">
+      <div class="panel-title">Politics</div>
+      <div class="panel-subtitle">Edicts, factions, and stability</div>
+
+      <div class="section-title">Edicts</div>
+      <div id="edictsList"></div>
+
+      <div class="section-title">Factions</div>
+      <div id="factionsList"></div>
+
+      <div class="section-title">Event Log</div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <div id="winModal">
+    <div id="winModalInner">
+      <h1>EL PRESIDENTE WINS</h1>
+      <div class="highlight">You stashed $5,000,000 in your Swiss account with approval above 60%.</div>
+      <div id="winTimeText" class="small" style="margin-bottom:6px;"></div>
+      <p class="small">Your rule is secure and your retirement is golden. Continue ruling or start a new island.</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+        <button id="winContinueBtn" class="btn secondary small">Continue</button>
+        <button id="winRestartBtn" class="btn small">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ======= CORE STATE =======
+    const WIN_SWISS = 5_000_000;
+    const WIN_APPROVAL = 60;
+
+    let population = 80;
+    let treasury = 20_000;
+    let swissAccount = 0;
+
+    let exportPerSec = 0;
+    let upkeepPerSec = 0;
+
+    let approvalOverall = 50; // 0–100
+    let rebelThreat = 0; // 0 low, 1 medium, 2 high
+
+    let gameStarted = false;
+    let gameWon = false;
+
+    let activePlaySeconds = 0;
+    let lastActiveTimestamp = null;
+    let tabActive = true;
+
+    const factions = [
+      { id: "loyalists", name: "Loyalists", approval: 60 },
+      { id: "communists", name: "Communists", approval: 50 },
+      { id: "capitalists", name: "Capitalists", approval: 50 },
+      { id: "religious", name: "Religious", approval: 50 },
+      { id: "military", name: "Military", approval: 55 },
+      { id: "environmentalists", name: "Environmentalists", approval: 45 },
+      { id: "foreign", name: "Foreign Powers", approval: 50 }
+    ];
+
+    const buildings = [
+      {
+        id: "sugar",
+        name: "Sugar Plantation",
+        baseCost: 5_000,
+        cost: 5_000,
+        count: 0,
+        exportPerBuilding: 120,
+        upkeepPerBuilding: 30,
+        workers: 12,
+        factionEffects: { capitalists: +1, communists: +0.5 },
+        type: "agriculture"
+      },
+      {
+        id: "tobacco",
+        name: "Tobacco Plantation",
+        baseCost: 7_000,
+        cost: 7_000,
+        count: 0,
+        exportPerBuilding: 180,
+        upkeepPerBuilding: 40,
+        workers: 14,
+        factionEffects: { capitalists: +1.5, environmentalists: -1 },
+        type: "agriculture"
+      },
+      {
+        id: "coffee",
+        name: "Coffee Plantation",
+        baseCost: 9_000,
+        cost: 9_000,
+        count: 0,
+        exportPerBuilding: 220,
+        upkeepPerBuilding: 45,
+        workers: 16,
+        factionEffects: { capitalists: +1, communists: +0.5, environmentalists: -0.5 },
+        type: "agriculture"
+      },
+      {
+        id: "mine",
+        name: "Gold Mine",
+        baseCost: 15_000,
+        cost: 15_000,
+        count: 0,
+        exportPerBuilding: 400,
+        upkeepPerBuilding: 80,
+        workers: 20,
+        factionEffects: { capitalists: +2, environmentalists: -2 },
+        type: "industry"
+      },
+      {
+        id: "oil",
+        name: "Offshore Oil Rig",
+        baseCost: 30_000,
+        cost: 30_000,
+        count: 0,
+        exportPerBuilding: 800,
+        upkeepPerBuilding: 150,
+        workers: 30,
+        factionEffects: { capitalists: +3, environmentalists: -3, foreign: +1 },
+        type: "industry"
+      },
+      {
+        id: "cigar",
+        name: "Cigar Factory",
+        baseCost: 20_000,
+        cost: 20_000,
+        count: 0,
+        exportPerBuilding: 500,
+        upkeepPerBuilding: 120,
+        workers: 24,
+        factionEffects: { capitalists: +2, communists: +1 },
+        type: "industry"
+      },
+      {
+        id: "tourist",
+        name: "Beach Resort",
+        baseCost: 18_000,
+        cost: 18_000,
+        count: 0,
+        exportPerBuilding: 350,
+        upkeepPerBuilding: 90,
+        workers: 18,
+        factionEffects: { capitalists: +1.5, foreign: +2, environmentalists: -0.5 },
+        type: "tourism"
+      },
+      {
+        id: "hotel",
+        name: "Luxury Hotel",
+        baseCost: 25_000,
+        cost: 25_000,
+        count: 0,
+        exportPerBuilding: 600,
+        upkeepPerBuilding: 140,
+        workers: 26,
+        factionEffects: { capitalists: +2, foreign: +2, communists: -1 },
+        type: "tourism"
+      },
+      {
+        id: "clinic",
+        name: "Clinic",
+        baseCost: 10_000,
+        cost: 10_000,
+        count: 0,
+        exportPerBuilding: 0,
+        upkeepPerBuilding: 80,
+        workers: 10,
+        factionEffects: { religious: +2, communists: +1, loyalists: +1 },
+        type: "service"
+      },
+      {
+        id: "church",
+        name: "Church",
+        baseCost: 8_000,
+        cost: 8_000,
+        count: 0,
+        exportPerBuilding: 0,
+        upkeepPerBuilding: 60,
+        workers: 8,
+        factionEffects: { religious: +3, loyalists: +1 },
+        type: "service"
+      },
+      {
+        id: "army",
+        name: "Army Base",
+        baseCost: 22_000,
+        cost: 22_000,
+        count: 0,
+        exportPerBuilding: 0,
+        upkeepPerBuilding: 150,
+        workers: 30,
+        factionEffects: { military: +4, loyalists: +1, communists: -1 },
+        type: "service"
+      },
+      {
+        id: "housing",
+        name: "Apartment Block",
+        baseCost: 12_000,
+        cost: 12_000,
+        count: 0,
+        exportPerBuilding: 0,
+        upkeepPerBuilding: 50,
+        workers: 0,
+        factionEffects: { communists: +2, loyalists: +1 },
+        type: "housing"
+      }
+    ];
+
+    const edicts = [
+      {
+        id: "social_security",
+        name: "Social Security",
+        desc: "Increases communist and loyalist approval, higher upkeep.",
+        active: false,
+        upkeepMult: 1.15,
+        effects: { communists: +8, loyalists: +5, capitalists: -3 }
+      },
+      {
+        id: "free_housing",
+        name: "Free Housing",
+        desc: "Greatly boosts communist approval, big upkeep increase.",
+        active: false,
+        upkeepMult: 1.25,
+        effects: { communists: +12, capitalists: -6 }
+      },
+      {
+        id: "tourism_campaign",
+        name: "Tourism Campaign",
+        desc: "Boosts tourism exports, small upkeep increase.",
+        active: false,
+        exportTourismMult: 1.4,
+        upkeepMult: 1.05,
+        effects: { foreign: +5, environmentalists: -2 }
+      },
+      {
+        id: "environmental_reg",
+        name: "Environmental Regulations",
+        desc: "Boosts environmentalists, reduces industry exports.",
+        active: false,
+        exportIndustryMult: 0.8,
+        effects: { environmentalists: +10, capitalists: -4 }
+      },
+      {
+        id: "martial_law",
+        name: "Martial Law",
+        desc: "Boosts military and loyalists, hurts others.",
+        active: false,
+        effects: {
+          military: +12,
+          loyalists: +5,
+          communists: -8,
+          capitalists: -5,
+          religious: -4,
+          environmentalists: -4
+        }
+      }
+    ];
+
+    // ======= DOM =======
+    const popStat = document.getElementById("popStat");
+    const treasuryStat = document.getElementById("treasuryStat");
+    const swissStat = document.getElementById("swissStat");
+    const exportStat = document.getElementById("exportStat");
+    const upkeepStat = document.getElementById("upkeepStat");
+    const netStat = document.getElementById("netStat");
+    const approvalStat = document.getElementById("approvalStat");
+    const rebelStat = document.getElementById("rebelStat");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const islandTitle = document.getElementById("islandTitle");
+    const pageTitle = document.getElementById("pageTitle");
+
+    const buildingsListEl = document.getElementById("buildingsList");
+    const exportsListEl = document.getElementById("exportsList");
+    const edictsListEl = document.getElementById("edictsList");
+    const factionsListEl = document.getElementById("factionsList");
+    const logEl = document.getElementById("log");
+
+    const speechBtn = document.getElementById("speechBtn");
+    const skimBtn = document.getElementById("skimBtn");
+    const aidBtn = document.getElementById("aidBtn");
+
+    const introOverlay = document.getElementById("introOverlay");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const islandNameInput = document.getElementById("islandNameInput");
+
+    const winModal = document.getElementById("winModal");
+    const winTimeText = document.getElementById("winTimeText");
+    const winContinueBtn = document.getElementById("winContinueBtn");
+    const winRestartBtn = document.getElementById("winRestartBtn");
+
+    // ======= HELPERS =======
+    function formatNumber(v) {
+      if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+      if (v >= 1e6) return (v / 1e6).toFixed(2) + "M";
+      if (v >= 1e3) return (v / 1e3).toFixed(2) + "K";
+      return v.toFixed(0);
+    }
+
+    function formatMoney(v) {
+      const sign = v < 0 ? "-" : "";
+      return sign + "$" + formatNumber(Math.abs(v));
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function log(msg) {
+      const time = new Date().toLocaleTimeString();
+      logEl.textContent = `[${time}] ${msg}\n` + logEl.textContent;
+    }
+
+    function rebelLabel(level) {
+      if (level === 0) return "Low";
+      if (level === 1) return "Medium";
+      return "High";
+    }
+
+    function getFaction(id) {
+      return factions.find(f => f.id === id);
+    }
+
+    // ======= ECONOMY =======
+    function computeEconomy() {
+      let exports = 0;
+      let upkeep = 0;
+
+      let agriExports = 0;
+      let industryExports = 0;
+      let tourismExports = 0;
+
+      buildings.forEach(b => {
+        const e = b.exportPerBuilding * b.count;
+        const u = b.upkeepPerBuilding * b.count;
+        upkeep += u;
+        if (b.type === "agriculture") agriExports += e;
+        else if (b.type === "industry") industryExports += e;
+        else if (b.type === "tourism") tourismExports += e;
+        exports += e;
+      });
+
+      let exportIndustryMult = 1;
+      let exportTourismMult = 1;
+      let upkeepMult = 1;
+
+      edicts.forEach(ed => {
+        if (!ed.active) return;
+        if (ed.exportIndustryMult) exportIndustryMult *= ed.exportIndustryMult;
+        if (ed.exportTourismMult) exportTourismMult *= ed.exportTourismMult;
+        if (ed.upkeepMult) upkeepMult *= ed.upkeepMult;
+      });
+
+      industryExports *= exportIndustryMult;
+      tourismExports *= exportTourismMult;
+      exports = agriExports + industryExports + tourismExports;
+
+      upkeep *= upkeepMult;
+
+      exportPerSec = exports;
+      upkeepPerSec = upkeep;
+
+      const net = exportPerSec - upkeepPerSec;
+      return { exportPerSec, upkeepPerSec, net, agriExports, industryExports, tourismExports };
+    }
+
+    function computeApproval() {
+      let total = 0;
+      factions.forEach(f => total += f.approval);
+      approvalOverall = total / factions.length;
+      approvalOverall = Math.max(0, Math.min(100, approvalOverall));
+
+      if (approvalOverall < 35) rebelThreat = 2;
+      else if (approvalOverall < 55) rebelThreat = 1;
+      else rebelThreat = 0;
+    }
+
+    // ======= RENDER =======
+    function updateStats() {
+      const { exportPerSec: exp, upkeepPerSec: up, net } = computeEconomy();
+      exportPerSec = exp;
+      upkeepPerSec = up;
+
+      computeApproval();
+
+      popStat.textContent = formatNumber(population);
+      treasuryStat.textContent = formatMoney(treasury);
+      swissStat.textContent = formatMoney(swissAccount);
+      exportStat.textContent = formatMoney(exportPerSec);
+      upkeepStat.textContent = formatMoney(upkeepPerSec);
+      netStat.textContent = formatMoney(net);
+      approvalStat.textContent = Math.round(approvalOverall) + "%";
+      rebelStat.textContent = rebelLabel(rebelThreat);
+      timerDisplay.textContent = formatTime(activePlaySeconds);
+
+      if (!gameWon && swissAccount >= WIN_SWISS && approvalOverall >= WIN_APPROVAL) {
+        triggerWin();
+      }
+    }
+
+    function renderBuildings() {
+      buildingsListEl.innerHTML = "";
+      buildings.forEach(b => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = b.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Built: ${b.count}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        row1.innerHTML =
+          `<span>Exports: ${formatMoney(b.exportPerBuilding)}/bldg</span><span>Upkeep: ${formatMoney(b.upkeepPerBuilding)}/bldg</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        const workersText = b.workers > 0 ? `Workers: ${b.workers}` : "Workers: N/A";
+        row2.innerHTML = `<span>${workersText}</span><span>Type: ${b.type}</span>`;
+        card.appendChild(row2);
+
+        const row3 = document.createElement("div");
+        row3.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Build cost: " + formatMoney(b.cost);
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = "Build";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          if (treasury >= b.cost) {
+            treasury -= b.cost;
+            b.count += 1;
+            b.cost = b.baseCost * Math.pow(1.18, b.count);
+            population += Math.round(b.workers * 0.8);
+            applyBuildingFactionEffects(b);
+            log(`Built ${b.name}.`);
+            updateStats();
+            renderBuildings();
+            renderFactions();
+            renderExports();
+          }
+        };
+        row3.appendChild(costSpan);
+        row3.appendChild(btn);
+        card.appendChild(row3);
+
+        buildingsListEl.appendChild(card);
+      });
+    }
+
+    function renderExports() {
+      exportsListEl.innerHTML = "";
+      const { agriExports, industryExports, tourismExports } = computeEconomy();
+
+      const agriCard = document.createElement("div");
+      agriCard.className = "card";
+      agriCard.innerHTML =
+        `<div class="card-header"><div class="card-title">Agriculture</div><div class="card-sub">Plantations & farms</div></div>
+         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(agriExports)}</span></div>`;
+      exportsListEl.appendChild(agriCard);
+
+      const indCard = document.createElement("div");
+      indCard.className = "card";
+      indCard.innerHTML =
+        `<div class="card-header"><div class="card-title">Industry</div><div class="card-sub">Mines & factories</div></div>
+         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(industryExports)}</span></div>`;
+      exportsListEl.appendChild(indCard);
+
+      const tourCard = document.createElement("div");
+      tourCard.className = "card";
+      tourCard.innerHTML =
+        `<div class="card-header"><div class="card-title">Tourism</div><div class="card-sub">Resorts & hotels</div></div>
+         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(tourismExports)}</span></div>`;
+      exportsListEl.appendChild(tourCard);
+    }
+
+    function renderEdicts() {
+      edictsListEl.innerHTML = "";
+      edicts.forEach(ed => {
+        const card = document.createElement("div");
+        card.className = "card" + (ed.active ? " edict-active" : "");
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = ed.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = ed.desc;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row = document.createElement("div");
+        row.className = "card-row";
+        const info = document.createElement("span");
+        info.textContent = ed.active ? "Active" : "Inactive";
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = ed.active ? "Revoke" : "Enact";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          ed.active = !ed.active;
+          applyEdictFactionEffects(ed, ed.active);
+          log(`${ed.name} ${ed.active ? "enacted" : "revoked"}.`);
+          updateStats();
+          renderEdicts();
+          renderFactions();
+          renderExports();
+        };
+        row.appendChild(info);
+        row.appendChild(btn);
+        card.appendChild(row);
+
+        edictsListEl.appendChild(card);
+      });
+    }
+
+    function renderFactions() {
+      factionsListEl.innerHTML = "";
+      factions.forEach(f => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = f.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Approval: ${Math.round(f.approval)}%`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row = document.createElement("div");
+        row.className = "card-row";
+        let mood = "Neutral";
+        if (f.approval >= 65) mood = "Supportive";
+        else if (f.approval <= 35) mood = "Angry";
+        row.innerHTML = `<span>Mood: ${mood}</span><span class="small">Influence them via buildings & edicts</span>`;
+        card.appendChild(row);
+
+        factionsListEl.appendChild(card);
+      });
+    }
+
+    // ======= EFFECTS =======
+    function applyBuildingFactionEffects(b) {
+      if (!b.factionEffects) return;
+      Object.entries(b.factionEffects).forEach(([fid, delta]) => {
+        const f = getFaction(fid);
+        if (!f) return;
+        f.approval += delta;
+        f.approval = Math.max(0, Math.min(100, f.approval));
+      });
+    }
+
+    function applyEdictFactionEffects(ed, activating) {
+      if (!ed.effects) return;
+      const sign = activating ? 1 : -1;
+      Object.entries(ed.effects).forEach(([fid, delta]) => {
+        const f = getFaction(fid);
+        if (!f) return;
+        f.approval += delta * sign;
+        f.approval = Math.max(0, Math.min(100, f.approval));
+      });
+    }
+
+    // ======= WIN =======
+    function triggerWin() {
+      gameWon = true;
+      winTimeText.textContent = "Time to $5,000,000 Swiss with 60% approval: " + formatTime(activePlaySeconds);
+      winModal.style.display = "flex";
+      log("You secured your Swiss fortune and kept the people (mostly) happy.");
+    }
+
+    // ======= LOOPS & EVENTS =======
+    function islandLoop() {
+      if (!gameStarted || !tabActive) return;
+
+      const { exportPerSec: exp, upkeepPerSec: up, net } = computeEconomy();
+      treasury += net;
+
+      const growthBase = 0.02 * population + 0.1 * buildings.reduce((sum, b) => sum + b.workers * b.count, 0);
+      let growth = growthBase;
+      if (approvalOverall < 40) growth *= 0.4;
+      if (approvalOverall > 70) growth *= 1.4;
+      population += growth / 10;
+
+      if (rebelThreat === 2 && Math.random() < 0.02) {
+        const loss = Math.round(treasury * 0.1);
+        treasury = Math.max(0, treasury - loss);
+        const mil = getFaction("military");
+        if (mil) mil.approval += 5;
+        log("Rebel attack! Treasury looted, but the military gained influence.");
+      }
+
+      updateStats();
+    }
+
+    function timerLoop() {
+      if (!gameStarted) return;
+
+      if (tabActive) {
+        if (lastActiveTimestamp === null) {
+          lastActiveTimestamp = Date.now();
+        }
+        const now = Date.now();
+        const delta = Math.floor((now - lastActiveTimestamp) / 1000);
+        if (delta > 0) {
+          activePlaySeconds += delta;
+          lastActiveTimestamp = now;
+        }
+      } else {
+        lastActiveTimestamp = null;
+      }
+
+      updateStats();
+    }
+
+    setInterval(islandLoop, 1000);
+    setInterval(timerLoop, 1000);
+
+    document.addEventListener("visibilitychange", () => {
+      tabActive = document.visibilityState === "visible";
+    });
+
+    // ======= ACTION BUTTONS =======
+    speechBtn.onclick = () => {
+      if (!gameStarted) return;
+      const cost = 10_000;
+      if (swissAccount < cost) {
+        log("You need at least $10,000 in Swiss funds to stage a grand speech.");
+        return;
+      }
+      swissAccount -= cost;
+      factions.forEach(f => {
+        f.approval += 4;
+        f.approval = Math.max(0, Math.min(100, f.approval));
+      });
+      log("You delivered a fiery speech. Approval rose across the island.");
+      updateStats();
+      renderFactions();
+    };
+
+    skimBtn.onclick = () => {
+      if (!gameStarted) return;
+      const amount = Math.min(treasury * 0.15, 50_000);
+      if (amount <= 0) {
+        log("There is nothing to skim from the treasury.");
+        return;
+      }
+      treasury -= amount;
+      swissAccount += amount;
+      factions.forEach(f => {
+        if (f.id === "loyalists" || f.id === "military") {
+          f.approval += 1;
+        } else {
+          f.approval -= 3;
+        }
+        f.approval = Math.max(0, Math.min(100, f.approval));
+      });
+      log(`You quietly skimmed ${formatMoney(amount)} into your Swiss account.`);
+      updateStats();
+      renderFactions();
+    };
+
+    aidBtn.onclick = () => {
+      if (!gameStarted) return;
+      const amount = 25_000 + Math.random() * 25_000;
+      treasury += amount;
+      const foreign = getFaction("foreign");
+      if (foreign) {
+        foreign.approval += 6;
+        foreign.approval = Math.max(0, Math.min(100, foreign.approval));
+      }
+      log(`Foreign aid arrived: ${formatMoney(amount)} added to the treasury.`);
+      updateStats();
+      renderFactions();
+    };
+
+    // ======= INTRO & WIN CONTROLS =======
+    startGameBtn.onclick = () => {
+      const name = islandNameInput.value.trim();
+      if (name.length > 0) {
+        islandTitle.textContent = name;
+        pageTitle.textContent = name.toUpperCase();
+      }
+      introOverlay.style.display = "none";
+      document.getElementById("app").style.display = "grid";
+      gameStarted = true;
+      lastActiveTimestamp = Date.now();
+      updateStats();
+      log("El Presidente, your island awaits your wise and benevolent rule.");
+    };
+
+    winContinueBtn.onclick = () => {
+      winModal.style.display = "none";
+    };
+
+    winRestartBtn.onclick = () => {
+      location.reload();
+    };
+
+    // ======= INIT =======
+    updateStats();
+    renderBuildings();
+    renderExports();
+    renderEdicts();
+    renderFactions();
+    log("Name your island to begin your reign.");
+  </script>
+</body>
+</html>
