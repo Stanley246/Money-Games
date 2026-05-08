@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Career Sim – US Life & Money</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1d4ed8 0, #020617 45%, #000 100%);
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px;
+    }
+    #app {
+      width: 1280px;
+      max-width: 100%;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 18px;
+      box-shadow:
+        0 0 0 1px rgba(148, 163, 184, 0.15),
+        0 30px 80px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      display: flex;
+      align-items: stretch;
+    }
+    .hero-left {
+      flex: 2;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.9));
+    }
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-title span.logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #facc15, #f97316 40%, #1d4ed8 100%);
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.8);
+    }
+    .hero-sub {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #e5e7eb;
+      max-width: 520px;
+    }
+    .hero-badges {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+    .hero-right {
+      flex: 3;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.2) contrast(1.05) brightness(0.9);
+      transform: scale(1.03);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), transparent 40%, rgba(15, 23, 42, 0.9));
+      pointer-events: none;
+    }
+    .hero-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 10px;
+      color: rgba(209, 213, 219, 0.7);
+      background: rgba(15, 23, 42, 0.7);
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .content {
+      padding: 18px 22px 22px;
+    }
+
+    h1, h2, h3, h4 {
+      margin-top: 0;
+      color: #f9fafb;
+    }
+
+    .section {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.18), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    label {
+      display: block;
+      margin: 6px 0 2px;
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+    input, select, button, textarea {
+      font-size: 14px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6);
+      background: rgba(15, 23, 42, 0.98);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #f9fafb;
+      font-weight: 600;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+      filter: brightness(1.05);
+    }
+    button:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+    button:disabled {
+      background: linear-gradient(135deg, #4b5563, #374151);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    button.secondary {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: none;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .col {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .highlight {
+      color: #facc15;
+      font-weight: 600;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .stat-box {
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), rgba(15, 23, 42, 0.98));
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(248, 250, 252, 0.06), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+    .stat-label {
+      color: #9ca3af;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .stat-value {
+      font-weight: 700;
+      color: #e5e7eb;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      padding-bottom: 4px;
+    }
+    .tab-btn {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .tab-btn span.icon {
+      font-size: 14px;
+    }
+    .tab-btn.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-color: rgba(59, 130, 246, 0.9);
+      color: #e5e7eb;
+    }
+    .tab-btn:not(.active):hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(55, 65, 81, 0.9);
+      color: #e5e7eb;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 8px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .log {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.98));
+      border-radius: 10px;
+      padding: 8px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-bottom: 2px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      margin-right: 4px;
+    }
+    .pill.good .pill-dot { background: #22c55e; }
+    .pill.bad .pill-dot { background: #ef4444; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .divider {
+      border-top: 1px dashed rgba(55, 65, 81, 0.9);
+      margin: 8px 0;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-fill {
+      position: absolute;
+      inset: 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #eab308, #f97316);
+      transition: width 0.2s ease-out;
+    }
+
+    .tagline {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .start-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .start-card-title span.icon {
+      font-size: 14px;
+    }
+
+    .start-tip {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .mini-metric {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .avatar-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #f97316, #1d4ed8 60%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #f9fafb;
+      font-size: 18px;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
+    }
+
+    .hud-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hud-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .hud-sub {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .hud-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill-status {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    .pill-status.paused .pill-status-dot {
+      background: #f97316;
+    }
+
+    .subsection-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .unsplash-thumb {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 6px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      object-fit: cover;
+      max-height: 130px;
+    }
+
+    canvas {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        height: auto;
+      }
+      .hero-right {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+   <!-- FULL GAME PAGE NAV BAR -->
+<nav class="game-nav">
+    <h1>Money Games</h1>
+  <div>
+        <a href="index.html">Home</a>
+        <a href="index.html#games">Games</a>
+        <a href="about.html">About</a>
+      <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
+       
+    </div>
+</nav>
+
+<style>
+    .game-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .game-nav h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .game-nav a {
+        color: #fff;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .game-nav a:hover {
+        color: #00eaff;
+    }
+</style>
+<div id="app">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-title">
+        <span class="logo"></span>
+        Career Sim
+      </div>
+      <p class="hero-sub">
+        A US-based life and money simulator. Start after college with student debt, grind through the rat race,
+        and see how hard it really is to build freedom.
+      </p>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Real-time months — <strong>2 seconds</strong> each
+        </div>
+        <div class="hero-badge">🎓 Degree-driven careers</div>
+        <div class="hero-badge">📈 Realistic stocks & real estate</div>
+        <div class="hero-badge">🚗 Cars, housing, US cities</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80"
+           alt="US city skyline from Unsplash">
+      <div class="hero-overlay"></div>
+      <div class="hero-caption">Photo: Unsplash — US city life</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- START SCREEN -->
+    <div id="start-screen" class="section">
+      <div class="flex-between">
+        <div>
+          <h2>Set up your starting life</h2>
+          <p class="small">
+            Every month is <span class="highlight">2 seconds</span>. You begin just after graduation in the US,
+            carrying student debt and a head full of plans. This version is tuned so wealth grows slowly and
+            escaping the rat race actually feels hard.
+          </p>
+        </div>
+        <div class="chip-row">
+          <div class="chip">Realistic salary growth & expenses</div>
+          <div class="chip">Stocks grow slower, with volatility</div>
+        </div>
+      </div>
+
+      <div class="start-grid">
+        <div class="section" style="background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.98));">
+          <div class="start-card-title">
+            <span class="icon">👤</span> Basic info
+          </div>
+          <label>Full name</label>
+          <input id="input-name" placeholder="Alex Carter">
+          <label>Age at graduation</label>
+          <input id="input-age" type="number" value="22" min="18" max="40">
+          <label>Starting city / region (US)</label>
+          <select id="input-location">
+            <option value="midwest_small">Midwest small town (low cost)</option>
+            <option value="sunbelt_city">Sunbelt city (moderate cost)</option>
+            <option value="nyc" selected>New York City (very high cost)</option>
+            <option value="sf_bay">San Francisco Bay Area (very high cost)</option>
+            <option value="texas_city">Texas city (good pay, moderate cost)</option>
+          </select>
+          <p class="start-tip">
+            Big coastal cities pay more but burn cash faster. Smaller or Sunbelt cities are calmer but slower to grow.
+          </p>
+        </div>
+
+        <div class="section" style="background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.18), rgba(15, 23, 42, 0.98));">
+          <div class="start-card-title">
+            <span class="icon">🎓</span> Degree & path
+          </div>
+          <label>Degree</label>
+          <select id="input-degree">
+            <option value="arts">BA in Arts / Humanities</option>
+            <option value="business" selected>Bachelor in Business / Finance</option>
+            <option value="stem">BSc in STEM (Engineering / CS)</option>
+            <option value="health">Health / Nursing</option>
+            <option value="trade">Skilled Trade / Vocational</option>
+          </select>
+          <label>Ambition level</label>
+          <select id="input-ambition">
+            <option value="chill">Chill (Work–life balance)</option>
+            <option value="balanced" selected>Balanced</option>
+            <option value="grinder">Grinder (Career first)</option>
+          </select>
+          <label>Risk tolerance</label>
+          <select id="input-risk">
+            <option value="low">Low (Safe & steady)</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High (Gambler)</option>
+          </select>
+          <p class="start-tip">
+            STEM and business start higher, but any path can win with time, discipline, and a bit of luck.
+          </p>
+        </div>
+
+        <div class="section" style="background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.08), rgba(15, 23, 42, 0.98));">
+          <div class="start-card-title">
+            <span class="icon">💸</span> Starting conditions
+          </div>
+          <label>Student debt size</label>
+          <select id="input-debt">
+            <option value="low">Low (~$15k)</option>
+            <option value="medium" selected>Medium (~$40k)</option>
+            <option value="high">High (~$80k)</option>
+          </select>
+          <label>Family support</label>
+          <select id="input-support">
+            <option value="none" selected>None</option>
+            <option value="some">Some (Occasional help)</option>
+            <option value="strong">Strong (Safety net)</option>
+          </select>
+          <label>Difficulty</label>
+          <select id="input-difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+          <p class="start-tip">
+            Difficulty tweaks salary and cost of living. Family support changes your starting cash cushion.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex-between" style="margin-top: 10px;">
+        <div class="mini-metric">
+          Months fly by automatically. Wealth builds slowly. Escaping the rat race takes years of consistent choices.
+        </div>
+        <button id="btn-start">
+          <span>Start life</span> <span>▶</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" style="display:none;">
+      <div class="section">
+        <div class="flex-between">
+          <div class="hud-top">
+            <div class="avatar-circle" id="hud-avatar">A</div>
+            <div>
+              <div class="hud-name" id="hud-name"></div>
+              <div class="hud-sub" id="hud-summary"></div>
+              <div class="chip-row" style="margin-top:4px;">
+                <div class="chip" id="hud-date"></div>
+                <div class="chip" id="hud-location"></div>
+                <div class="chip" id="hud-career"></div>
+              </div>
+            </div>
+          </div>
+          <div class="hud-controls">
+            <div id="hud-run-status" class="pill-status">
+              <span class="pill-status-dot"></span>
+              <span id="hud-run-text">Running — 1 month = 2 seconds</span>
+            </div>
+            <button id="btn-toggle-run" class="secondary">⏸ Pause</button>
+            <button id="btn-step">⏭ Step 1 month</button>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="margin-top: 10px;">
+          <div class="stat-box">
+            <div class="stat-label">Age</div>
+            <div class="stat-value" id="stat-age"></div>
+            <div class="progress-bar"><div class="progress-fill" id="bar-age"></div></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Cash</div>
+            <div class="stat-value" id="stat-cash"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Net worth</div>
+            <div class="stat-value" id="stat-networth"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Student debt</div>
+            <div class="stat-value" id="stat-student-debt"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Other debt</div>
+            <div class="stat-value" id="stat-other-debt"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Monthly income (after tax)</div>
+            <div class="stat-value" id="stat-income"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Monthly expenses</div>
+            <div class="stat-value" id="stat-expenses"></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Job satisfaction</div>
+            <div class="stat-value" id="stat-satisfaction"></div>
+            <div class="progress-bar"><div class="progress-fill" id="bar-satisfaction"></div></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Health</div>
+            <div class="stat-value" id="stat-health"></div>
+            <div class="progress-bar"><div class="progress-fill" id="bar-health"></div></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Stress</div>
+            <div class="stat-value" id="stat-stress"></div>
+            <div class="progress-bar"><div class="progress-fill" id="bar-stress"></div></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Mental health</div>
+            <div class="stat-value" id="stat-mental"></div>
+            <div class="progress-bar"><div class="progress-fill" id="bar-mental"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-career"><span class="icon">💼</span> Career</button>
+          <button class="tab-btn" data-tab="tab-finances"><span class="icon">💰</span> Finances</button>
+          <button class="tab-btn" data-tab="tab-stock"><span class="icon">📈</span> Stock market</button>
+          <button class="tab-btn" data-tab="tab-realestate"><span class="icon">🏠</span> Real estate</button>
+          <button class="tab-btn" data-tab="tab-lifestyle"><span class="icon">🌱</span> Lifestyle</button>
+          <button class="tab-btn" data-tab="tab-assets"><span class="icon">🚗</span> Housing & vehicles</button>
+          <button class="tab-btn" data-tab="tab-summary"><span class="icon">📜</span> Life summary</button>
+        </div>
+
+        <!-- CAREER TAB -->
+        <div id="tab-career" class="tab-content active">
+          <div class="row">
+            <div class="col">
+              <h3>Career</h3>
+              <div id="career-info" class="small"></div>
+              <div class="divider"></div>
+              <div class="subsection-title">Monthly actions</div>
+              <button id="btn-ask-raise">💬 Ask for a raise</button><br>
+              <button id="btn-job-hunt">🔍 Look for a new job</button><br>
+              <button id="btn-study">📚 Study / Upskill this month</button><br>
+              <button id="btn-take-break">😌 Take it easy this month</button><br>
+              <button id="btn-work-overtime">⏱ Work overtime</button><br>
+              <button id="btn-remote-work">🏡 Try to go remote</button>
+              <p class="tagline">
+                Salary growth is slower and more realistic. Promotions and raises matter, but they won't make you a billionaire overnight.
+              </p>
+            </div>
+            <div class="col">
+              <h4>Career stats</h4>
+              <div id="career-stats" class="small"></div>
+              <div class="divider"></div>
+              <div class="subsection-title">Office vibes</div>
+              <img class="unsplash-thumb"
+                   src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800&q=80"
+                   alt="Office life from Unsplash">
+            </div>
+          </div>
+        </div>
+
+        <!-- FINANCES TAB -->
+        <div id="tab-finances" class="tab-content">
+          <div class="row">
+            <div class="col">
+              <h3>Finances</h3>
+              <div id="finance-overview" class="small"></div>
+              <div class="divider"></div>
+              <h4>Debt management</h4>
+              <label>Extra payment to student debt this month ($)</label>
+              <input id="input-extra-student" type="number" value="0" min="0">
+              <label>Extra payment to other debt this month ($)</label>
+              <input id="input-extra-other" type="number" value="0" min="0">
+              <button id="btn-apply-extra-payments">Apply extra payments</button>
+              <p class="tagline">
+                Extra payments reduce debt faster but lower your cash this month. Debt grows with interest if ignored.
+              </p>
+            </div>
+            <div class="col">
+              <h4>Budget & lifestyle</h4>
+              <label>Housing level (rented)</label>
+              <select id="input-housing">
+                <option value="cheap">Cheap / Roommates</option>
+                <option value="normal" selected>Normal apartment</option>
+                <option value="nice">Nice apartment</option>
+                <option value="luxury">Luxury high-rise</option>
+              </select>
+              <label>Lifestyle spending</label>
+              <select id="input-lifestyle-spend">
+                <option value="frugal">Frugal</option>
+                <option value="moderate" selected>Moderate</option>
+                <option value="high">High</option>
+                <option value="lavish">Lavish</option>
+              </select>
+              <label>Savings rate target (% of leftover)</label>
+              <input id="input-savings-rate" type="number" value="30" min="0" max="80">
+              <label>Health insurance</label>
+              <select id="input-health-ins">
+                <option value="none">None</option>
+                <option value="basic" selected>Basic</option>
+                <option value="premium">Premium</option>
+              </select>
+              <label>Life insurance</label>
+              <select id="input-life-ins">
+                <option value="none" selected>None</option>
+                <option value="term">Term policy</option>
+              </select>
+              <p class="tagline">
+                Housing and lifestyle affect expenses, satisfaction, and stress. Insurance softens bad events but costs money.
+              </p>
+              <img class="unsplash-thumb"
+                   src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800&q=80"
+                   alt="Money and finance from Unsplash">
+            </div>
+          </div>
+        </div>
+
+        <!-- STOCK TAB -->
+        <div id="tab-stock" class="tab-content">
+          <h3>Stock market</h3>
+          <div id="stock-locked" class="small"></div>
+          <div id="stock-unlocked" style="display:none;">
+            <div class="row">
+              <div class="col">
+                <h4>Portfolio</h4>
+                <div id="stock-portfolio" class="small"></div>
+                <div class="divider"></div>
+                <h4>Buy / Sell</h4>
+                <label>Choose asset</label>
+                <select id="input-stock-asset">
+                  <option value="index">Index Fund (low risk, low dividend)</option>
+                  <option value="bluechip">Blue-chip Stocks (medium, dividend)</option>
+                  <option value="growth">Growth Stocks (high, no dividend)</option>
+                  <option value="crypto">Crypto (very high, no dividend)</option>
+                  <option value="reit">REIT (real estate fund, high dividend)</option>
+                </select>
+                <label>Amount to invest / sell ($)</label>
+                <input id="input-stock-amount" type="number" value="0" min="0">
+                <button id="btn-stock-buy">Buy</button>
+                <button id="btn-stock-sell" class="secondary">Sell</button>
+                <p class="tagline">
+                  Returns are slower and more realistic. Some assets pay dividends into your cash. Big wins are rare.
+                </p>
+              </div>
+              <div class="col">
+                <h4>Market chart</h4>
+                <label>Chart asset</label>
+                <select id="input-chart-asset">
+                  <option value="index">Index Fund</option>
+                  <option value="bluechip">Blue-chip Stocks</option>
+                  <option value="growth">Growth Stocks</option>
+                  <option value="crypto">Crypto</option>
+                  <option value="reit">REIT</option>
+                </select>
+                <canvas id="stock-chart" width="420" height="180"></canvas>
+                <div id="stock-notes" class="small" style="margin-top:6px;"></div>
+                <img class="unsplash-thumb"
+                     src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=800&q=80"
+                     alt="Stock market chart from Unsplash">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REAL ESTATE TAB -->
+        <div id="tab-realestate" class="tab-content">
+          <h3>Real estate</h3>
+          <div id="re-locked" class="small"></div>
+          <div id="re-unlocked" style="display:none;">
+            <div class="row">
+              <div class="col">
+                <h4>Properties owned</h4>
+                <div id="re-properties" class="small"></div>
+              </div>
+              <div class="col">
+                <h4>Buy property</h4>
+                <label>Property type</label>
+                <select id="input-re-type">
+                  <option value="small">Small condo</option>
+                  <option value="house">Family house</option>
+                  <option value="duplex">Duplex (rental)</option>
+                  <option value="luxury">Luxury home</option>
+                  <option value="commercial">Small commercial unit</option>
+                </select>
+                <label>Down payment ($)</label>
+                <input id="input-re-down" type="number" value="30000" min="0">
+                <button id="btn-re-buy">Buy with mortgage / cash</button>
+                <div class="divider"></div>
+                <h4>Sell property</h4>
+                <label>Property index to sell (0,1,2...)</label>
+                <input id="input-re-sell-index" type="number" value="0" min="0">
+                <button id="btn-re-sell" class="secondary">Sell property</button>
+                <p class="tagline">
+                  Properties add to net worth but come with mortgage, taxes, maintenance, and vacancy risk. Some generate rent.
+                </p>
+                <img class="unsplash-thumb"
+                     src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80"
+                     alt="House from Unsplash">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIFESTYLE TAB -->
+        <div id="tab-lifestyle" class="tab-content">
+          <div class="row">
+            <div class="col">
+              <h3>Lifestyle & wellbeing</h3>
+              <div id="life-wellbeing" class="small"></div>
+              <div class="divider"></div>
+              <h4>Monthly focus</h4>
+              <button id="btn-focus-health">💪 Focus on health</button><br>
+              <button id="btn-focus-social">🤝 Focus on social life</button><br>
+              <button id="btn-focus-sidehustle">🚀 Work on side hustle</button><br>
+              <button id="btn-therapy">🧠 Go to therapy</button><br>
+              <button id="btn-vacation">🏖 Take a vacation</button>
+              <p class="tagline">
+                You can nudge your life each month. Health, relationships, and side projects all shape your long-term story.
+              </p>
+            </div>
+            <div class="col">
+              <h4>Milestones & life events</h4>
+              <div id="life-milestones" class="small"></div>
+              <img class="unsplash-thumb"
+                   src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"
+                   alt="Friends and wellbeing from Unsplash">
+            </div>
+          </div>
+        </div>
+
+        <!-- ASSETS / HOUSING & VEHICLES TAB -->
+        <div id="tab-assets" class="tab-content">
+          <div class="row">
+            <div class="col">
+              <h3>Housing & vehicles</h3>
+              <div id="assets-overview" class="small"></div>
+              <div class="divider"></div>
+              <h4>Move to another US region</h4>
+              <label>New region</label>
+              <select id="input-move-region">
+                <option value="midwest_small">Midwest small town</option>
+                <option value="sunbelt_city">Sunbelt city</option>
+                <option value="nyc">New York City</option>
+                <option value="sf_bay">San Francisco Bay Area</option>
+                <option value="texas_city">Texas city</option>
+              </select>
+              <button id="btn-move-region">Move (one-time cost)</button>
+              <p class="tagline">
+                Moving changes salary levels and cost of living. There is a one-time moving cost.
+              </p>
+            </div>
+            <div class="col">
+              <h4>Buy vehicles & toys</h4>
+              <label>Buy a car</label>
+              <select id="input-car-type">
+                <option value="none">No car</option>
+                <option value="used">Used car (~$10k)</option>
+                <option value="new">New car (~$30k)</option>
+                <option value="luxury">Luxury car (~$70k)</option>
+              </select>
+              <button id="btn-buy-car">Buy / upgrade car</button>
+              <label style="margin-top:8px;">Buy a boat</label>
+              <select id="input-boat-type">
+                <option value="none">No boat</option>
+                <option value="small">Small boat (~$15k)</option>
+                <option value="yacht">Yacht (~$250k)</option>
+              </select>
+              <button id="btn-buy-boat">Buy / upgrade boat</button>
+              <p class="tagline">
+                Cars and boats increase expenses but can boost satisfaction. They also show up in your net worth.
+              </p>
+              <img class="unsplash-thumb"
+                   src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80"
+                   alt="Car and boat from Unsplash">
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY TAB -->
+        <div id="tab-summary" class="tab-content">
+          <h3>Life summary</h3>
+          <div id="summary-main" class="small"></div>
+          <div class="divider"></div>
+          <h4>Event log</h4>
+          <div id="log" class="log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const MONTH_MS = 2000; // 2 seconds per month
+  const CAR_ACCIDENT_PROB = 0.000002; // 0.0002% per month
+
+  const state = {
+    running: true,
+    month: 6,
+    year: 2026,
+    age: 22,
+    name: "",
+    degree: "",
+    location: "",
+    ambition: "",
+    risk: "",
+    difficulty: "normal",
+    familySupport: "none",
+    // finances
+    cash: 0,
+    studentDebt: 0,
+    otherDebt: 0,
+    incomeGross: 0,
+    incomeNet: 0,
+    expenses: 0,
+    housingLevel: "normal",
+    lifestyleSpend: "moderate",
+    savingsRate: 0.3,
+    healthIns: "basic",
+    lifeIns: "none",
+    inflation: 0.02,
+    baseInterestRate: 0.03,
+    creditScore: 650,
+    // career
+    careerLevel: 1,
+    careerTitle: "",
+    careerField: "",
+    jobSatisfaction: 65,
+    stress: 35,
+    health: 80,
+    mentalHealth: 70,
+    burnout: 10,
+    sleepQuality: 70,
+    skillLevel: 1,
+    officePolitics: 20,
+    managerRel: 50,
+    remoteWork: false,
+    // unlocks
+    unlocks: {
+      stock: false,
+      realEstate: false,
+      luxury: false,
+      sideHustle: false
+    },
+    // investments
+    stocks: {
+      index: 0,
+      bluechip: 0,
+      growth: 0,
+      crypto: 0,
+      reit: 0
+    },
+    stockReturns: {
+      index: 0,
+      bluechip: 0,
+      growth: 0,
+      crypto: 0,
+      reit: 0
+    },
+    stockPriceHistory: {
+      index: [100],
+      bluechip: [100],
+      growth: [100],
+      crypto: [100],
+      reit: [100]
+    },
+    stockBullBear: 1,
+    properties: [],
+    homeValueIndex: 1.0,
+    // side hustle
+    sideHustleIncome: 0,
+    // assets
+    car: { type: "none", value: 0, upkeep: 0 },
+    boat: { type: "none", value: 0, upkeep: 0 },
+    // flags
+    extraStudentPayment: 0,
+    extraOtherPayment: 0,
+    focusThisMonth: null,
+    careerActionThisMonth: null,
+    therapyThisMonth: false,
+    vacationThisMonth: false,
+    // log
+    log: [],
+    milestones: [],
+    // internal
+    monthsLived: 0,
+    alive: true
+  };
+
+  function randRange(min, max) { return Math.random() * (max - min) + min; }
+  function randInt(min, max) { return Math.floor(randRange(min, max + 1)); }
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  function addLog(msg) {
+    const stamp = `Y${state.year} M${state.month}`;
+    state.log.unshift(`[${stamp}] ${msg}`);
+    if (state.log.length > 400) state.log.pop();
+    renderLog();
+  }
+
+  function addMilestone(text) {
+    if (!state.milestones.includes(text)) {
+      state.milestones.push(text);
+      addLog(`Milestone reached: ${text}`);
+      renderMilestones();
+    }
+  }
+
+  function formatMoney(v) {
+    const sign = v < 0 ? "-" : "";
+    const abs = Math.abs(v);
+    return `${sign}$${abs.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+  }
+
+  function locationMultiplier(loc) {
+    switch (loc) {
+      case "midwest_small": return { salary: 0.85, rent: 0.7 };
+      case "sunbelt_city": return { salary: 1.0, rent: 0.9 };
+      case "nyc": return { salary: 1.25, rent: 1.6 };
+      case "sf_bay": return { salary: 1.3, rent: 1.7 };
+      case "texas_city": return { salary: 1.1, rent: 0.95 };
+      default: return { salary: 1.0, rent: 1.0 };
+    }
+  }
+
+  function computeStartingConditions() {
+    const degree = state.degree;
+    const loc = state.location;
+    const diff = state.difficulty;
+
+    let baseSalary;
+    let field;
+    switch (degree) {
+      case "arts": baseSalary = 38000; field = "Creative / Arts"; break;
+      case "business": baseSalary = 48000; field = "Business / Finance"; break;
+      case "stem": baseSalary = 65000; field = "STEM / Tech"; break;
+      case "health": baseSalary = 52000; field = "Health / Care"; break;
+      case "trade": baseSalary = 45000; field = "Skilled Trade"; break;
+      default: baseSalary = 42000; field = "General";
+    }
+
+    const locMult = locationMultiplier(loc);
+    let diffMult;
+    switch (diff) {
+      case "easy": diffMult = 1.05; break;
+      case "normal": diffMult = 1.0; break;
+      case "hard": diffMult = 0.95; break;
+      default: diffMult = 1.0;
+    }
+
+    const salary = baseSalary * locMult.salary * diffMult;
+    state.incomeGross = salary / 12;
+
+    const taxRate = 0.24;
+    state.incomeNet = state.incomeGross * (1 - taxRate);
+
+    let baseRent = 1000 * locMult.rent;
+    state.housingLevel = "normal";
+    state.lifestyleSpend = "moderate";
+    state.savingsRate = 0.3;
+
+    const housingCost = baseRent;
+    const lifestyleCost = 600;
+    const otherFixed = 400;
+    state.expenses = housingCost + lifestyleCost + otherFixed;
+
+    switch (document.getElementById("input-debt").value) {
+      case "low": state.studentDebt = 15000; break;
+      case "medium": state.studentDebt = 40000; break;
+      case "high": state.studentDebt = 80000; break;
+    }
+
+    switch (state.familySupport) {
+      case "none": state.cash = 800; break;
+      case "some": state.cash = 6000; break;
+      case "strong": state.cash = 15000; break;
+    }
+
+    state.careerField = field;
+    state.careerTitle = "Junior " + field;
+    state.careerLevel = 1;
+    state.skillLevel = 1;
+
+    addLog(`Started as ${state.careerTitle} with gross salary ${formatMoney(salary)} per year.`);
+  }
+
+  function recalcExpenses() {
+    const locMult = locationMultiplier(state.location);
+    let baseRent = 1000 * locMult.rent;
+
+    let housingMult;
+    switch (state.housingLevel) {
+      case "cheap": housingMult = 0.6; break;
+      case "normal": housingMult = 1.0; break;
+      case "nice": housingMult = 1.5; break;
+      case "luxury": housingMult = 2.3; break;
+      default: housingMult = 1.0;
+    }
+
+    let lifestyleBase;
+    switch (state.lifestyleSpend) {
+      case "frugal": lifestyleBase = 350; break;
+      case "moderate": lifestyleBase = 650; break;
+      case "high": lifestyleBase = 1100; break;
+      case "lavish": lifestyleBase = 1900; break;
+      default: lifestyleBase = 650;
+    }
+
+    let healthInsCost = 0;
+    if (state.healthIns === "basic") healthInsCost = 250;
+    else if (state.healthIns === "premium") healthInsCost = 500;
+
+    let lifeInsCost = 0;
+    if (state.lifeIns === "term") lifeInsCost = 80;
+
+    const otherFixed = 400;
+    let total = baseRent * housingMult + lifestyleBase + otherFixed + healthInsCost + lifeInsCost;
+
+    let mortgageTotal = 0;
+    let propertyTaxTotal = 0;
+    let maintenanceTotal = 0;
+    state.properties.forEach(p => {
+      mortgageTotal += p.mortgagePayment;
+      propertyTaxTotal += p.propertyTax;
+      maintenanceTotal += p.maintenance;
+    });
+
+    total += mortgageTotal + propertyTaxTotal + maintenanceTotal;
+
+    total += state.car.upkeep + state.boat.upkeep;
+
+    state.expenses = total;
+  }
+
+  function recalcIncome() {
+    const taxRate = 0.24;
+    state.incomeNet = state.incomeGross * (1 - taxRate) + state.sideHustleIncome;
+
+    let rentalIncome = 0;
+    state.properties.forEach(p => {
+      rentalIncome += p.rentIncome * (1 - p.vacancyRate);
+    });
+    state.incomeNet += rentalIncome;
+
+    let dividends = 0;
+    dividends += state.stocks.index * 0.0015;
+    dividends += state.stocks.bluechip * 0.002;
+    dividends += state.stocks.reit * 0.003;
+    state.incomeNet += dividends;
+    if (dividends > 0) addLog(`You received about ${formatMoney(dividends)} in dividends this month.`);
+  }
+
+  function computeNetWorth() {
+    let assets = state.cash;
+    let stockValue = 0;
+    for (const k in state.stocks) stockValue += state.stocks[k];
+    assets += stockValue;
+    state.properties.forEach(p => assets += p.value);
+    assets += state.car.value + state.boat.value;
+
+    let debts = state.studentDebt + state.otherDebt;
+    state.properties.forEach(p => debts += p.mortgageBalance);
+
+    return assets - debts;
+  }
+
+  function maybeUnlocks() {
+    const netWorth = computeNetWorth();
+    if (!state.unlocks.stock && netWorth >= 8000) {
+      state.unlocks.stock = true;
+      addMilestone("Unlocked stock market investing");
+    }
+    if (!state.unlocks.realEstate && netWorth >= 60000) {
+      state.unlocks.realEstate = true;
+      addMilestone("Unlocked real estate investing");
+    }
+    if (!state.unlocks.luxury && netWorth >= 400000) {
+      state.unlocks.luxury = true;
+      addMilestone("Unlocked luxury lifestyle options");
+    }
+    if (!state.unlocks.sideHustle && state.skillLevel >= 3) {
+      state.unlocks.sideHustle = true;
+      addMilestone("Unlocked side hustle potential");
+    }
+  }
+
+  function applyCareerActionEffects() {
+    const action = state.careerActionThisMonth;
+    if (!action) return;
+
+    if (action === "raise") {
+      const chanceBase = 0.2 + state.skillLevel * 0.04 + (state.managerRel - 50) / 300;
+      const stressPenalty = state.stress > 75 ? 0.1 : 0;
+      const chance = clamp(chanceBase - stressPenalty, 0.05, 0.6);
+      if (Math.random() < chance) {
+        const bump = state.incomeGross * randRange(0.03, 0.07);
+        state.incomeGross += bump;
+        state.careerLevel += 0.2;
+        addLog(`You successfully negotiated a raise! Gross monthly income increased by ${formatMoney(bump)}.`);
+        state.jobSatisfaction = clamp(state.jobSatisfaction + 6, 0, 100);
+        state.managerRel = clamp(state.managerRel + 5, 0, 100);
+      } else {
+        addLog("Raise request denied. Your manager says 'maybe next review'.");
+        state.jobSatisfaction = clamp(state.jobSatisfaction - 4, 0, 100);
+        state.stress = clamp(state.stress + 5, 0, 100);
+        state.managerRel = clamp(state.managerRel - 3, 0, 100);
+      }
+    } else if (action === "jobhunt") {
+      const chance = 0.3 + state.skillLevel * 0.06 - state.burnout / 200;
+      if (Math.random() < chance) {
+        const bump = state.incomeGross * randRange(0.08, 0.2);
+        state.incomeGross += bump;
+        state.careerLevel += 1;
+        state.careerTitle = "Level " + state.careerLevel.toFixed(0) + " " + state.careerField;
+        addLog(`You landed a better job! New role: ${state.careerTitle}. Income up by ${formatMoney(bump)}.`);
+        state.jobSatisfaction = clamp(state.jobSatisfaction + 10, 0, 100);
+        state.officePolitics = clamp(state.officePolitics - 5, 0, 100);
+      } else {
+        addLog("Job hunt yielded no offers this month.");
+        state.stress = clamp(state.stress + 4, 0, 100);
+      }
+    } else if (action === "study") {
+      const gain = randRange(0.1, 0.3);
+      state.skillLevel += gain;
+      addLog(`You studied and improved your skills. Skill level +${gain.toFixed(2)}.`);
+      state.jobSatisfaction = clamp(state.jobSatisfaction + 3, 0, 100);
+      state.stress = clamp(state.stress + 2, 0, 100);
+    } else if (action === "break") {
+      state.stress = clamp(state.stress - 10, 0, 100);
+      state.jobSatisfaction = clamp(state.jobSatisfaction + 4, 0, 100);
+      state.burnout = clamp(state.burnout - 5, 0, 100);
+      addLog("You took it easy this month, recharging a bit.");
+    } else if (action === "overtime") {
+      const extra = state.incomeGross * 0.15;
+      state.cash += extra;
+      addLog(`You worked overtime and earned an extra ${formatMoney(extra)} before tax.`);
+      state.stress = clamp(state.stress + 8, 0, 100);
+      state.burnout = clamp(state.burnout + 5, 0, 100);
+      state.health = clamp(state.health - 3, 0, 100);
+    } else if (action === "remote") {
+      if (!state.remoteWork && Math.random() < 0.4) {
+        state.remoteWork = true;
+        addLog("You negotiated a remote / hybrid work arrangement.");
+        state.jobSatisfaction = clamp(state.jobSatisfaction + 6, 0, 100);
+        state.stress = clamp(state.stress - 4, 0, 100);
+      } else if (!state.remoteWork) {
+        addLog("Your request to go remote was declined.");
+      } else {
+        addLog("You are already working remotely / hybrid.");
+      }
+    }
+
+    state.careerActionThisMonth = null;
+  }
+
+  function applyLifestyleFocusEffects() {
+    const focus = state.focusThisMonth;
+    if (!focus) return;
+
+    if (focus === "health") {
+      state.health = clamp(state.health + 7, 0, 100);
+      state.stress = clamp(state.stress - 5, 0, 100);
+      state.mentalHealth = clamp(state.mentalHealth + 3, 0, 100);
+      addLog("You focused on health: exercise, sleep, and good food.");
+    } else if (focus === "social") {
+      state.jobSatisfaction = clamp(state.jobSatisfaction + 5, 0, 100);
+      state.stress = clamp(state.stress - 3, 0, 100);
+      state.mentalHealth = clamp(state.mentalHealth + 4, 0, 100);
+      addLog("You invested in your social life and relationships.");
+    } else if (focus === "sidehustle") {
+      if (state.unlocks.sideHustle) {
+        const inc = randRange(40, 150);
+        state.sideHustleIncome += inc;
+        addLog(`You grew your side hustle. Extra monthly income +${formatMoney(inc)}.`);
+      } else {
+        addLog("You tried to start a side hustle, but it hasn't taken off yet.");
+      }
+      state.stress = clamp(state.stress + 4, 0, 100);
+      state.burnout = clamp(state.burnout + 2, 0, 100);
+    }
+
+    state.focusThisMonth = null;
+  }
+
+  function applyTherapyVacation() {
+    if (state.therapyThisMonth) {
+      const cost = 150;
+      state.cash -= cost;
+      state.mentalHealth = clamp(state.mentalHealth + 8, 0, 100);
+      state.stress = clamp(state.stress - 6, 0, 100);
+      addLog(`You went to therapy. It cost ${formatMoney(cost)} but helped your mental health.`);
+      state.therapyThisMonth = false;
+    }
+    if (state.vacationThisMonth) {
+      const cost = 1200;
+      state.cash -= cost;
+      state.stress = clamp(state.stress - 12, 0, 100);
+      state.jobSatisfaction = clamp(state.jobSatisfaction + 4, 0, 100);
+      state.burnout = clamp(state.burnout - 8, 0, 100);
+      addLog(`You took a vacation. It cost ${formatMoney(cost)} but you feel refreshed.`);
+      state.vacationThisMonth = false;
+    }
+  }
+
+  function applyRandomEvents() {
+    if (!state.alive) return;
+
+    const r = Math.random();
+    const risk = state.risk;
+    let riskMult;
+    switch (risk) {
+      case "low": riskMult = 0.7; break;
+      case "medium": riskMult = 1.0; break;
+      case "high": riskMult = 1.3; break;
+      default: riskMult = 1.0;
+    }
+
+    const badChance = 0.08 * riskMult;
+    const goodChance = 0.07;
+
+    if (r < badChance) {
+      const type = randInt(1, 4);
+      if (type === 1) {
+        const cost = randInt(300, 2000);
+        state.cash -= cost;
+        addLog(`Unexpected expense: car / home repair cost you ${formatMoney(cost)}.`);
+        state.stress = clamp(state.stress + 6, 0, 100);
+      } else if (type === 2) {
+        const hit = randInt(3, 10);
+        state.health = clamp(state.health - hit, 0, 100);
+        addLog(`You had a health setback. Health -${hit}.`);
+      } else if (type === 3) {
+        const hit = randInt(5, 12);
+        state.jobSatisfaction = clamp(state.jobSatisfaction - hit, 0, 100);
+        addLog("Work drama this month hurt your mood.");
+      } else {
+        const cost = randInt(500, 3000);
+        state.cash -= cost;
+        addLog(`Legal / paperwork issue cost you ${formatMoney(cost)}.`);
+      }
+    } else if (r > 1 - goodChance) {
+      const type = randInt(1, 4);
+      if (type === 1) {
+        const bonus = randInt(300, 2500);
+        state.cash += bonus;
+        addLog(`You received a bonus / gift of ${formatMoney(bonus)}.`);
+      } else if (type === 2) {
+        const bump = randInt(3, 8);
+        state.health = clamp(state.health + bump, 0, 100);
+        addLog(`You felt unusually energised. Health +${bump}.`);
+      } else if (type === 3) {
+        const bump = randInt(4, 10);
+        state.jobSatisfaction = clamp(state.jobSatisfaction + bump, 0, 100);
+        addLog("A great month at work boosted your morale.");
+      } else {
+        const inherit = randInt(2000, 15000);
+        state.cash += inherit;
+        addLog(`You received an unexpected inheritance of ${formatMoney(inherit)}.`);
+        addMilestone("Received an inheritance");
+      }
+    }
+
+    const socialRoll = Math.random();
+    if (socialRoll < 0.03) {
+      const loanAmount = randInt(500, 5000);
+      const repayChance = 0.6;
+      const interest = randInt(50, 400);
+      const decision = Math.random();
+      if (decision < 0.5) {
+        if (state.cash >= loanAmount) {
+          state.cash -= loanAmount;
+          addLog(`A friend asked for a loan of ${formatMoney(loanAmount)}. You agreed.`);
+          if (Math.random() < repayChance) {
+            const repay = loanAmount + interest;
+            state.cash += repay;
+            addLog(`Your friend repaid the loan with ${formatMoney(interest)} extra.`);
+          } else {
+            addLog("Your friend never repaid the loan.");
+            state.mentalHealth = clamp(state.mentalHealth - 4, 0, 100);
+          }
+        } else {
+          addLog("A friend asked for a loan, but you couldn't afford to help.");
+        }
+      } else {
+        addLog("A friend asked for a loan, but you declined.");
+      }
+    }
+
+    const startupRoll = Math.random();
+    if (startupRoll < 0.008) {
+      const invest = randInt(2000, 8000);
+      if (state.cash > invest && Math.random() < 0.5) {
+        state.cash -= invest;
+        addLog(`You invested ${formatMoney(invest)} in a risky startup.`);
+        if (Math.random() < 0.25) {
+          const payout = invest * randRange(2, 5);
+          state.cash += payout;
+          addLog(`The startup did well! You cashed out ${formatMoney(payout)}.`);
+          addMilestone("Startup windfall");
+        } else {
+          addLog("The startup failed. You lost your investment.");
+        }
+      }
+    }
+  }
+
+  function applyCarAccident() {
+    if (!state.alive) return;
+    if (Math.random() < CAR_ACCIDENT_PROB) {
+      const severe = Math.random() < 0.1;
+      const insured = state.healthIns !== "none";
+      if (severe && Math.random() < 0.2) {
+        state.alive = false;
+        const cost = insured ? randInt(2000, 10000) : randInt(20000, 80000);
+        state.otherDebt += cost;
+        addLog(`You were hit by a car in a severe accident. Medical costs ${formatMoney(cost)}. Game over.`);
+      } else {
+        const healthHit = randInt(10, 35);
+        state.health = clamp(state.health - healthHit, 0, 100);
+        const cost = insured ? randInt(500, 3000) : randInt(5000, 20000);
+        state.otherDebt += cost;
+        addLog(`You were hit by a car but survived. Health -${healthHit}, medical bills ${formatMoney(cost)}.`);
+      }
+    }
+  }
+
+  function applyStockReturns() {
+    if (!state.unlocks.stock) return;
+
+    const risk = state.risk;
+    let riskBias;
+    switch (risk) {
+      case "low": riskBias = -0.0005; break;
+      case "medium": riskBias = 0; break;
+      case "high": riskBias = 0.001; break;
+      default: riskBias = 0;
+    }
+
+    if (Math.random() < 0.05) {
+      state.stockBullBear = Math.random() < 0.5 ? -1 : 1;
+    }
+
+    function monthlyReturn(base, vol) {
+      const cycle = state.stockBullBear * 0.0025;
+      const r = base + riskBias + cycle + randRange(-vol, vol);
+      return clamp(r, -0.15, 0.15);
+    }
+
+    const returns = {};
+    returns.index = monthlyReturn(0.003, 0.005);      // ~4%/yr avg
+    returns.bluechip = monthlyReturn(0.004, 0.01);    // ~5–6%/yr avg
+    returns.growth = monthlyReturn(0.006, 0.02);      // ~8–10%/yr avg
+    returns.crypto = monthlyReturn(0.01, 0.06);       // wild but capped
+    returns.reit = monthlyReturn(0.004, 0.01);        // ~5–6%/yr avg
+
+    for (const k in state.stocks) {
+      const val = state.stocks[k];
+      const r = returns[k];
+      const gain = val * r;
+      state.stocks[k] += gain;
+      state.stockReturns[k] = r;
+    }
+
+    for (const key of ["index", "bluechip", "growth", "crypto", "reit"]) {
+      const history = state.stockPriceHistory[key];
+      const lastPrice = history[history.length - 1] || 100;
+      const newPrice = lastPrice * (1 + returns[key]);
+      history.push(newPrice);
+      if (history.length > 240) history.shift();
+    }
+  }
+
+  function applyPropertyDynamics() {
+    state.homeValueIndex *= 1 + randRange(-0.001, 0.003);
+    state.properties.forEach(p => {
+      const appreciation = p.value * randRange(0.0005, 0.004) * state.homeValueIndex;
+      p.value += appreciation;
+
+      const interest = p.mortgageBalance * (p.interestRate / 12);
+      const principal = p.mortgagePayment - interest;
+      p.mortgageBalance = Math.max(0, p.mortgageBalance - principal);
+
+      if (Math.random() < p.vacancyRate / 12) {
+        addLog(`Your property "${p.name}" had a vacancy this month (no rent).`);
+        p.rentIncome = 0;
+      } else {
+        if (p.baseRent) p.rentIncome = p.baseRent;
+      }
+
+      if (Math.random() < 0.02) {
+        const spike = randInt(200, 1500);
+        p.maintenance += spike / 12;
+        addLog(`Unexpected maintenance on "${p.name}" increased monthly costs.`);
+      }
+    });
+  }
+
+  function applyDebtInterest() {
+    const studentRate = 0.045 / 12;
+    const otherRate = 0.19 / 12;
+
+    state.studentDebt += state.studentDebt * studentRate;
+    state.otherDebt += state.otherDebt * otherRate;
+  }
+
+  function applyMonthlyCashFlow() {
+    recalcIncome();
+    recalcExpenses();
+
+    let cash = state.cash;
+    cash += state.incomeNet;
+    cash -= state.expenses;
+
+    if (state.extraStudentPayment > 0) {
+      const pay = Math.min(state.extraStudentPayment, cash + state.expenses);
+      cash -= pay;
+      state.studentDebt = Math.max(0, state.studentDebt - pay);
+      addLog(`Extra student loan payment of ${formatMoney(pay)}.`);
+      state.extraStudentPayment = 0;
+    }
+    if (state.extraOtherPayment > 0) {
+      const pay = Math.min(state.extraOtherPayment, cash + state.expenses);
+      cash -= pay;
+      state.otherDebt = Math.max(0, state.otherDebt - pay);
+      addLog(`Extra other debt payment of ${formatMoney(pay)}.`);
+      state.extraOtherPayment = 0;
+    }
+
+    if (cash < 0) {
+      const shortfall = -cash;
+      state.otherDebt += shortfall;
+      cash = 0;
+      addLog(`You couldn't cover expenses. Shortfall ${formatMoney(shortfall)} added to other debt.`);
+      state.stress = clamp(state.stress + 8, 0, 100);
+      state.creditScore = clamp(state.creditScore - 10, 300, 850);
+    }
+
+    const leftover = cash;
+    const saveAmount = leftover * state.savingsRate;
+    cash = leftover;
+
+    state.cash = cash + saveAmount;
+  }
+
+  function applyWellbeingDrift() {
+    const workStress = state.ambition === "grinder" ? 1.6 : state.ambition === "chill" ? 0.7 : 1.0;
+    const moneyStress = state.cash < 1000 ? 1.6 : state.cash < 5000 ? 1.1 : 0.7;
+
+    const stressDelta = 0.5 * workStress * moneyStress;
+    state.stress = clamp(state.stress + stressDelta, 0, 100);
+
+    const healthDelta = -0.2 * (state.stress / 50) + 0.1 * ((state.sleepQuality - 60) / 40);
+    state.health = clamp(state.health + healthDelta, 0, 100);
+
+    const mentalDelta = -0.15 * (state.stress / 50) + 0.1 * ((state.jobSatisfaction - 50) / 50);
+    state.mentalHealth = clamp(state.mentalHealth + mentalDelta, 0, 100);
+
+    state.burnout = clamp(state.burnout + (state.stress - 50) / 80, 0, 100);
+
+    if (state.stress > 85 && Math.random() < 0.05) {
+      const hit = randInt(5, 15);
+      state.health = clamp(state.health - hit, 0, 100);
+      addLog("Burnout episode due to high stress. Health took a hit.");
+    }
+  }
+
+  function advanceTime() {
+    state.month += 1;
+    if (state.month > 12) {
+      state.month = 1;
+      state.year += 1;
+      state.age += 1;
+      addLog(`You turned ${state.age} this year.`);
+    }
+    state.monthsLived += 1;
+  }
+
+  function gameTick() {
+    if (!state.running || !state.alive) return;
+
+    advanceTime();
+    applyCareerActionEffects();
+    applyLifestyleFocusEffects();
+    applyTherapyVacation();
+    applyRandomEvents();
+    applyCarAccident();
+    applyStockReturns();
+    applyPropertyDynamics();
+    applyDebtInterest();
+    applyMonthlyCashFlow();
+    applyWellbeingDrift();
+    maybeUnlocks();
+    renderAll();
+  }
+
+  function renderHUD() {
+    const initials = (state.name || "You")
+      .split(" ")
+      .filter(Boolean)
+      .map(s => s[0].toUpperCase())
+      .slice(0, 2)
+      .join("");
+    document.getElementById("hud-avatar").textContent = initials || "Y";
+
+    document.getElementById("hud-name").textContent = `${state.name} — ${state.careerTitle}`;
+    document.getElementById("hud-summary").textContent =
+      `${state.careerField} • Ambition: ${state.ambition}, Risk: ${state.risk}`;
+
+    document.getElementById("hud-date").textContent = `Year ${state.year}, Month ${state.month}`;
+    document.getElementById("hud-location").textContent = state.location.replace(/_/g, " ");
+    document.getElementById("hud-career").textContent = `Career L${state.careerLevel.toFixed(1)}`;
+
+    document.getElementById("stat-age").textContent = `${state.age} years`;
+    document.getElementById("stat-cash").textContent = formatMoney(state.cash);
+    document.getElementById("stat-student-debt").textContent = formatMoney(state.studentDebt);
+    document.getElementById("stat-other-debt").textContent = formatMoney(state.otherDebt);
+    document.getElementById("stat-income").textContent = formatMoney(state.incomeNet);
+    document.getElementById("stat-expenses").textContent = formatMoney(state.expenses);
+    document.getElementById("stat-satisfaction").textContent = `${state.jobSatisfaction.toFixed(0)}/100`;
+    document.getElementById("stat-health").textContent = `${state.health.toFixed(0)}/100`;
+    document.getElementById("stat-stress").textContent = `${state.stress.toFixed(0)}/100`;
+    document.getElementById("stat-mental").textContent = `${state.mentalHealth.toFixed(0)}/100`;
+    document.getElementById("stat-networth").textContent = formatMoney(computeNetWorth());
+
+    const agePct = clamp((state.age - 18) / (70 - 18), 0, 1) * 100;
+    document.getElementById("bar-age").style.width = `${agePct}%`;
+    document.getElementById("bar-satisfaction").style.width = `${clamp(state.jobSatisfaction, 0, 100)}%`;
+    document.getElementById("bar-health").style.width = `${clamp(state.health, 0, 100)}%`;
+    document.getElementById("bar-stress").style.width = `${clamp(state.stress, 0, 100)}%`;
+    document.getElementById("bar-mental").style.width = `${clamp(state.mentalHealth, 0, 100)}%`;
+
+    const runStatus = document.getElementById("hud-run-status");
+    const runText = document.getElementById("hud-run-text");
+    if (state.running && state.alive) {
+      runStatus.classList.remove("paused");
+      runText.textContent = "Running — 1 month = 2 seconds";
+    } else if (!state.alive) {
+      runStatus.classList.add("paused");
+      runText.textContent = "Life ended — review your story";
+    } else {
+      runStatus.classList.add("paused");
+      runText.textContent = "Paused — step or resume when ready";
+    }
+  }
+
+  function renderCareerTab() {
+    const info = document.getElementById("career-info");
+    info.innerHTML =
+      `You work in <span class="highlight">${state.careerField}</span> as <span class="highlight">${state.careerTitle}</span>.<br>` +
+      `Skill level: <span class="highlight">${state.skillLevel.toFixed(2)}</span>. ` +
+      `Ambition: ${state.ambition}. Remote: ${state.remoteWork ? "Yes" : "No"}.`;
+
+    const stats = document.getElementById("career-stats");
+    stats.innerHTML =
+      `<span class="badge">Gross monthly: ${formatMoney(state.incomeGross)}</span>` +
+      `<span class="badge">Side hustle: ${formatMoney(state.sideHustleIncome)}</span><br>` +
+      `<span class="badge">Job satisfaction: ${state.jobSatisfaction.toFixed(0)}/100</span>` +
+      `<span class="badge">Stress: ${state.stress.toFixed(0)}/100</span>` +
+      `<span class="badge">Health: ${state.health.toFixed(0)}/100</span><br>` +
+      `<span class="badge">Office politics: ${state.officePolitics.toFixed(0)}/100</span>` +
+      `<span class="badge">Manager relationship: ${state.managerRel.toFixed(0)}/100</span>`;
+  }
+
+  function renderFinanceTab() {
+    const netWorth = computeNetWorth();
+    const overview = document.getElementById("finance-overview");
+    overview.innerHTML =
+      `<span class="badge">Cash: ${formatMoney(state.cash)}</span>` +
+      `<span class="badge">Net worth: ${formatMoney(netWorth)}</span><br>` +
+      `<span class="badge">Student debt: ${formatMoney(state.studentDebt)}</span>` +
+      `<span class="badge">Other debt: ${formatMoney(state.otherDebt)}</span><br>` +
+      `<span class="badge">Monthly net income: ${formatMoney(state.incomeNet)}</span>` +
+      `<span class="badge">Monthly expenses: ${formatMoney(state.expenses)}</span><br>` +
+      `<span class="badge">Credit score: ${state.creditScore}</span>`;
+
+    document.getElementById("input-housing").value = state.housingLevel;
+    document.getElementById("input-lifestyle-spend").value = state.lifestyleSpend;
+    document.getElementById("input-savings-rate").value = (state.savingsRate * 100).toFixed(0);
+    document.getElementById("input-health-ins").value = state.healthIns;
+    document.getElementById("input-life-ins").value = state.lifeIns;
+  }
+
+  function renderStockChart() {
+    const canvas = document.getElementById("stock-chart");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const asset = document.getElementById("input-chart-asset").value;
+    const data = state.stockPriceHistory[asset];
+    if (!data || data.length < 2) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const padding = 20;
+    const w = canvas.width - padding * 2;
+    const h = canvas.height - padding * 2;
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+
+    ctx.strokeStyle = "#4ade80";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    data.forEach((v, i) => {
+      const x = padding + (i / (data.length - 1)) * w;
+      const y = padding + (1 - (v - min) / range) * h;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(148,163,184,0.4)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padding, padding + h);
+    ctx.lineTo(padding + w, padding + h);
+    ctx.stroke();
+  }
+
+  function renderStockTab() {
+    const locked = document.getElementById("stock-locked");
+    const unlocked = document.getElementById("stock-unlocked");
+    if (!state.unlocks.stock) {
+      locked.style.display = "block";
+      unlocked.style.display = "none";
+      locked.innerHTML =
+        `You haven't unlocked investing yet. Build your net worth to at least <span class="highlight">${formatMoney(8000)}</span>.`;
+      return;
+    }
+    locked.style.display = "none";
+    unlocked.style.display = "block";
+
+    const portfolio = document.getElementById("stock-portfolio");
+    let total = 0;
+    for (const k in state.stocks) total += state.stocks[k];
+    portfolio.innerHTML =
+      `<span class="badge">Total invested: ${formatMoney(total)}</span><br>` +
+      `<span class="badge">Index: ${formatMoney(state.stocks.index)}</span>` +
+      `<span class="badge">Blue-chip: ${formatMoney(state.stocks.bluechip)}</span>` +
+      `<span class="badge">Growth: ${formatMoney(state.stocks.growth)}</span>` +
+      `<span class="badge">Crypto: ${formatMoney(state.stocks.crypto)}</span>` +
+      `<span class="badge">REIT: ${formatMoney(state.stocks.reit)}</span>`;
+
+    const notes = document.getElementById("stock-notes");
+    notes.innerHTML =
+      `Last month returns (approx):<br>` +
+      `<span class="pill ${state.stockReturns.index >= 0 ? "good" : "bad"}"><span class="pill-dot"></span>Index ${(state.stockReturns.index * 100).toFixed(2)}%</span>` +
+      `<span class="pill ${state.stockReturns.bluechip >= 0 ? "good" : "bad"}"><span class="pill-dot"></span>Blue-chip ${(state.stockReturns.bluechip * 100).toFixed(2)}%</span>` +
+      `<span class="pill ${state.stockReturns.growth >= 0 ? "good" : "bad"}"><span class="pill-dot"></span>Growth ${(state.stockReturns.growth * 100).toFixed(2)}%</span>` +
+      `<span class="pill ${state.stockReturns.crypto >= 0 ? "good" : "bad"}"><span class="pill-dot"></span>Crypto ${(state.stockReturns.crypto * 100).toFixed(2)}%</span>` +
+      `<span class="pill ${state.stockReturns.reit >= 0 ? "good" : "bad"}"><span class="pill-dot"></span>REIT ${(state.stockReturns.reit * 100).toFixed(2)}%</span>`;
+
+    renderStockChart();
+  }
+
+  function renderRealEstateTab() {
+    const locked = document.getElementById("re-locked");
+    const unlocked = document.getElementById("re-unlocked");
+    if (!state.unlocks.realEstate) {
+      locked.style.display = "block";
+      unlocked.style.display = "none";
+      locked.innerHTML =
+        `Real estate unlocks when your net worth reaches around <span class="highlight">${formatMoney(60000)}</span>.`;
+      return;
+    }
+    locked.style.display = "none";
+    unlocked.style.display = "block";
+
+    const propsDiv = document.getElementById("re-properties");
+    if (state.properties.length === 0) {
+      propsDiv.textContent = "You don't own any properties yet.";
+    } else {
+      propsDiv.innerHTML = "";
+      state.properties.forEach((p, idx) => {
+        const el = document.createElement("div");
+        el.className = "small";
+        el.innerHTML =
+          `<span class="badge">#${idx} ${p.name}</span>` +
+          `<span class="badge">Value: ${formatMoney(p.value)}</span>` +
+          `<span class="badge">Mortgage: ${formatMoney(p.mortgageBalance)}</span>` +
+          `<span class="badge">Payment: ${formatMoney(p.mortgagePayment)}</span>` +
+          `<span class="badge">Rent: ${formatMoney(p.rentIncome)}</span>` +
+          `<span class="badge">Taxes: ${formatMoney(p.propertyTax)}</span>`;
+        propsDiv.appendChild(el);
+      });
+    }
+  }
+
+  function renderLifestyleTab() {
+    const well = document.getElementById("life-wellbeing");
+    well.innerHTML =
+      `<span class="badge">Health: ${state.health.toFixed(0)}/100</span>` +
+      `<span class="badge">Stress: ${state.stress.toFixed(0)}/100</span>` +
+      `<span class="badge">Mental health: ${state.mentalHealth.toFixed(0)}/100</span><br>` +
+      `<span class="badge">Job satisfaction: ${state.jobSatisfaction.toFixed(0)}/100</span>` +
+      `<span class="badge">Burnout: ${state.burnout.toFixed(0)}/100</span>` +
+      `<span class="badge">Side hustle income: ${formatMoney(state.sideHustleIncome)}</span>`;
+
+    renderMilestones();
+  }
+
+  function renderAssetsTab() {
+    const div = document.getElementById("assets-overview");
+    div.innerHTML =
+      `<span class="badge">Region: ${state.location.replace(/_/g, " ")}</span>` +
+      `<span class="badge">Car: ${state.car.type} (${formatMoney(state.car.value)})</span>` +
+      `<span class="badge">Boat: ${state.boat.type} (${formatMoney(state.boat.value)})</span><br>` +
+      `<span class="badge">Car upkeep: ${formatMoney(state.car.upkeep)}/mo</span>` +
+      `<span class="badge">Boat upkeep: ${formatMoney(state.boat.upkeep)}/mo</span>`;
+  }
+
+  function renderMilestones() {
+    const div = document.getElementById("life-milestones");
+    if (!div) return;
+    if (state.milestones.length === 0) {
+      div.textContent = "No major milestones yet. Keep going.";
+      return;
+    }
+    div.innerHTML = "";
+    state.milestones.forEach(m => {
+      const el = document.createElement("div");
+      el.className = "small";
+      el.innerHTML = `<span class="badge">${m}</span>`;
+      div.appendChild(el);
+    });
+  }
+
+  function renderSummaryTab() {
+    const summary = document.getElementById("summary-main");
+    const netWorth = computeNetWorth();
+    const yearsWorked = (state.monthsLived / 12).toFixed(1);
+    summary.innerHTML =
+      `You've lived <span class="highlight">${yearsWorked}</span> years since graduation.<br>` +
+      `Net worth: <span class="highlight">${formatMoney(netWorth)}</span>. ` +
+      `Cash: ${formatMoney(state.cash)}. Student debt: ${formatMoney(state.studentDebt)}. Other debt: ${formatMoney(state.otherDebt)}.<br>` +
+      `Career: ${state.careerTitle} in ${state.careerField}. Skill level: ${state.skillLevel.toFixed(2)}.<br>` +
+      `Wellbeing — Health: ${state.health.toFixed(0)}/100, Stress: ${state.stress.toFixed(0)}/100, Mental health: ${state.mentalHealth.toFixed(0)}/100, Job satisfaction: ${state.jobSatisfaction.toFixed(0)}/100.`;
+  }
+
+  function renderLog() {
+    const logDiv = document.getElementById("log");
+    logDiv.textContent = state.log.join("\n");
+  }
+
+  function renderAll() {
+    renderHUD();
+    renderCareerTab();
+    renderFinanceTab();
+    renderStockTab();
+    renderRealEstateTab();
+    renderLifestyleTab();
+    renderAssetsTab();
+    renderSummaryTab();
+  }
+
+  function setupTabs() {
+    const buttons = document.querySelectorAll(".tab-btn");
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tabId = btn.getAttribute("data-tab");
+        document.querySelectorAll(".tab-content").forEach(tc => {
+          tc.classList.remove("active");
+          if (tc.id === tabId) tc.classList.add("active");
+        });
+      });
+    });
+  }
+
+  function setupControls() {
+    document.getElementById("btn-toggle-run").addEventListener("click", () => {
+      if (!state.alive) return;
+      state.running = !state.running;
+      document.getElementById("btn-toggle-run").textContent = state.running ? "⏸ Pause" : "▶ Resume";
+      renderHUD();
+    });
+
+    document.getElementById("btn-step").addEventListener("click", () => {
+      if (!state.alive) return;
+      const prev = state.running;
+      state.running = true;
+      gameTick();
+      state.running = prev;
+    });
+
+    document.getElementById("btn-ask-raise").addEventListener("click", () => {
+      state.careerActionThisMonth = "raise";
+      addLog("You plan to ask for a raise this month.");
+    });
+
+    document.getElementById("btn-job-hunt").addEventListener("click", () => {
+      state.careerActionThisMonth = "jobhunt";
+      addLog("You start looking for a new job this month.");
+    });
+
+    document.getElementById("btn-study").addEventListener("click", () => {
+      state.careerActionThisMonth = "study";
+      addLog("You commit to studying and upskilling this month.");
+    });
+
+    document.getElementById("btn-take-break").addEventListener("click", () => {
+      state.careerActionThisMonth = "break";
+      addLog("You decide to take it easy at work this month.");
+    });
+
+    document.getElementById("btn-work-overtime").addEventListener("click", () => {
+      state.careerActionThisMonth = "overtime";
+      addLog("You plan to work overtime this month.");
+    });
+
+    document.getElementById("btn-remote-work").addEventListener("click", () => {
+      state.careerActionThisMonth = "remote";
+      addLog("You plan to negotiate remote / hybrid work this month.");
+    });
+
+    document.getElementById("btn-apply-extra-payments").addEventListener("click", () => {
+      const s = parseFloat(document.getElementById("input-extra-student").value) || 0;
+      const o = parseFloat(document.getElementById("input-extra-other").value) || 0;
+      state.extraStudentPayment = Math.max(0, s);
+      state.extraOtherPayment = Math.max(0, o);
+      addLog(`You scheduled extra payments: student ${formatMoney(state.extraStudentPayment)}, other ${formatMoney(state.extraOtherPayment)}.`);
+    });
+
+    document.getElementById("input-housing").addEventListener("change", e => {
+      state.housingLevel = e.target.value;
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("input-lifestyle-spend").addEventListener("change", e => {
+      state.lifestyleSpend = e.target.value;
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("input-savings-rate").addEventListener("change", e => {
+      const v = parseFloat(e.target.value) || 0;
+      state.savingsRate = clamp(v / 100, 0, 0.8);
+      renderAll();
+    });
+
+    document.getElementById("input-health-ins").addEventListener("change", e => {
+      state.healthIns = e.target.value;
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("input-life-ins").addEventListener("change", e => {
+      state.lifeIns = e.target.value;
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("btn-stock-buy").addEventListener("click", () => {
+      if (!state.unlocks.stock) return;
+      const asset = document.getElementById("input-stock-asset").value;
+      const amt = Math.max(0, parseFloat(document.getElementById("input-stock-amount").value) || 0);
+      if (amt <= 0) return;
+      if (amt > state.cash) {
+        addLog("Not enough cash to invest that amount.");
+        return;
+      }
+      state.cash -= amt;
+      state.stocks[asset] += amt;
+      addLog(`Invested ${formatMoney(amt)} into ${asset}.`);
+      renderAll();
+    });
+
+    document.getElementById("btn-stock-sell").addEventListener("click", () => {
+      if (!state.unlocks.stock) return;
+      const asset = document.getElementById("input-stock-asset").value;
+      const amt = Math.max(0, parseFloat(document.getElementById("input-stock-amount").value) || 0);
+      if (amt <= 0) return;
+      if (amt > state.stocks[asset]) {
+        addLog("You don't have that much in this asset to sell.");
+        return;
+      }
+      state.stocks[asset] -= amt;
+      state.cash += amt;
+      addLog(`Sold ${formatMoney(amt)} from ${asset}.`);
+      renderAll();
+    });
+
+    document.getElementById("input-chart-asset").addEventListener("change", () => {
+      renderStockChart();
+    });
+
+    document.getElementById("btn-re-buy").addEventListener("click", () => {
+      if (!state.unlocks.realEstate) return;
+      const type = document.getElementById("input-re-type").value;
+      const down = Math.max(0, parseFloat(document.getElementById("input-re-down").value) || 0);
+      if (down > state.cash) {
+        addLog("You don't have enough cash for that down payment.");
+        return;
+      }
+
+      let price, baseRent, maint, rate, taxRate;
+      if (type === "small") {
+        price = 180000; baseRent = 1100; maint = 150; rate = 0.035; taxRate = 0.012;
+      } else if (type === "house") {
+        price = 320000; baseRent = 1800; maint = 220; rate = 0.037; taxRate = 0.013;
+      } else if (type === "duplex") {
+        price = 420000; baseRent = 2600; maint = 300; rate = 0.038; taxRate = 0.014;
+      } else if (type === "luxury") {
+        price = 800000; baseRent = 4000; maint = 600; rate = 0.04; taxRate = 0.015;
+      } else {
+        price = 550000; baseRent = 3500; maint = 450; rate = 0.04; taxRate = 0.016;
+      }
+
+      const mortgage = price - down;
+      state.cash -= down;
+
+      if (mortgage <= 0) {
+        state.properties.push({
+          name: type === "small" ? "Small condo" :
+                type === "house" ? "Family house" :
+                type === "duplex" ? "Duplex" :
+                type === "luxury" ? "Luxury home" : "Commercial unit",
+          value: price,
+          mortgageBalance: 0,
+          mortgagePayment: 0,
+          interestRate: 0,
+          baseRent,
+          rentIncome: baseRent,
+          maintenance: maint,
+          propertyTax: price * taxRate / 12,
+          vacancyRate: type === "duplex" || type === "commercial" ? 0.12 : 0.08
+        });
+        addLog(`You bought a property outright for ${formatMoney(price)}.`);
+      } else {
+        const years = 30;
+        const monthlyRate = rate / 12;
+        const n = years * 12;
+        const payment = mortgage * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+        state.properties.push({
+          name: type === "small" ? "Small condo" :
+                type === "house" ? "Family house" :
+                type === "duplex" ? "Duplex" :
+                type === "luxury" ? "Luxury home" : "Commercial unit",
+          value: price,
+          mortgageBalance: mortgage,
+          mortgagePayment: payment,
+          interestRate: rate,
+          baseRent,
+          rentIncome: baseRent,
+          maintenance: maint,
+          propertyTax: price * taxRate / 12,
+          vacancyRate: type === "duplex" || type === "commercial" ? 0.12 : 0.08
+        });
+        addLog(`You bought a property worth ${formatMoney(price)} with a mortgage. Monthly payment ${formatMoney(payment)}.`);
+      }
+
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("btn-re-sell").addEventListener("click", () => {
+      if (!state.unlocks.realEstate) return;
+      const idx = parseInt(document.getElementById("input-re-sell-index").value, 10) || 0;
+      if (idx < 0 || idx >= state.properties.length) {
+        addLog("Invalid property index to sell.");
+        return;
+      }
+      const p = state.properties[idx];
+      const closingCost = p.value * 0.06;
+      const netProceeds = p.value - p.mortgageBalance - closingCost;
+      state.cash += netProceeds;
+      addLog(`You sold "${p.name}". After paying off mortgage and closing costs, you received ${formatMoney(netProceeds)}.`);
+      state.properties.splice(idx, 1);
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("btn-focus-health").addEventListener("click", () => {
+      state.focusThisMonth = "health";
+      addLog("You plan to focus on health this month.");
+    });
+
+    document.getElementById("btn-focus-social").addEventListener("click", () => {
+      state.focusThisMonth = "social";
+      addLog("You plan to focus on social life this month.");
+    });
+
+    document.getElementById("btn-focus-sidehustle").addEventListener("click", () => {
+      state.focusThisMonth = "sidehustle";
+      addLog("You plan to work on your side hustle this month.");
+    });
+
+    document.getElementById("btn-therapy").addEventListener("click", () => {
+      state.therapyThisMonth = true;
+      addLog("You scheduled therapy this month.");
+    });
+
+    document.getElementById("btn-vacation").addEventListener("click", () => {
+      state.vacationThisMonth = true;
+      addLog("You scheduled a vacation this month.");
+    });
+
+    document.getElementById("btn-move-region").addEventListener("click", () => {
+      const newRegion = document.getElementById("input-move-region").value;
+      if (newRegion === state.location) {
+        addLog("You already live in that region.");
+        return;
+      }
+      const moveCost = 3000;
+      if (state.cash < moveCost) {
+        addLog("You don't have enough cash to move right now.");
+        return;
+      }
+      state.cash -= moveCost;
+      state.location = newRegion;
+      addLog(`You moved to ${newRegion.replace(/_/g, " ")}. Moving cost ${formatMoney(moveCost)}.`);
+      const locMult = locationMultiplier(newRegion);
+      state.incomeGross *= locMult.salary;
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("btn-buy-car").addEventListener("click", () => {
+      const type = document.getElementById("input-car-type").value;
+      let price = 0, upkeep = 0;
+      if (type === "used") { price = 10000; upkeep = 150; }
+      else if (type === "new") { price = 30000; upkeep = 250; }
+      else if (type === "luxury") { price = 70000; upkeep = 500; }
+      else { price = 0; upkeep = 0; }
+
+      if (type !== "none" && state.cash < price) {
+        addLog("You don't have enough cash to buy that car.");
+        return;
+      }
+      if (type === "none") {
+        addLog("You decided not to own a car.");
+        state.car = { type: "none", value: 0, upkeep: 0 };
+      } else {
+        state.cash -= price;
+        state.car = { type, value: price, upkeep };
+        addLog(`You bought a ${type} car for ${formatMoney(price)}.`);
+      }
+      recalcExpenses();
+      renderAll();
+    });
+
+    document.getElementById("btn-buy-boat").addEventListener("click", () => {
+      const type = document.getElementById("input-boat-type").value;
+      let price = 0, upkeep = 0;
+      if (type === "small") { price = 15000; upkeep = 200; }
+      else if (type === "yacht") { price = 250000; upkeep = 2000; }
+      else { price = 0; upkeep = 0; }
+
+      if (type !== "none" && state.cash < price) {
+        addLog("You don't have enough cash to buy that boat.");
+        return;
+      }
+      if (type === "none") {
+        addLog("You decided not to own a boat.");
+        state.boat = { type: "none", value: 0, upkeep: 0 };
+      } else {
+        state.cash -= price;
+        state.boat = { type, value: price, upkeep };
+        addLog(`You bought a ${type} boat for ${formatMoney(price)}.`);
+      }
+      recalcExpenses();
+      renderAll();
+    });
+  }
+
+  function setupStartScreen() {
+    document.getElementById("btn-start").addEventListener("click", () => {
+      const name = document.getElementById("input-name").value.trim() || "You";
+      const age = parseInt(document.getElementById("input-age").value, 10) || 22;
+      state.name = name;
+      state.age = age;
+      state.degree = document.getElementById("input-degree").value;
+      state.location = document.getElementById("input-location").value;
+      state.ambition = document.getElementById("input-ambition").value;
+      state.risk = document.getElementById("input-risk").value;
+      state.familySupport = document.getElementById("input-support").value;
+      state.difficulty = document.getElementById("input-difficulty").value;
+
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("game-screen").style.display = "block";
+
+      computeStartingConditions();
+      recalcExpenses();
+      renderAll();
+    });
+  }
+
+  function startLoop() {
+    setInterval(gameTick, MONTH_MS);
+  }
+
+  setupStartScreen();
+  setupTabs();
+  setupControls();
+  startLoop();
+})();
+</script>
+</body>
+</html>
