@@ -5,140 +5,303 @@
   <title>Tropico Island Sim</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #13201b 0, #050b08 55%, #020504 100%);
-      color: #f4f5ff;
+      background: linear-gradient(180deg, #021b26 0, #012b32 40%, #021015 100%);
+      color: #f4f7f8;
     }
-    h1 {
-      text-align: center;
-      margin: 10px 0 4px;
+
+    /* Top nav */
+    .game-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 32px;
+      background: rgba(0, 20, 28, 0.95);
+      border-bottom: 1px solid rgba(0, 180, 160, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .game-nav h1 {
+      font-size: 24px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #00d4a6;
+      margin: 0;
+    }
+
+    .game-nav a {
+      color: #f4f7f8;
+      margin-left: 18px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .game-nav a:hover {
+      color: #ffb347;
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 16px 0;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .hero-text {
+      padding: 16px 18px;
+      background: rgba(1, 24, 32, 0.9);
+      border: 1px solid rgba(0, 160, 140, 0.7);
+      border-radius: 0;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero-text h1 {
+      margin: 0 0 6px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       font-size: 22px;
-      color: #f5f0d0;
-      text-shadow: 0 0 18px rgba(255,230,140,0.7);
+      color: #fffbdf;
     }
-    #subtitle {
-      text-align: center;
+
+    .hero-text p {
+      margin: 4px 0;
       font-size: 13px;
-      color: #d0d7b0;
-      margin-bottom: 10px;
+      color: #c7e4e4;
     }
+
+    .hero-tags {
+      margin-top: 8px;
+    }
+
+    .tag-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 140, 120, 0.8);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #fffbdf;
+      margin-right: 4px;
+      margin-bottom: 3px;
+    }
+
+    .hero-image {
+      background-image: url("https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80");
+      background-size: cover;
+      background-position: center;
+      border-radius: 0;
+      border: 1px solid rgba(0, 160, 140, 0.7);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+      position: relative;
+      min-height: 160px;
+    }
+
+    .hero-overlay-label {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 4px 8px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fffbdf;
+      border-left: 3px solid #00d4a6;
+    }
+
+    /* Layout */
     #app {
-      max-width: 1250px;
-      margin: 0 auto;
-      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto 32px;
+      padding: 16px 16px 24px;
       display: none;
-      grid-template-columns: 1.1fr 1.1fr 0.9fr;
+    }
+
+    .layout-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
+
     .panel {
-      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
-      border-radius: 12px;
-      border: 1px solid #3a5a46;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      background: rgba(1, 24, 32, 0.9);
+      border-radius: 0;
+      border: 1px solid rgba(0, 160, 140, 0.7);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
       min-height: 0;
     }
-    .panel-title {
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #f5f0d0;
-      margin-bottom: 4px;
-    }
-    .panel-subtitle {
-      font-size: 12px;
-      color: #c0cf9a;
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid rgba(0, 120, 110, 0.6);
+      padding-bottom: 4px;
       margin-bottom: 6px;
     }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fffbdf;
+    }
+
+    .panel-subtitle {
+      font-size: 11px;
+      color: #c7e4e4;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 10px;
+      margin-bottom: 6px;
+    }
+
     .stat-row {
       display: flex;
       justify-content: space-between;
       font-size: 13px;
-      margin-bottom: 2px;
     }
-    .stat-label { color: #c0cf9a; }
-    .stat-value { font-variant-numeric: tabular-nums; }
-    .positive { color: #5ae08c; }
+
+    .stat-label {
+      color: #c7e4e4;
+    }
+
+    .stat-value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #c7e4e4;
+    }
+
+    .positive { color: #4fe08a; }
     .negative { color: #ff6b6b; }
-    .small { font-size: 12px; color: #c0cf9a; }
+
+    #timerRow {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #c7e4e4;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 4px;
+      border-top: 1px solid rgba(0, 120, 110, 0.6);
+    }
 
     .btn {
-      background: linear-gradient(135deg, #f0b14b, #d07a2f);
+      background: linear-gradient(135deg, #ffb347, #ff7e3a);
       border: none;
-      color: #fff;
+      color: #041015;
       padding: 7px 14px;
-      border-radius: 999px;
+      border-radius: 0;
       cursor: pointer;
-      font-size: 13px;
-      font-weight: 550;
-      letter-spacing: 0.03em;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
-      box-shadow: 0 10px 26px rgba(240,177,75,0.45);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
       white-space: nowrap;
     }
+
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 16px 32px rgba(240,177,75,0.6);
-      background: linear-gradient(135deg, #f5c05f, #e08a3a);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
+      background: linear-gradient(135deg, #ffd067, #ff9a4a);
     }
+
     .btn:active {
       transform: translateY(0);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
     }
+
     .btn.secondary {
-      background: radial-gradient(circle at top, #3b4f3f 0, #28352a 60%, #1a241d 100%);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+      background: linear-gradient(135deg, #01424a, #026a6f);
+      color: #f4f7f8;
     }
+
     .btn.small {
       padding: 4px 10px;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .section-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 650;
-      color: #f5f0d0;
+      color: #fffbdf;
       margin: 8px 0 4px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
+      border-bottom: 1px solid rgba(0, 120, 110, 0.6);
+      padding-bottom: 2px;
     }
 
-    .card {
-      background: radial-gradient(circle at top left, #28382f 0, #151f18 55%, #101a13 100%);
-      border-radius: 10px;
-      border: 1px solid #3a5a46;
-      padding: 7px 9px;
-      margin-bottom: 6px;
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 12px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      margin-top: 4px;
     }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 3px;
+
+    .list-table th,
+    .list-table td {
+      padding: 4px 4px;
+      border-bottom: 1px solid rgba(0, 80, 70, 0.7);
+      text-align: left;
     }
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fdf7d8;
-    }
-    .card-sub {
+
+    .list-table th {
       font-size: 11px;
-      color: #c0cf9a;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #c7e4e4;
     }
-    .card-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2px;
+
+    .list-table td:last-child {
+      text-align: right;
+    }
+
+    .table-label {
+      color: #fffbdf;
+      font-weight: 500;
+    }
+
+    .table-sub {
+      display: block;
+      font-size: 11px;
+      color: #8fb9b9;
     }
 
     #buildingsList,
@@ -150,112 +313,170 @@
       overflow-y: auto;
       padding-right: 4px;
       margin-top: 4px;
+      max-height: 260px;
     }
 
     #log {
       font-size: 11px;
-      border-radius: 8px;
-      background: rgba(5,7,6,0.7);
-      border: 1px solid #2a3f31;
+      border-radius: 0;
+      background: rgba(1, 18, 24, 0.9);
+      border: 1px solid rgba(0, 120, 110, 0.8);
       padding: 6px;
       white-space: pre-line;
     }
 
-    .edict-active {
-      border-color: #f0b14b;
-      box-shadow: 0 0 12px rgba(240,177,75,0.7);
+    .edict-active-row {
+      background: rgba(255, 179, 71, 0.08);
     }
 
-    #timerRow {
-      margin-top: 4px;
+    .objective-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 4px 0 0;
       font-size: 12px;
-      color: #c0cf9a;
-      display: flex;
-      justify-content: space-between;
+      color: #c7e4e4;
+    }
+
+    .objective-list li::before {
+      content: "• ";
+      color: #ffb347;
     }
 
     /* Intro overlay */
     #introOverlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at top, #13201b 0, #050b08 55%, #020504 100%);
+      background: radial-gradient(circle at top, #01313f 0, #02151c 55%, #01080c 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 200;
     }
+
     #introInner {
-      width: 360px;
+      width: 380px;
       max-width: 90vw;
-      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
-      border-radius: 14px;
-      border: 1px solid #3a5a46;
-      box-shadow: 0 22px 50px rgba(0,0,0,0.8);
-      padding: 18px 18px 16px;
+      background: linear-gradient(145deg, #022b35 0, #02151c 60%, #01080c 100%);
+      border-radius: 0;
+      border: 1px solid rgba(0, 160, 140, 0.9);
+      box-shadow: 0 26px 60px rgba(0, 0, 0, 0.9);
+      padding: 20px 20px 16px;
       text-align: center;
     }
+
     #introInner h1 {
       font-size: 20px;
       margin-bottom: 6px;
+      letter-spacing: 0.18em;
+      color: #fffbdf;
     }
+
     #introInner p {
       font-size: 13px;
-      color: #c0cf9a;
+      color: #c7e4e4;
       margin: 4px 0;
     }
+
     #islandNameInput {
       width: 100%;
       padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid #3a5a46;
-      background: #050b08;
-      color: #fdf7d8;
+      border-radius: 0;
+      border: 1px solid rgba(0, 140, 120, 0.8);
+      background: #021015;
+      color: #fffbdf;
       font-size: 13px;
       margin-top: 6px;
     }
 
-    /* Win modal */
-    #winModal {
-      position: fixed;
-      inset: 0;
+    /* Summary screen */
+    #summaryScreen {
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      background: rgba(0,0,0,0.7);
+      min-height: 100vh;
+      padding-bottom: 40px;
+      background-image: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
-    #winModalInner {
-      position: relative;
-      width: 360px;
-      max-width: 90vw;
-      background: radial-gradient(circle at top left, #18251f 0, #050b08 60%, #020504 100%);
-      border-radius: 16px;
-      border: 1px solid #f0b14b;
-      box-shadow: 0 26px 60px rgba(0,0,0,0.9);
-      padding: 18px 18px 16px;
+
+    #summaryInner {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px 20px 24px;
+      background: rgba(1, 24, 32, 0.94);
+      border-radius: 0;
+      border: 1px solid rgba(0, 160, 140, 0.9);
+      box-shadow: 0 26px 60px rgba(0, 0, 0, 0.9);
+    }
+
+    #summaryInner h2 {
       text-align: center;
-    }
-    #winModalInner h1 {
-      font-size: 22px;
-      margin-bottom: 6px;
+      margin: 0 0 8px;
       letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 20px;
+      color: #fffbdf;
     }
-    .highlight {
+
+    #summaryInner p {
+      font-size: 13px;
+      color: #c7e4e4;
+      text-align: center;
+      margin: 4px 0 10px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+      margin-top: 10px;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: #c7e4e4;
+    }
+
+    .summary-value {
       font-size: 14px;
-      color: #5ae08c;
-      margin-bottom: 6px;
+      font-weight: 600;
+      color: #fffbdf;
+    }
+
+    .summary-row {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .layout-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+  
     }
   </style>
 </head>
 <body>
-   <nav class="game-nav">
+<nav class="game-nav">
     <h1>Money Games</h1>
   <div>
         <a href="index.html">Home</a>
         <a href="index.html#games">Games</a>
         <a href="about.html">About</a>
-     <!--  <a href="comments.html">Comments</a>
-      <a href="contributors.html">Contributors</a>-->
+      <a href="comments.html">Comments</a>
+      <a href="contributors.html">Contributors</a>
        
     </div>
 </nav>
@@ -294,120 +515,216 @@
         color: #00eaff;
     }
 </style>
+
+  <!-- Intro -->
   <div id="introOverlay">
     <div id="introInner">
       <h1>TROPICO ISLAND SIM</h1>
-      <p>Rule your Caribbean island, export goods, balance factions, and stay in power.</p>
+      <p>Rule your island, grow exports, balance factions, and quietly build a Swiss fortune.</p>
       <p style="margin-top:8px;">Name your island:</p>
-      <input id="islandNameInput" type="text" placeholder="e.g. Isla Bonita">
-      <button id="startGameBtn" class="btn" style="width:100%; margin-top:10px;">Begin Reign</button>
-      <p style="margin-top:10px; font-size:11px; color:#c0cf9a;">
-        Timer only runs while this tab is active. No idle progress in the background.
+      <input id="islandNameInput" type="text" placeholder="e.g. Isla Sol Verde">
+      <button id="startGameBtn" class="btn" style="width:100%; margin-top:10px;">Begin Your Rule</button>
+      <p style="margin-top:10px; font-size:11px; color:#c7e4e4;">
+        Time only counts while this tab is active. No idle progress in the background.
       </p>
     </div>
   </div>
 
-  <h1 id="pageTitle">TROPICO ISLAND SIM</h1>
-  <div id="subtitle">Grow exports, keep factions happy, and stash a fortune in your Swiss account.</div>
-
+  <!-- Main game -->
   <div id="app">
-    <!-- LEFT: OVERVIEW -->
-    <div class="panel">
-      <div class="panel-title" id="islandTitle">Island Overview</div>
-      <div class="panel-subtitle">Economy, people, and power</div>
-
-      <div class="stat-row">
-        <span class="stat-label">Population</span>
-        <span class="stat-value" id="popStat">0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Treasury</span>
-        <span class="stat-value" id="treasuryStat">$0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Swiss Account</span>
-        <span class="stat-value" id="swissStat">$0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Exports / sec</span>
-        <span class="stat-value" id="exportStat">$0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Upkeep / sec</span>
-        <span class="stat-value" id="upkeepStat">$0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Net / sec</span>
-        <span class="stat-value" id="netStat">$0</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Overall Approval</span>
-        <span class="stat-value" id="approvalStat">50%</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Rebel Threat</span>
-        <span class="stat-value" id="rebelStat">Low</span>
-      </div>
-
-      <div id="timerRow">
-        <span>Active Time</span>
-        <span id="timerDisplay">00:00</span>
-      </div>
-
-      <div class="section-title">Presidential Actions</div>
-      <div class="card">
-        <div class="card-row">
-          <span class="small">Deliver fiery speech (+approval, -Swiss)</span>
-          <button id="speechBtn" class="btn secondary small">Give Speech</button>
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1 id="pageTitle">TROPICO ISLAND SIM</h1>
+          <p id="subtitle">
+            Grow exports, keep factions on your side, and stash enough in your Swiss account to retire in style.
+          </p>
+          <p class="small">
+            This run is tuned so that reaching your goals will usually take somewhere around a focused session of play—
+            but it’s up to your strategy, not a fixed timer.
+          </p>
+          <div class="hero-tags">
+            <span class="tag-pill">Island Builder</span>
+            <span class="tag-pill">Export Strategy</span>
+            <span class="tag-pill">Faction Balancing</span>
+          </div>
         </div>
-        <div class="card-row">
-          <span class="small">Skim from treasury (+Swiss, -approval)</span>
-          <button id="skimBtn" class="btn secondary small">Skim Funds</button>
-        </div>
-        <div class="card-row">
-          <span class="small">Call foreign aid (+treasury, +foreign faction)</span>
-          <button id="aidBtn" class="btn secondary small">Request Aid</button>
+        <div class="hero-image">
+          <div class="hero-overlay-label">Caribbean Coastline • Unsplash</div>
         </div>
       </div>
     </div>
 
-    <!-- MIDDLE: BUILDINGS & EXPORTS -->
-    <div class="panel">
-      <div class="panel-title">Economy</div>
-      <div class="panel-subtitle">Plantations, mines, and tourism</div>
+    <div class="layout-main">
+      <!-- LEFT COLUMN: OVERVIEW + ACTIONS -->
+      <div class="column">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title" id="islandTitle">Island Overview</div>
+            <div class="panel-subtitle">Population, money, and stability</div>
+          </div>
 
-      <div class="section-title">Production Buildings</div>
-      <div id="buildingsList"></div>
+          <div class="stat-grid">
+            <div class="stat-row">
+              <span class="stat-label">Population</span>
+              <span class="stat-value" id="popStat">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Treasury</span>
+              <span class="stat-value" id="treasuryStat">$0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Swiss Account</span>
+              <span class="stat-value" id="swissStat">$0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Exports / sec</span>
+              <span class="stat-value" id="exportStat">$0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Upkeep / sec</span>
+              <span class="stat-value" id="upkeepStat">$0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Net / sec</span>
+              <span class="stat-value" id="netStat">$0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Overall Approval</span>
+              <span class="stat-value" id="approvalStat">50%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Rebel Threat</span>
+              <span class="stat-value" id="rebelStat">Low</span>
+            </div>
+          </div>
 
-      <div class="section-title">Export Overview</div>
-      <div id="exportsList"></div>
-    </div>
+          <div id="timerRow">
+            <span>Active Time</span>
+            <span id="timerDisplay">00:00</span>
+          </div>
+        </div>
 
-    <!-- RIGHT: EDICTS, FACTIONS, LOG -->
-    <div class="panel">
-      <div class="panel-title">Politics</div>
-      <div class="panel-subtitle">Edicts, factions, and stability</div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Presidential Actions</div>
+            <div class="panel-subtitle">Spend influence, cash, and reputation</div>
+          </div>
 
-      <div class="section-title">Edicts</div>
-      <div id="edictsList"></div>
+          <table class="list-table">
+            <tbody>
+              <tr>
+                <td>
+                  <span class="table-label">Fiery Speech</span>
+                  <span class="table-sub">+approval, costs Swiss funds</span>
+                </td>
+                <td>
+                  <button id="speechBtn" class="btn secondary small">Give Speech</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="table-label">Skim Funds</span>
+                  <span class="table-sub">+Swiss, hurts most factions</span>
+                </td>
+                <td>
+                  <button id="skimBtn" class="btn secondary small">Skim Treasury</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="table-label">Foreign Aid</span>
+                  <span class="table-sub">+treasury, pleases foreign powers</span>
+                </td>
+                <td>
+                  <button id="aidBtn" class="btn secondary small">Request Aid</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-      <div class="section-title">Factions</div>
-      <div id="factionsList"></div>
+          <div class="section-title">Core Goals</div>
+          <ul class="objective-list">
+            <li>Reach at least $5,000,000 in your Swiss account.</li>
+            <li>Keep overall approval at or above 60% when you cash out.</li>
+          </ul>
+        </div>
+      </div>
 
-      <div class="section-title">Event Log</div>
-      <div id="log"></div>
+      <!-- RIGHT COLUMN: ECONOMY, POLITICS, LOG -->
+      <div class="column">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Economy</div>
+            <div class="panel-subtitle">Production buildings and export mix</div>
+          </div>
+
+          <div class="section-title">Production Buildings</div>
+          <div id="buildingsList"></div>
+
+          <div class="section-title">Export Overview</div>
+          <div id="exportsList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Politics & Events</div>
+            <div class="panel-subtitle">Edicts, factions, and what just happened</div>
+          </div>
+
+          <div class="section-title">Edicts</div>
+          <div id="edictsList"></div>
+
+          <div class="section-title">Factions</div>
+          <div id="factionsList"></div>
+
+          <div class="section-title">Event Log</div>
+          <div id="log"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="winModal">
-    <div id="winModalInner">
-      <h1>EL PRESIDENTE WINS</h1>
-      <div class="highlight">You stashed $5,000,000 in your Swiss account with approval above 60%.</div>
-      <div id="winTimeText" class="small" style="margin-bottom:6px;"></div>
-      <p class="small">Your rule is secure and your retirement is golden. Continue ruling or start a new island.</p>
-      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
-        <button id="winContinueBtn" class="btn secondary small">Continue</button>
-        <button id="winRestartBtn" class="btn small">Restart</button>
+  <!-- Summary screen (full page at the end) -->
+  <div id="summaryScreen">
+    <div id="summaryInner">
+      <h2>Run Summary</h2>
+      <p>Your rule has reached a natural conclusion. Here is how your island will be remembered.</p>
+
+      <div class="summary-grid">
+        <div class="summary-row">
+          <span class="summary-label">Island Name</span>
+          <span class="summary-value" id="summaryIslandName">–</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Active Time</span>
+          <span class="summary-value" id="summaryTime">00:00</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Swiss Account</span>
+          <span class="summary-value" id="summarySwiss">$0</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Treasury</span>
+          <span class="summary-value" id="summaryTreasury">$0</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Overall Approval</span>
+          <span class="summary-value" id="summaryApproval">0%</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Population</span>
+          <span class="summary-value" id="summaryPopulation">0</span>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:16px;">Final Notes</div>
+      <p id="summaryNote" style="margin-top:4px;">
+        You met all victory conditions. El Presidente retires with a comfortable offshore cushion.
+      </p>
+
+      <div class="summary-actions">
+        <button id="summaryRestartBtn" class="btn small">Start New Run</button>
       </div>
     </div>
   </div>
@@ -668,10 +985,15 @@
     const startGameBtn = document.getElementById("startGameBtn");
     const islandNameInput = document.getElementById("islandNameInput");
 
-    const winModal = document.getElementById("winModal");
-    const winTimeText = document.getElementById("winTimeText");
-    const winContinueBtn = document.getElementById("winContinueBtn");
-    const winRestartBtn = document.getElementById("winRestartBtn");
+    const summaryScreen = document.getElementById("summaryScreen");
+    const summaryIslandName = document.getElementById("summaryIslandName");
+    const summaryTime = document.getElementById("summaryTime");
+    const summarySwiss = document.getElementById("summarySwiss");
+    const summaryTreasury = document.getElementById("summaryTreasury");
+    const summaryApproval = document.getElementById("summaryApproval");
+    const summaryPopulation = document.getElementById("summaryPopulation");
+    const summaryNote = document.getElementById("summaryNote");
+    const summaryRestartBtn = document.getElementById("summaryRestartBtn");
 
     // ======= HELPERS =======
     function formatNumber(v) {
@@ -786,41 +1108,39 @@
 
     function renderBuildings() {
       buildingsListEl.innerHTML = "";
+
+      const table = document.createElement("table");
+      table.className = "list-table";
+
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Building</th>
+          <th>Exports</th>
+          <th>Upkeep</th>
+          <th>Cost / Build</th>
+        </tr>`;
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
       buildings.forEach(b => {
-        const card = document.createElement("div");
-        card.className = "card";
+        const tr = document.createElement("tr");
 
-        const header = document.createElement("div");
-        header.className = "card-header";
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = b.name;
-        const sub = document.createElement("div");
-        sub.className = "card-sub";
-        sub.textContent = `Built: ${b.count}`;
-        header.appendChild(title);
-        header.appendChild(sub);
-        card.appendChild(header);
+        const nameTd = document.createElement("td");
+        nameTd.innerHTML =
+          `<span class="table-label">${b.name}</span><span class="table-sub">Built: ${b.count} • Type: ${b.type}</span>`;
 
-        const row1 = document.createElement("div");
-        row1.className = "card-row";
-        row1.innerHTML =
-          `<span>Exports: ${formatMoney(b.exportPerBuilding)}/bldg</span><span>Upkeep: ${formatMoney(b.upkeepPerBuilding)}/bldg</span>`;
-        card.appendChild(row1);
+        const expTd = document.createElement("td");
+        expTd.textContent = b.exportPerBuilding > 0 ? formatMoney(b.exportPerBuilding) + "/bldg" : "—";
 
-        const row2 = document.createElement("div");
-        row2.className = "card-row";
-        const workersText = b.workers > 0 ? `Workers: ${b.workers}` : "Workers: N/A";
-        row2.innerHTML = `<span>${workersText}</span><span>Type: ${b.type}</span>`;
-        card.appendChild(row2);
+        const upTd = document.createElement("td");
+        upTd.textContent = formatMoney(b.upkeepPerBuilding) + "/bldg";
 
-        const row3 = document.createElement("div");
-        row3.className = "card-row";
-        const costSpan = document.createElement("span");
-        costSpan.textContent = "Build cost: " + formatMoney(b.cost);
+        const actionTd = document.createElement("td");
         const btn = document.createElement("button");
         btn.className = "btn secondary small";
-        btn.textContent = "Build";
+        btn.textContent = "Build (" + formatMoney(b.cost) + ")";
         btn.onclick = () => {
           if (!gameStarted) return;
           if (treasury >= b.cost) {
@@ -836,62 +1156,80 @@
             renderExports();
           }
         };
-        row3.appendChild(costSpan);
-        row3.appendChild(btn);
-        card.appendChild(row3);
+        actionTd.appendChild(btn);
 
-        buildingsListEl.appendChild(card);
+        tr.appendChild(nameTd);
+        tr.appendChild(expTd);
+        tr.appendChild(upTd);
+        tr.appendChild(actionTd);
+
+        tbody.appendChild(tr);
       });
+
+      table.appendChild(tbody);
+      buildingsListEl.appendChild(table);
     }
 
     function renderExports() {
       exportsListEl.innerHTML = "";
       const { agriExports, industryExports, tourismExports } = computeEconomy();
 
-      const agriCard = document.createElement("div");
-      agriCard.className = "card";
-      agriCard.innerHTML =
-        `<div class="card-header"><div class="card-title">Agriculture</div><div class="card-sub">Plantations & farms</div></div>
-         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(agriExports)}</span></div>`;
-      exportsListEl.appendChild(agriCard);
-
-      const indCard = document.createElement("div");
-      indCard.className = "card";
-      indCard.innerHTML =
-        `<div class="card-header"><div class="card-title">Industry</div><div class="card-sub">Mines & factories</div></div>
-         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(industryExports)}</span></div>`;
-      exportsListEl.appendChild(indCard);
-
-      const tourCard = document.createElement("div");
-      tourCard.className = "card";
-      tourCard.innerHTML =
-        `<div class="card-header"><div class="card-title">Tourism</div><div class="card-sub">Resorts & hotels</div></div>
-         <div class="card-row"><span>Exports / sec</span><span>${formatMoney(tourismExports)}</span></div>`;
-      exportsListEl.appendChild(tourCard);
+      const table = document.createElement("table");
+      table.className = "list-table";
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Sector</th>
+            <th>Exports / sec</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="table-label">Agriculture</span><span class="table-sub">Plantations & farms</span></td>
+            <td>${formatMoney(agriExports)}</td>
+          </tr>
+          <tr>
+            <td><span class="table-label">Industry</span><span class="table-sub">Mines & factories</span></td>
+            <td>${formatMoney(industryExports)}</td>
+          </tr>
+          <tr>
+            <td><span class="table-label">Tourism</span><span class="table-sub">Resorts & hotels</span></td>
+            <td>${formatMoney(tourismExports)}</td>
+          </tr>
+        </tbody>
+      `;
+      exportsListEl.appendChild(table);
     }
 
     function renderEdicts() {
       edictsListEl.innerHTML = "";
+
+      const table = document.createElement("table");
+      table.className = "list-table";
+
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Edict</th>
+          <th>Status</th>
+          <th></th>
+        </tr>`;
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
       edicts.forEach(ed => {
-        const card = document.createElement("div");
-        card.className = "card" + (ed.active ? " edict-active" : "");
+        const tr = document.createElement("tr");
+        if (ed.active) tr.classList.add("edict-active-row");
 
-        const header = document.createElement("div");
-        header.className = "card-header";
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = ed.name;
-        const sub = document.createElement("div");
-        sub.className = "card-sub";
-        sub.textContent = ed.desc;
-        header.appendChild(title);
-        header.appendChild(sub);
-        card.appendChild(header);
+        const nameTd = document.createElement("td");
+        nameTd.innerHTML =
+          `<span class="table-label">${ed.name}</span><span class="table-sub">${ed.desc}</span>`;
 
-        const row = document.createElement("div");
-        row.className = "card-row";
-        const info = document.createElement("span");
-        info.textContent = ed.active ? "Active" : "Inactive";
+        const statusTd = document.createElement("td");
+        statusTd.textContent = ed.active ? "Active" : "Inactive";
+
+        const actionTd = document.createElement("td");
         const btn = document.createElement("button");
         btn.className = "btn secondary small";
         btn.textContent = ed.active ? "Revoke" : "Enact";
@@ -905,42 +1243,60 @@
           renderFactions();
           renderExports();
         };
-        row.appendChild(info);
-        row.appendChild(btn);
-        card.appendChild(row);
+        actionTd.appendChild(btn);
 
-        edictsListEl.appendChild(card);
+        tr.appendChild(nameTd);
+        tr.appendChild(statusTd);
+        tr.appendChild(actionTd);
+
+        tbody.appendChild(tr);
       });
+
+      table.appendChild(tbody);
+      edictsListEl.appendChild(table);
     }
 
     function renderFactions() {
       factionsListEl.innerHTML = "";
+
+      const table = document.createElement("table");
+      table.className = "list-table";
+
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Faction</th>
+          <th>Approval</th>
+          <th>Mood</th>
+        </tr>`;
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
       factions.forEach(f => {
-        const card = document.createElement("div");
-        card.className = "card";
+        const tr = document.createElement("tr");
 
-        const header = document.createElement("div");
-        header.className = "card-header";
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = f.name;
-        const sub = document.createElement("div");
-        sub.className = "card-sub";
-        sub.textContent = `Approval: ${Math.round(f.approval)}%`;
-        header.appendChild(title);
-        header.appendChild(sub);
-        card.appendChild(header);
+        const nameTd = document.createElement("td");
+        nameTd.innerHTML = `<span class="table-label">${f.name}</span>`;
 
-        const row = document.createElement("div");
-        row.className = "card-row";
+        const approvalTd = document.createElement("td");
+        approvalTd.textContent = Math.round(f.approval) + "%";
+
+        const moodTd = document.createElement("td");
         let mood = "Neutral";
         if (f.approval >= 65) mood = "Supportive";
         else if (f.approval <= 35) mood = "Angry";
-        row.innerHTML = `<span>Mood: ${mood}</span><span class="small">Influence them via buildings & edicts</span>`;
-        card.appendChild(row);
+        moodTd.textContent = mood;
 
-        factionsListEl.appendChild(card);
+        tr.appendChild(nameTd);
+        tr.appendChild(approvalTd);
+        tr.appendChild(moodTd);
+
+        tbody.appendChild(tr);
       });
+
+      table.appendChild(tbody);
+      factionsListEl.appendChild(table);
     }
 
     // ======= EFFECTS =======
@@ -965,17 +1321,34 @@
       });
     }
 
-    // ======= WIN =======
+    // ======= WIN / SUMMARY =======
     function triggerWin() {
       gameWon = true;
-      winTimeText.textContent = "Time to $5,000,000 Swiss with 60% approval: " + formatTime(activePlaySeconds);
-      winModal.style.display = "flex";
-      log("You secured your Swiss fortune and kept the people (mostly) happy.");
+
+      const name = islandTitle.textContent || "Unnamed Island";
+      summaryIslandName.textContent = name;
+      summaryTime.textContent = formatTime(activePlaySeconds);
+      summarySwiss.textContent = formatMoney(swissAccount);
+      summaryTreasury.textContent = formatMoney(treasury);
+      summaryApproval.textContent = Math.round(approvalOverall) + "%";
+      summaryPopulation.textContent = formatNumber(population);
+
+      if (swissAccount >= WIN_SWISS && approvalOverall >= WIN_APPROVAL) {
+        summaryNote.textContent =
+          "You met all victory conditions. El Presidente retires with a comfortable offshore cushion.";
+      } else {
+        summaryNote.textContent =
+          "You stepped down without meeting every goal. History will debate whether you were visionary or reckless.";
+      }
+
+      document.getElementById("app").style.display = "none";
+      summaryScreen.style.display = "block";
+      log("Your rule has concluded. View your summary.");
     }
 
     // ======= LOOPS & EVENTS =======
     function islandLoop() {
-      if (!gameStarted || !tabActive) return;
+      if (!gameStarted || !tabActive || gameWon) return;
 
       const { exportPerSec: exp, upkeepPerSec: up, net } = computeEconomy();
       treasury += net;
@@ -998,7 +1371,7 @@
     }
 
     function timerLoop() {
-      if (!gameStarted) return;
+      if (!gameStarted || gameWon) return;
 
       if (tabActive) {
         if (lastActiveTimestamp === null) {
@@ -1026,7 +1399,7 @@
 
     // ======= ACTION BUTTONS =======
     speechBtn.onclick = () => {
-      if (!gameStarted) return;
+      if (!gameStarted || gameWon) return;
       const cost = 10_000;
       if (swissAccount < cost) {
         log("You need at least $10,000 in Swiss funds to stage a grand speech.");
@@ -1043,7 +1416,7 @@
     };
 
     skimBtn.onclick = () => {
-      if (!gameStarted) return;
+      if (!gameStarted || gameWon) return;
       const amount = Math.min(treasury * 0.15, 50_000);
       if (amount <= 0) {
         log("There is nothing to skim from the treasury.");
@@ -1065,7 +1438,7 @@
     };
 
     aidBtn.onclick = () => {
-      if (!gameStarted) return;
+      if (!gameStarted || gameWon) return;
       const amount = 25_000 + Math.random() * 25_000;
       treasury += amount;
       const foreign = getFaction("foreign");
@@ -1078,7 +1451,7 @@
       renderFactions();
     };
 
-    // ======= INTRO & WIN CONTROLS =======
+    // ======= INTRO & SUMMARY CONTROLS =======
     startGameBtn.onclick = () => {
       const name = islandNameInput.value.trim();
       if (name.length > 0) {
@@ -1086,18 +1459,14 @@
         pageTitle.textContent = name.toUpperCase();
       }
       introOverlay.style.display = "none";
-      document.getElementById("app").style.display = "grid";
+      document.getElementById("app").style.display = "block";
       gameStarted = true;
       lastActiveTimestamp = Date.now();
       updateStats();
-      log("El Presidente, your island awaits your wise and benevolent rule.");
+      log("El Presidente, your island awaits your rule.");
     };
 
-    winContinueBtn.onclick = () => {
-      winModal.style.display = "none";
-    };
-
-    winRestartBtn.onclick = () => {
+    summaryRestartBtn.onclick = () => {
       location.reload();
     };
 
@@ -1107,7 +1476,7 @@
     renderExports();
     renderEdicts();
     renderFactions();
-    log("Name your island to begin your reign.");
+    log("Name your island to begin your run.");
   </script>
 </body>
 </html>
