@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>City Skyline Sim</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2335 0, #050712 55%, #02030a 100%);
+      color: #f4f5ff;
+    }
+    h1 {
+      text-align: center;
+      margin: 10px 0 4px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 22px;
+      color: #dbe4ff;
+      text-shadow: 0 0 18px rgba(91,157,255,0.7);
+    }
+    #subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #9aa2d8;
+      margin-bottom: 10px;
+    }
+    #app {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 16px;
+      display: none;
+      grid-template-columns: 1.1fr 1.1fr 0.9fr;
+      gap: 12px;
+    }
+    .panel {
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 12px;
+      border: 1px solid #2f3656;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #b5c6ff;
+      margin-bottom: 4px;
+    }
+    .panel-subtitle {
+      font-size: 12px;
+      color: #8b93d0;
+      margin-bottom: 6px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .stat-label { color: #9aa2d8; }
+    .stat-value { font-variant-numeric: tabular-nums; }
+    .positive { color: #5ae08c; }
+    .negative { color: #ff6b6b; }
+    .small { font-size: 12px; color: #9aa2d8; }
+
+    .btn {
+      background: linear-gradient(135deg, #4b8dff, #2f63d0);
+      border: none;
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: 0.03em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      box-shadow: 0 10px 26px rgba(75,141,255,0.45);
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(75,141,255,0.6);
+      background: linear-gradient(135deg, #5b9dff, #3a6fe0);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .btn.secondary {
+      background: radial-gradient(circle at top, #343b63 0, #252b4a 60%, #181c33 100%);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+    }
+    .btn.small {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 650;
+      color: #b5c6ff;
+      margin: 8px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #262f57 0, #151a33 55%, #101426 100%);
+      border-radius: 10px;
+      border: 1px solid #323a5a;
+      padding: 7px 9px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #dbe4ff;
+    }
+    .card-sub {
+      font-size: 11px;
+      color: #9aa2d8;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    #zonesList,
+    #servicesList,
+    #policiesList,
+    #log {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 4px;
+    }
+
+    #log {
+      font-size: 11px;
+      border-radius: 8px;
+      background: rgba(5,7,18,0.7);
+      border: 1px solid #252b45;
+      padding: 6px;
+      white-space: pre-line;
+    }
+
+    .policy-active {
+      border-color: #5b9dff;
+      box-shadow: 0 0 12px rgba(91,157,255,0.7);
+    }
+
+    #timerRow {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #9aa2d8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Intro overlay */
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #1b2335 0, #050712 55%, #02030a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    #introInner {
+      width: 340px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 14px;
+      border: 1px solid #323a5a;
+      box-shadow: 0 22px 50px rgba(0,0,0,0.8);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #introInner h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    #introInner p {
+      font-size: 13px;
+      color: #9aa2d8;
+      margin: 4px 0;
+    }
+    #cityNameInput {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #323a5a;
+      background: #050712;
+      color: #e6ebff;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* Win modal */
+    #winModal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      background: rgba(0,0,0,0.7);
+    }
+    #winModalInner {
+      position: relative;
+      width: 360px;
+      max-width: 90vw;
+      background: radial-gradient(circle at top left, #15182c 0, #050712 60%, #02030a 100%);
+      border-radius: 16px;
+      border: 1px solid #4b8dff;
+      box-shadow: 0 26px 60px rgba(0,0,0,0.9);
+      padding: 18px 18px 16px;
+      text-align: center;
+    }
+    #winModalInner h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+      letter-spacing: 0.16em;
+    }
+    .highlight {
+      font-size: 14px;
+      color: #5ae08c;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="introOverlay">
+    <div id="introInner">
+      <h1>CITY SKYLINE SIM</h1>
+      <p>Zone, build services, set policies, and grow your city to 10,000,000 citizens.</p>
+      <p style="margin-top:8px;">Name your city:</p>
+      <input id="cityNameInput" type="text" placeholder="e.g. New Avalon">
+      <button id="startGameBtn" class="btn" style="width:100%; margin-top:10px;">Start</button>
+      <p style="margin-top:10px; font-size:11px; color:#9aa2d8;">
+        Timer only runs while this tab is active. No idle progress in the background.
+      </p>
+    </div>
+  </div>
+
+  <h1 id="pageTitle">CITY SKYLINE SIM</h1>
+  <div id="subtitle">Manage zoning, services, and policies to build a thriving metropolis.</div>
+
+  <div id="app">
+    <!-- LEFT: CITY OVERVIEW -->
+    <div class="panel">
+      <div class="panel-title" id="cityTitle">City Overview</div>
+      <div class="panel-subtitle">Population, budget, and happiness</div>
+
+      <div class="stat-row">
+        <span class="stat-label">Population</span>
+        <span class="stat-value" id="popStat">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Target Population</span>
+        <span class="stat-value" id="targetPopStat">10,000,000</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">City Budget</span>
+        <span class="stat-value" id="budgetStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Income / sec</span>
+        <span class="stat-value" id="incomeStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Expenses / sec</span>
+        <span class="stat-value" id="expenseStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Net / sec</span>
+        <span class="stat-value" id="netStat">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Happiness</span>
+        <span class="stat-value" id="happinessStat">50%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Traffic</span>
+        <span class="stat-value" id="trafficStat">Moderate</span>
+      </div>
+
+      <div id="timerRow">
+        <span>Active Time</span>
+        <span id="timerDisplay">00:00</span>
+      </div>
+
+      <div class="section-title">Manual Actions</div>
+      <div class="card">
+        <div class="card-row">
+          <span class="small">Promote city (small population boost)</span>
+          <button id="promoteBtn" class="btn secondary small">Run Campaign</button>
+        </div>
+        <div class="card-row">
+          <span class="small">Issue municipal bonds (+cash, +debt)</span>
+          <button id="bondBtn" class="btn secondary small">Issue Bonds</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE: ZONES & SERVICES -->
+    <div class="panel">
+      <div class="panel-title">Zoning</div>
+      <div class="panel-subtitle">Residential, commercial, and industrial growth</div>
+
+      <div id="zonesList"></div>
+
+      <div class="section-title">City Services</div>
+      <div class="small">Invest in services to boost happiness and growth (but watch expenses).</div>
+      <div id="servicesList"></div>
+    </div>
+
+    <!-- RIGHT: POLICIES & LOG -->
+    <div class="panel">
+      <div class="panel-title">Policies</div>
+      <div class="panel-subtitle">Adjust taxes and city-wide rules</div>
+
+      <div id="policiesList"></div>
+
+      <div class="section-title">Event Log</div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <div id="winModal">
+    <div id="winModalInner">
+      <h1>CITY COMPLETE</h1>
+      <div class="highlight">You reached 10,000,000 population.</div>
+      <div id="winTimeText" class="small" style="margin-bottom:6px;"></div>
+      <p class="small">Your skyline dominates the horizon. Keep managing or restart a new city.</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+        <button id="winContinueBtn" class="btn secondary small">Continue</button>
+        <button id="winRestartBtn" class="btn small">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ======= CORE STATE =======
+    const WIN_POPULATION = 10_000_000;
+
+    let population = 1_000;
+    let budget = 50_000;
+    let happiness = 50; // 0–100
+    let trafficLevel = 1; // 0 low, 1 moderate, 2 heavy
+
+    let incomePerSec = 0;
+    let expensePerSec = 0;
+
+    let gameStarted = false;
+    let gameWon = false;
+
+    let activePlaySeconds = 0;
+    let lastActiveTimestamp = null;
+    let tabActive = true;
+
+    let debt = 0;
+
+    const zones = [
+      {
+        id: "res_low",
+        name: "Low-Density Residential",
+        baseCost: 2_000,
+        cost: 2_000,
+        popPerTile: 80,
+        tiles: 0,
+        incomePerTile: 40,
+        trafficPerTile: 0.3
+      },
+      {
+        id: "res_high",
+        name: "High-Density Residential",
+        baseCost: 10_000,
+        cost: 10_000,
+        popPerTile: 500,
+        tiles: 0,
+        incomePerTile: 120,
+        trafficPerTile: 0.8
+      },
+      {
+        id: "com",
+        name: "Commercial Zone",
+        baseCost: 8_000,
+        cost: 8_000,
+        popPerTile: 0,
+        tiles: 0,
+        incomePerTile: 400,
+        trafficPerTile: 0.7
+      },
+      {
+        id: "ind",
+        name: "Industrial Zone",
+        baseCost: 12_000,
+        cost: 12_000,
+        popPerTile: 0,
+        tiles: 0,
+        incomePerTile: 700,
+        trafficPerTile: 1.0
+      }
+    ];
+
+    const services = [
+      {
+        id: "power",
+        name: "Power Plants",
+        baseCost: 20_000,
+        cost: 20_000,
+        level: 0,
+        expensePerLevel: 300,
+        effect: (state) => {
+          // Higher power level slightly boosts income and happiness
+          const boost = 1 + state.level * 0.05;
+          return { incomeMult: boost, happinessDelta: state.level * 1 };
+        }
+      },
+      {
+        id: "water",
+        name: "Water & Sewage",
+        baseCost: 15_000,
+        cost: 15_000,
+        level: 0,
+        expensePerLevel: 250,
+        effect: (state) => {
+          const boost = 1 + state.level * 0.04;
+          return { incomeMult: boost, happinessDelta: state.level * 1.5 };
+        }
+      },
+      {
+        id: "health",
+        name: "Healthcare",
+        baseCost: 25_000,
+        cost: 25_000,
+        level: 0,
+        expensePerLevel: 400,
+        effect: (state) => {
+          return { incomeMult: 1, happinessDelta: state.level * 3 };
+        }
+      },
+      {
+        id: "education",
+        name: "Education",
+        baseCost: 30_000,
+        cost: 30_000,
+        level: 0,
+        expensePerLevel: 450,
+        effect: (state) => {
+          const boost = 1 + state.level * 0.06;
+          return { incomeMult: boost, happinessDelta: state.level * 2 };
+        }
+      },
+      {
+        id: "transit",
+        name: "Public Transit",
+        baseCost: 40_000,
+        cost: 40_000,
+        level: 0,
+        expensePerLevel: 500,
+        effect: (state) => {
+          // Reduces traffic impact
+          return { incomeMult: 1, happinessDelta: state.level * 2.5, trafficReduction: state.level * 0.2 };
+        }
+      },
+      {
+        id: "police",
+        name: "Police & Fire",
+        baseCost: 35_000,
+        cost: 35_000,
+        level: 0,
+        expensePerLevel: 420,
+        effect: (state) => {
+          return { incomeMult: 1, happinessDelta: state.level * 2.5 };
+        }
+      }
+    ];
+
+    const policies = [
+      {
+        id: "tax_low",
+        name: "Low Taxes",
+        desc: "Lower taxes: +happiness, -income.",
+        active: false,
+        apply: (state) => {
+          if (state.active) {
+            return { incomeMult: 0.85, happinessDelta: 8 };
+          }
+          return { incomeMult: 1, happinessDelta: 0 };
+        }
+      },
+      {
+        id: "tax_high",
+        name: "High Taxes",
+        desc: "Higher taxes: -happiness, +income.",
+        active: false,
+        apply: (state) => {
+          if (state.active) {
+            return { incomeMult: 1.2, happinessDelta: -10 };
+          }
+          return { incomeMult: 1, happinessDelta: 0 };
+        }
+      },
+      {
+        id: "green",
+        name: "Green City",
+        desc: "Environmental focus: +happiness, -industrial income.",
+        active: false,
+        apply: (state) => {
+          if (state.active) {
+            return { happinessDelta: 6, industrialMult: 0.8 };
+          }
+          return { happinessDelta: 0, industrialMult: 1 };
+        }
+      },
+      {
+        id: "nightlife",
+        name: "Nightlife Districts",
+        desc: "Boost commercial income, slight traffic and happiness impact.",
+        active: false,
+        apply: (state) => {
+          if (state.active) {
+            return { commercialMult: 1.25, happinessDelta: 2, trafficDelta: 0.3 };
+          }
+          return { commercialMult: 1, happinessDelta: 0, trafficDelta: 0 };
+        }
+      }
+    ];
+
+    // ======= DOM =======
+    const popStat = document.getElementById("popStat");
+    const targetPopStat = document.getElementById("targetPopStat");
+    const budgetStat = document.getElementById("budgetStat");
+    const incomeStat = document.getElementById("incomeStat");
+    const expenseStat = document.getElementById("expenseStat");
+    const netStat = document.getElementById("netStat");
+    const happinessStat = document.getElementById("happinessStat");
+    const trafficStat = document.getElementById("trafficStat");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const cityTitle = document.getElementById("cityTitle");
+    const pageTitle = document.getElementById("pageTitle");
+
+    const zonesListEl = document.getElementById("zonesList");
+    const servicesListEl = document.getElementById("servicesList");
+    const policiesListEl = document.getElementById("policiesList");
+    const logEl = document.getElementById("log");
+
+    const promoteBtn = document.getElementById("promoteBtn");
+    const bondBtn = document.getElementById("bondBtn");
+
+    const introOverlay = document.getElementById("introOverlay");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const cityNameInput = document.getElementById("cityNameInput");
+
+    const winModal = document.getElementById("winModal");
+    const winTimeText = document.getElementById("winTimeText");
+    const winContinueBtn = document.getElementById("winContinueBtn");
+    const winRestartBtn = document.getElementById("winRestartBtn");
+
+    // ======= HELPERS =======
+    function formatNumber(v) {
+      if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+      if (v >= 1e6) return (v / 1e6).toFixed(2) + "M";
+      if (v >= 1e3) return (v / 1e3).toFixed(2) + "K";
+      return v.toFixed(0);
+    }
+
+    function formatMoney(v) {
+      const sign = v < 0 ? "-" : "";
+      return sign + "$" + formatNumber(Math.abs(v));
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function log(msg) {
+      const time = new Date().toLocaleTimeString();
+      logEl.textContent = `[${time}] ${msg}\n` + logEl.textContent;
+    }
+
+    function computeTrafficLevel() {
+      let traffic = 0;
+      zones.forEach(z => {
+        traffic += z.trafficPerTile * z.tiles;
+      });
+      const transitService = services.find(s => s.id === "transit");
+      if (transitService && transitService.level > 0) {
+        const eff = transitService.effect(transitService);
+        if (eff.trafficReduction) {
+          traffic = Math.max(0, traffic - eff.trafficReduction);
+        }
+      }
+      if (traffic < 20) return 0;
+      if (traffic < 60) return 1;
+      return 2;
+    }
+
+    function trafficLabel(level) {
+      if (level === 0) return "Low";
+      if (level === 1) return "Moderate";
+      return "Heavy";
+    }
+
+    function computeIncomeAndExpenses() {
+      let income = 0;
+      let expenses = 0;
+
+      let residentialIncome = 0;
+      let commercialIncome = 0;
+      let industrialIncome = 0;
+
+      zones.forEach(z => {
+        const base = z.incomePerTile * z.tiles;
+        if (z.id === "res_low" || z.id === "res_high") {
+          residentialIncome += base;
+        } else if (z.id === "com") {
+          commercialIncome += base;
+        } else if (z.id === "ind") {
+          industrialIncome += base;
+        }
+      });
+
+      services.forEach(s => {
+        expenses += s.level * s.expensePerLevel;
+      });
+
+      let incomeMult = 1;
+      let industrialMult = 1;
+      let commercialMult = 1;
+      let happinessDeltaFromPolicies = 0;
+      let trafficDeltaFromPolicies = 0;
+
+      policies.forEach(p => {
+        const eff = p.apply(p);
+        if (p.id === "tax_low" && p.active) {
+          incomeMult *= eff.incomeMult;
+          happinessDeltaFromPolicies += eff.happinessDelta;
+        }
+        if (p.id === "tax_high" && p.active) {
+          incomeMult *= eff.incomeMult;
+          happinessDeltaFromPolicies += eff.happinessDelta;
+        }
+        if (p.id === "green" && p.active) {
+          industrialMult *= eff.industrialMult;
+          happinessDeltaFromPolicies += eff.happinessDelta;
+        }
+        if (p.id === "nightlife" && p.active) {
+          commercialMult *= eff.commercialMult;
+          happinessDeltaFromPolicies += eff.happinessDelta;
+          trafficDeltaFromPolicies += eff.trafficDelta;
+        }
+      });
+
+      industrialIncome *= industrialMult;
+      commercialIncome *= commercialMult;
+
+      income = (residentialIncome + commercialIncome + industrialIncome) * incomeMult;
+
+      services.forEach(s => {
+        const eff = s.effect(s);
+        if (eff.incomeMult) {
+          income *= eff.incomeMult;
+        }
+      });
+
+      incomePerSec = income;
+      expensePerSec = expenses + debt * 0.0002;
+
+      let net = incomePerSec - expensePerSec;
+      return { incomePerSec, expensePerSec, net, happinessDeltaFromPolicies, trafficDeltaFromPolicies };
+    }
+
+    function computePopulationGrowth() {
+      let baseGrowth = 0;
+
+      zones.forEach(z => {
+        if (z.id === "res_low" || z.id === "res_high") {
+          baseGrowth += z.popPerTile * z.tiles * 0.0005;
+        }
+      });
+
+      const { incomePerSec, expensePerSec } = computeIncomeAndExpenses();
+      const net = incomePerSec - expensePerSec;
+
+      if (net < 0) baseGrowth *= 0.3;
+      if (happiness < 40) baseGrowth *= 0.4;
+      if (happiness > 70) baseGrowth *= 1.4;
+
+      const traffic = computeTrafficLevel();
+      if (traffic === 2) baseGrowth *= 0.5;
+
+      return baseGrowth;
+    }
+
+    // ======= RENDER =======
+    function updateStats() {
+      const { incomePerSec: inc, expensePerSec: exp, net } = computeIncomeAndExpenses();
+      incomePerSec = inc;
+      expensePerSec = exp;
+
+      popStat.textContent = formatNumber(population);
+      budgetStat.textContent = formatMoney(budget);
+      incomeStat.textContent = formatMoney(incomePerSec);
+      expenseStat.textContent = formatMoney(expensePerSec);
+      netStat.textContent = formatMoney(net);
+      happinessStat.textContent = Math.round(happiness) + "%";
+      trafficLevel = computeTrafficLevel();
+      trafficStat.textContent = trafficLabel(trafficLevel);
+      timerDisplay.textContent = formatTime(activePlaySeconds);
+
+      if (!gameWon && population >= WIN_POPULATION) {
+        triggerWin();
+      }
+    }
+
+    function renderZones() {
+      zonesListEl.innerHTML = "";
+      zones.forEach(z => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = z.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Tiles: ${z.tiles}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        const popText = (z.id === "res_low" || z.id === "res_high")
+          ? `Pop/tile: ${z.popPerTile}`
+          : "Pop/tile: 0";
+        row1.innerHTML =
+          `<span>${popText}</span><span>Income/tile: ${formatMoney(z.incomePerTile)}</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Zone cost: " + formatMoney(z.cost);
+        const buyBtn = document.createElement("button");
+        buyBtn.className = "btn secondary small";
+        buyBtn.textContent = "Add Tile";
+        buyBtn.onclick = () => {
+          if (!gameStarted) return;
+          if (budget >= z.cost) {
+            budget -= z.cost;
+            z.tiles += 1;
+            z.cost = z.baseCost * Math.pow(1.15, z.tiles);
+            log(`Zoned 1 tile of ${z.name}.`);
+            updateStats();
+            renderZones();
+          }
+        };
+        row2.appendChild(costSpan);
+        row2.appendChild(buyBtn);
+        card.appendChild(row2);
+
+        zonesListEl.appendChild(card);
+      });
+    }
+
+    function renderServices() {
+      servicesListEl.innerHTML = "";
+      services.forEach(s => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = s.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = `Level: ${s.level}`;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row1 = document.createElement("div");
+        row1.className = "card-row";
+        row1.innerHTML =
+          `<span>Expense/level: ${formatMoney(s.expensePerLevel)}</span><span>Total expense: ${formatMoney(s.expensePerLevel * s.level)}</span>`;
+        card.appendChild(row1);
+
+        const row2 = document.createElement("div");
+        row2.className = "card-row";
+        const costSpan = document.createElement("span");
+        costSpan.textContent = "Upgrade cost: " + formatMoney(s.cost);
+        const upBtn = document.createElement("button");
+        upBtn.className = "btn secondary small";
+        upBtn.textContent = "Upgrade";
+        upBtn.onclick = () => {
+          if (!gameStarted) return;
+          if (budget >= s.cost) {
+            budget -= s.cost;
+            s.level += 1;
+            s.cost = s.baseCost * Math.pow(1.2, s.level);
+            log(`Upgraded ${s.name} to level ${s.level}.`);
+            updateStats();
+            renderServices();
+          }
+        };
+        row2.appendChild(costSpan);
+        row2.appendChild(upBtn);
+        card.appendChild(row2);
+
+        servicesListEl.appendChild(card);
+      });
+    }
+
+    function renderPolicies() {
+      policiesListEl.innerHTML = "";
+      policies.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card" + (p.active ? " policy-active" : "");
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = p.name;
+        const sub = document.createElement("div");
+        sub.className = "card-sub";
+        sub.textContent = p.desc;
+        header.appendChild(title);
+        header.appendChild(sub);
+        card.appendChild(header);
+
+        const row = document.createElement("div");
+        row.className = "card-row";
+        const info = document.createElement("span");
+        info.textContent = p.active ? "Active" : "Inactive";
+        const btn = document.createElement("button");
+        btn.className = "btn secondary small";
+        btn.textContent = p.active ? "Disable" : "Enable";
+        btn.onclick = () => {
+          if (!gameStarted) return;
+          p.active = !p.active;
+          log(`${p.name} ${p.active ? "enabled" : "disabled"}.`);
+          updateStats();
+          renderPolicies();
+        };
+        row.appendChild(info);
+        row.appendChild(btn);
+        card.appendChild(row);
+
+        policiesListEl.appendChild(card);
+      });
+    }
+
+    // ======= WIN =======
+    function triggerWin() {
+      gameWon = true;
+      winTimeText.textContent = "Time to 10,000,000 population: " + formatTime(activePlaySeconds);
+      winModal.style.display = "flex";
+      log("Your city reached 10,000,000 population!");
+    }
+
+    // ======= LOOPS & EVENTS =======
+    function cityLoop() {
+      if (!gameStarted || !tabActive) return;
+
+      const { incomePerSec: inc, expensePerSec: exp } = computeIncomeAndExpenses();
+      const net = inc - exp;
+      budget += net;
+
+      const growth = computePopulationGrowth();
+      population += growth;
+
+      let happinessChange = 0;
+      services.forEach(s => {
+        const eff = s.effect(s);
+        if (eff.happinessDelta) happinessChange += eff.happinessDelta * 0.01;
+      });
+
+      policies.forEach(p => {
+        const eff = p.apply(p);
+        if (eff.happinessDelta) happinessChange += eff.happinessDelta * 0.02;
+      });
+
+      const traffic = computeTrafficLevel();
+      if (traffic === 2) happinessChange -= 0.4;
+      if (traffic === 1) happinessChange -= 0.1;
+
+      if (net < 0) happinessChange -= 0.2;
+
+      happiness += happinessChange;
+      happiness = Math.max(0, Math.min(100, happiness));
+
+      updateStats();
+    }
+
+    function timerLoop() {
+      if (!gameStarted) return;
+
+      if (tabActive) {
+        if (lastActiveTimestamp === null) {
+          lastActiveTimestamp = Date.now();
+        }
+        const now = Date.now();
+        const delta = Math.floor((now - lastActiveTimestamp) / 1000);
+        if (delta > 0) {
+          activePlaySeconds += delta;
+          lastActiveTimestamp = now;
+        }
+      } else {
+        lastActiveTimestamp = null;
+      }
+
+      updateStats();
+    }
+
+    setInterval(cityLoop, 1000);
+    setInterval(timerLoop, 1000);
+
+    document.addEventListener("visibilitychange", () => {
+      tabActive = document.visibilityState === "visible";
+    });
+
+    promoteBtn.onclick = () => {
+      if (!gameStarted) return;
+      const boost = Math.max(500, population * 0.01);
+      population += boost;
+      budget -= 5_000;
+      log(`You ran a city promotion campaign. Population +${formatNumber(boost)}, budget -$5,000.`);
+      updateStats();
+    };
+
+    bondBtn.onclick = () => {
+      if (!gameStarted) return;
+      const amount = 100_000;
+      budget += amount;
+      debt += amount;
+      log(`You issued municipal bonds for ${formatMoney(amount)}. Debt increased.`);
+      updateStats();
+    };
+
+    // ======= INTRO & WIN CONTROLS =======
+    startGameBtn.onclick = () => {
+      const name = cityNameInput.value.trim();
+      if (name.length > 0) {
+        cityTitle.textContent = name;
+        pageTitle.textContent = name.toUpperCase();
+      }
+      introOverlay.style.display = "none";
+      document.getElementById("app").style.display = "grid";
+      gameStarted = true;
+      lastActiveTimestamp = Date.now();
+      updateStats();
+      log("Welcome, Mayor. Start zoning and building your skyline.");
+    };
+
+    winContinueBtn.onclick = () => {
+      winModal.style.display = "none";
+    };
+
+    winRestartBtn.onclick = () => {
+      location.reload();
+    };
+
+    // ======= INIT =======
+    targetPopStat.textContent = formatNumber(WIN_POPULATION);
+    updateStats();
+    renderZones();
+    renderServices();
+    renderPolicies();
+    log("Name your city to begin.");
+  </script>
+</body>
+</html>
+sdf
