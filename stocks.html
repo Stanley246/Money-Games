@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Stock Sim – Race to a Billion</title>
+  <title>Stock Sim – Race to 10 Million</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -350,7 +350,7 @@
   <div id="introOverlay">
     <div id="introInner">
       <h1>STOCK SIM</h1>
-      <p>Trade stocks and crypto, manage risk, and see how fast you can hit $1,000,000,000 net worth.</p>
+      <p>Trade stocks and crypto, manage risk, and see how fast you can hit $10,000,000 net worth.</p>
       <p style="margin-top:8px;">Name your fund:</p>
       <input id="empireNameInput" type="text" placeholder="e.g. Alpha Capital">
       <button id="startGameBtn" class="btn" style="width:100%; margin-top:8px;">Start</button>
@@ -368,7 +368,7 @@
       <div class="panel-header">
         <div class="panel-title" id="playerTitle">Your Fund</div>
         <div class="panel-subtitle">
-          Race to $1B • <span id="timerDisplay">00:00</span>
+          Race to $10 Mil • <span id="timerDisplay">00:00</span>
         </div>
       </div>
 
@@ -464,9 +464,9 @@
     <div id="winModalGlow" style="position:absolute; inset:0; background: radial-gradient(circle at center, rgba(90,224,140,0.18) 0, transparent 55%); pointer-events:none;"></div>
     <div id="winModalInner" style="position:relative; background: radial-gradient(circle at top, #1f2750 0, #050712 70%); border-radius: 20px; border: 1.5px solid #5b9dff; padding: 28px 32px; max-width: 480px; text-align: center; box-shadow: 0 26px 70px rgba(0,0,0,0.85); color: #e6ebff;">
       <h1 style="margin:0 0 10px 0; font-size:32px; letter-spacing:0.08em; text-transform:uppercase;">YOU WON</h1>
-      <div class="highlight" style="font-size:18px; color:#5ae08c; margin-bottom:10px;">You hit $1,000,000,000 net worth.</div>
+      <div class="highlight" style="font-size:18px; color:#5ae08c; margin-bottom:10px;">You hit $10,000,000 net worth.</div>
       <div id="winTimeText" style="font-size:14px; color:#b7c5ff; margin-bottom:18px;"></div>
-      <p style="margin:0 0 18px 0; font-size:16px; color:#c3cffc;">You raced to a billion. Want to run it back or keep trading?</p>
+      <p style="margin:0 0 18px 0; font-size:16px; color:#c3cffc;">You raced to 10 Million. Want to run it back or keep trading?</p>
       <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
         <button id="winContinueBtn" class="btn secondary">Continue</button>
         <button id="winRestartBtn" class="btn">Play again</button>
