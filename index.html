@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Money Games</title>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
 
@@ -339,6 +338,8 @@ html {
             letter-spacing: 1px;
         }
     </style>
+
+
 </head>
 
 <body>
@@ -349,13 +350,10 @@ html {
         <div>
             <span id="userDisplay"></span>
             <span id="balanceDisplay"></span>
-        <!--    <a href="#">Home</a>
-            <a href="#games">Games</a>-->
-            <a href="about.html" >About</a>
-            <!--<a href="#" id="openLeaderboard">Leaderboard</a>-->
+            <a href="about.html">About</a>
             <a href="#" id="openMission">Daily Mission</a>
-            <a href="comments.html" >Comments</a>
-           <a href="contributors.html" >Contributors</a>
+            <a href="comments.html">Comments</a>
+            <a href="contributors.html">Contributors</a>
             <button id="loginBtn">Login</button>
             <button id="claimRewardNavBtn" class="disabled">Claim Reward</button>
         </div>
@@ -367,141 +365,137 @@ html {
         <p>Jump into a universe of fun. Choose a game and start Making Money instantly.</p>
     </section>
 
-<!-- GAME SECTION -->
-<section id="games" class="games-section">
-    <h2 class="games-title">Available Games</h2>
-    <button id="openLeaderboard" class="leaderboardBtn">Leaderboard</button>
+    <!-- GAME SECTION -->
+    <section id="games" class="games-section">
+        <h2 class="games-title">Available Games</h2>
+        <button id="openLeaderboard" class="leaderboardBtn">Leaderboard</button>
 
-    <div class="game-grid">
+        <div class="game-grid">
 
-        <a class="game-card" href="race_to_a_billion.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1759074558512-da6322c07f8c?q=80&w=2070&auto=format&fit=crop">
-            <h3>Race To A Billion</h3>
-            <p>Master the markets and outmanoeuvre your rivals.</p>
-        </a>
+            <a class="game-card" href="race_to_a_billion.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1759074558512-da6322c07f8c?q=80&w=2070&auto=format&fit=crop">
+                <h3>Race To A Billion</h3>
+                <p>Master the markets and outmanoeuvre your rivals.</p>
+            </a>
 
-        <a class="game-card" href="race_to_a_trillion.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1759074558477-6f35e3a5eb30?q=80&w=2070&auto=format&fit=crop">
-            <h3>Race To A Trillion</h3>
-            <p>Build a global empire and reach the trillion‑dollar milestone.</p>
-        </a>
+            <a class="game-card" href="race_to_a_trillion.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1759074558477-6f35e3a5eb30?q=80&w=2070&auto=format&fit=crop">
+                <h3>Race To A Trillion</h3>
+                <p>Build a global empire and reach the trillion‑dollar milestone.</p>
+            </a>
 
-        <a class="game-card" href="real_estate_tycoon_v1.html" target="_blank">
-            <img src="https://plus.unsplash.com/premium_photo-1661947115071-731aaa568bc3?q=80&w=2055&auto=format&fit=crop">
-            <h3>Real Estate Tycoon</h3>
-            <p>Flip properties and dominate the housing market.</p>
-        </a>
+            <a class="game-card" href="real_estate_tycoon_v1.html" target="_blank">
+                <img src="https://plus.unsplash.com/premium_photo-1661947115071-731aaa568bc3?q=80&w=2055&auto=format&fit=crop">
+                <h3>Real Estate Tycoon</h3>
+                <p>Flip properties and dominate the housing market.</p>
+            </a>
 
-        <a class="game-card" href="real_estate_tycoon_v2.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1741796127170-eacd847682e7?q=80&w=2832&auto=format&fit=crop">
-            <h3>Real Estate Tycoon V2</h3>
-            <p>Flip properties and dominate the housing market. (upgraded/V2)</p>
-        </a>
+            <a class="game-card" href="real_estate_tycoon_v2.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1741796127170-eacd847682e7?q=80&w=2832&auto=format&fit=crop">
+                <h3>Real Estate Tycoon V2</h3>
+                <p>Flip properties and dominate the housing market. (upgraded/V2)</p>
+            </a>
 
-        <a class="game-card" href="stocks.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1745270917233-65e776a47547?q=80&w=2070&auto=format&fit=crop">
-            <h3>Stock Market Tycoon</h3>
-            <p>Flip Shares and Crypto To Reach A Billion Net worth.</p>
-        </a>
+            <a class="game-card" href="stocks.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1745270917233-65e776a47547?q=80&w=2070&auto=format&fit=crop">
+                <h3>Stock Market Tycoon</h3>
+                <p>Flip Shares and Crypto To Reach A Billion Net worth.</p>
+            </a>
 
-        <a class="game-card" href="https://phcode.site/p/p-4b2d1493a58/explore/index.html" target="_blank">
-            <img src="https://plus.unsplash.com/premium_photo-1679082307672-02ebf0ba9b9a?w=900&auto=format&fit=crop&q=60">
-            <h3>Black Jack</h3>
-            <p>Back-alley bets to high-roller suites: Master the deck and own the floor.</p>
-        </a>
+            <a class="game-card" href="https://phcode.site/p/p-4b2d1493a58/explore/index.html" target="_blank">
+                <img src="https://plus.unsplash.com/premium_photo-1679082307672-02ebf0ba9b9a?w=900&auto=format&fit=crop&q=60">
+                <h3>Black Jack</h3>
+                <p>Back-alley bets to high-roller suites: Master the deck and own the floor.</p>
+            </a>
 
-        <a class="game-card" href="https://phcode.site/p/p-84dcc2e378d/default%20project/index.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1617994452722-4145e196248b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVkaW8lMjB3YXZlc3xlbnwwfHwwfHx8MA%3D%3D">
-            <h3>Texas Hold'Em</h3>
-            <p>Build a stack through patience, discipline, and calculated risks.</p>
-        </a>
-     
+            <a class="game-card" href="https://phcode.site/p/p-84dcc2e378d/default%20project/index.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1617994452722-4145e196248b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVkaW8lMjB3YXZlc3xlbnwwfHwwfHx8MA%3D%3D">
+                <h3>Texas Hold'Em</h3>
+                <p>Build a stack through patience, discipline, and calculated risks.</p>
+            </a>
 
-<a class="game-card" href="https://phcode.site/p/p-4b2d1493a58/explore/fortune-cookie-generator.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1504704911898-68304a7d2807?q=80&w=2940&auto=format&fit=crop">
-            <h3>Life Sim</h3>
-            <p>Master your timeline through routine, choices, and strategic risks.</p>
-        </a>
-                  <a class="game-card" href="https://phcode.site/p/p-29824be58fe/Phoenix%20Code/index.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1625905928324-577cf7f94ac4?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>F1 Manager Tycoon</h3>
-            <p>Podiums are earned in milliseconds. Every choice shapes your legacy.
-</p>
-      
-              
-        <a class="game-card" href="side_hustle_tycoon.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1663237763499-b03856894b1a?q=80&w=2070&auto=format&fit=crop">
-            <h3>Side Hustle Tycoon</h3>
-            <p>Still Being Developed!!!</p>
-        </a>
-                  <a class="game-card" href="tropico_island.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1672841828482-45faa4c70e50?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHJvcGljYWwlMjBpc2xhbmR8ZW58MHx8MHx8fDA%3D">
-            <h3>Tropico Island Sim</h3>
-            <p>Still Being Developed!!!</p>
-        </a>
-    <a class="game-card" href="career_sim.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1766218326892-4b261b02a03f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fHN0b2NrJTIwY2hhcnR8ZW58MHx8MHx8fDA%3D">
-            <h3>Career Sim</h3>
-            <p>Still Being Developed!!!</p>
-        </a>
+            <a class="game-card" href="https://phcode.site/p/p-4b2d1493a58/explore/fortune-cookie-generator.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1504704911898-68304a7d2807?q=80&w=2940&auto=format&fit=crop">
+                <h3>Life Sim</h3>
+                <p>Master your timeline through routine, choices, and strategic risks.</p>
+            </a>
 
-        </a>
-        <a class="game-card" href="bank_fund_tycoon.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1628763228263-d9ebb07bd0d9?q=80&w=2070&auto=format&fit=crop">
-            <h3>Bank Fund Tycoon</h3>
-            <p>Still Being Developed!!!</p>
-        </a>
+            <a class="game-card" href="https://phcode.site/p/p-29824be58fe/Phoenix%20Code/index.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1625905928324-577cf7f94ac4?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>F1 Manager Tycoon</h3>
+                <p>Podiums are earned in milliseconds. Every choice shapes your legacy.</p>
+            </a>
 
+            <a class="game-card" href="side_hustle_tycoon.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1663237763499-b03856894b1a?q=80&w=2070&auto=format&fit=crop">
+                <h3>Side Hustle Tycoon</h3>
+                <p>Still Being Developed!!!</p>
+            </a>
 
-  <a class="game-card" href="offshore_empire.html" target="_blank">
-            <img src="https://images.unsplash.com/photo-1758129949419-c296cead04c3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGFyZ2UlMjBvaWxyaWdzfGVufDB8fDB8fHww">
-            <h3>Offshore Empire</h3>
-            <p>Still Being Developed!!!</p>
-        </a>
- 
-        <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1690815592101-e95ff0236d3d?q=80&w=2032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>City Sky Line</h3>
-            <p>Coming Soon!!!</p>
-        </a>
+            <a class="game-card" href="tropico_island.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1672841828482-45faa4c70e50?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHJvcGljYWwlMjBpc2xhbmR8ZW58MHx8MHx8fDA%3D">
+                <h3>Tropico Island Sim</h3>
+                <p>Still Being Developed!!!</p>
+            </a>
 
-      
-        <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>Crypto Exchange Tycoon</h3>
-            <p>Coming Soon!!!</p>
-        </a>
+            <a class="game-card" href="career_sim.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1766218326892-4b261b02a03f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fHN0b2NrJTIwY2hhcnR8ZW58MHx8MHx8fDA%3D">
+                <h3>Career Sim</h3>
+                <p>Still Being Developed!!!</p>
+            </a>
+
+            <a class="game-card" href="bank_fund_tycoon.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1628763228263-d9ebb07bd0d9?q=80&w=2070&auto=format&fit=crop">
+                <h3>Bank Fund Tycoon</h3>
+                <p>Still Being Developed!!!</p>
+            </a>
+
+            <a class="game-card" href="offshore_empire.html" target="_blank">
+                <img src="https://images.unsplash.com/photo-1758129949419-c296cead04c3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGFyZ2UlMjBvaWxyaWdzfGVufDB8fDB8fHww">
+                <h3>Offshore Empire</h3>
+                <p>Still Being Developed!!!</p>
+            </a>
+
             <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>Crypto Exchange Tycoon</h3>
-            <p>Coming Soon!!!</p>
-        </a>
-            <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>Crypto Exchange Tycoon</h3>
-            <p>Coming Soon!!!</p>
-        </a>
-            <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>Crypto Exchange Tycoon</h3>
-            <p>Coming Soon!!!</p>
-        </a>
-            <a class="game-card" href="#" target="_blank">
-            <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            <h3>Crypto Exchange Tycoon</h3>
-            <p>Coming Soon!!!</p>
-        </a>
+                <img src="https://images.unsplash.com/photo-1690815592101-e95ff0236d3d?q=80&w=2032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>City Sky Line</h3>
+                <p>Coming Soon!!!</p>
+            </a>
 
-    </div>
+            <a class="game-card" href="#" target="_blank">
+                <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>Crypto Exchange Tycoon</h3>
+                <p>Coming Soon!!!</p>
+            </a>
 
-    <div style="display: flex; justify-content: center; text-align: center;">
-        <p>If you beat a record and want to be added to the leaderboard, email us! (On the about page)</p>
-    </div>
-</section>
+            <a class="game-card" href="#" target="_blank">
+                <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>Crypto Exchange Tycoon</h3>
+                <p>Coming Soon!!!</p>
+            </a>
 
-<footer>
-    © 2026 Money Games — All Rights Reserved
-</footer>
+            <a class="game-card" href="#" target="_blank">
+                <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>Crypto Exchange Tycoon</h3>
+                <p>Coming Soon!!!</p>
+            </a>
+
+            <a class="game-card" href="#" target="_blank">
+                <img src="https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>Crypto Exchange Tycoon</h3>
+                <p>Coming Soon!!!</p>
+            </a>
+
+        </div>
+
+        <div style="display: flex; justify-content: center; text-align: center;">
+            <p>If you beat a record and want to be added to the leaderboard, email us! (On the about page)</p>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 Money Games — All Rights Reserved
+    </footer>
 
     <!-- LOGIN / SIGNUP MODAL -->
     <div class="modal" id="loginModal">
@@ -509,11 +503,15 @@ html {
             <span class="close" onclick="closeLogin()">&times;</span>
             <h2>Sign in / Sign up</h2>
             <input id="email" type="email" placeholder="Enter email">
-            <input id="username" placeholder="Enter username">
+            <input id="username" placeholder="Enter username (for new accounts)">
             <input id="password" type="password" placeholder="Enter password">
+            <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;">
+                <input id="updatesOptIn" type="checkbox">
+                <span>Send me updates when new games are released</span>
+            </label>
             <button onclick="handleAuth()">Continue</button>
             <p style="margin-top:10px; font-size:14px; opacity:0.8;">
-                If this email already has an account, you'll be logged in.  
+                If this email already has an account, you'll be logged in.<br>
                 If not, a new account will be created.
             </p>
         </div>
@@ -558,577 +556,529 @@ html {
             <p class="reward-meta" id="missionHint"></p>
         </div>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
+    <script>
+    // ---------- SUPABASE CLIENT ----------
+    const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function loadLeaderboard() {
-    const { data } = await db
-        .from("game_leaderboard")
-        .select("*")
-        .order("score", { ascending: false });
+    // ---------- GLOBAL STATE ----------
+    let currentUser = null; // this will hold the row from profiles
 
-    renderLeaderboard(data);
-}
+    // ---------- DOM ELEMENTS ----------
+    const loginModal = document.getElementById("loginModal");
+    const leaderboardModal = document.getElementById("leaderboardModal");
+    const dailyRewardModal = document.getElementById("dailyRewardModal");
+    const missionModal = document.getElementById("missionModal");
 
-function renderLeaderboard(rows) {
-    const box = document.getElementById("openleaderboard");
-    box.innerHTML = "";
+    const heroTitle = document.getElementById("heroTitle");
+    const loginBtn = document.getElementById("loginBtn");
+    const userDisplay = document.getElementById("userDisplay");
+    const balanceDisplay = document.getElementById("balanceDisplay");
 
-    rows.forEach(row => {
-        const div = document.createElement("div");
-        div.className = "leader-row";
-        div.innerHTML = `
-            <span><strong>${row.game_id}</strong></span>
-            <span>${row.player_name}</span>
-            <span>${row.score}</span>
-        `;
-        box.appendChild(div);
-    });
-}
+    const claimRewardBtn = document.getElementById("claimRewardBtn");
+    const claimRewardNavBtn = document.getElementById("claimRewardNavBtn");
 
-db.channel("game_leaderboard")
-  .on("postgres_changes", { event: "*", schema: "public", table: "game_leaderboard" }, loadLeaderboard)
-  .subscribe();
+    const rewardWelcome = document.getElementById("rewardWelcome");
+    const rewardAmountDisplay = document.getElementById("rewardAmountDisplay");
+    const streakDisplay = document.getElementById("streakDisplay");
+    const missionBonusInfo = document.getElementById("missionBonusInfo");
+    const nextClaimInfo = document.getElementById("nextClaimInfo");
 
-loadLeaderboard();
-</script>
+    const missionGameDisplay = document.getElementById("missionGameDisplay");
+    const missionStatusDisplay = document.getElementById("missionStatusDisplay");
+    const missionHint = document.getElementById("missionHint");
 
+    const updatesOptIn = document.getElementById("updatesOptIn");
 
-<script>
-/* AUTH + UI ELEMENTS */
-const loginModal = document.getElementById("loginModal");
-const leaderboardModal = document.getElementById("leaderboardModal");
-const dailyRewardModal = document.getElementById("dailyRewardModal");
-const missionModal = document.getElementById("missionModal");
+    // ---------- MISSION GAME POOL ----------
+    const missionGames = [
+        { id: "race_to_a_billion", name: "Race To A Billion" },
+        { id: "race_to_a_trillion", name: "Race To A Trillion" },
+        { id: "real_estate_tycoon_v1", name: "Real Estate Tycoon (V1)" },
+        { id: "real_estate_tycoon_v2", name: "Real Estate Tycoon (V2)" },
+        { id: "bank_fund_tycoon", name: "Bank Fund Tycoon" }
+    ];
 
-const heroTitle = document.getElementById("heroTitle");
-const loginBtn = document.getElementById("loginBtn");
-const userDisplay = document.getElementById("userDisplay");
-const balanceDisplay = document.getElementById("balanceDisplay");
+    // ---------- HELPERS ----------
+    function closeLogin() { loginModal.style.display = "none"; }
+    function closeLeaderboard() { leaderboardModal.style.display = "none"; }
+    function closeDailyReward() { dailyRewardModal.style.display = "none"; }
+    function closeMission() { missionModal.style.display = "none"; }
 
-const claimRewardBtn = document.getElementById("claimRewardBtn");
-const claimRewardNavBtn = document.getElementById("claimRewardNavBtn");
-
-const rewardWelcome = document.getElementById("rewardWelcome");
-const rewardAmountDisplay = document.getElementById("rewardAmountDisplay");
-const streakDisplay = document.getElementById("streakDisplay");
-const missionBonusInfo = document.getElementById("missionBonusInfo");
-const nextClaimInfo = document.getElementById("nextClaimInfo");
-
-const missionGameDisplay = document.getElementById("missionGameDisplay");
-const missionStatusDisplay = document.getElementById("missionStatusDisplay");
-const missionHint = document.getElementById("missionHint");
-
-/* MISSION GAME POOL */
-const missionGames = [
-    { id: "race_to_a_billion", name: "Race To A Billion" },
-    { id: "race_to_a_trillion", name: "Race To A Trillion" },
-    { id: "real_estate_tycoon_v1", name: "Real Estate Tycoon (V1)" },
-    { id: "real_estate_tycoon_v2", name: "Real Estate Tycoon (V2)" },
-    { id: "bank_fund_tycoon", name: "Bank Fund Tycoon" }
-];
-
-/* NAVBAR LOGIN */
-loginBtn.onclick = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (currentUser) {
-        logout();
-    } else {
-        loginModal.style.display = "flex";
-    }
-};
-
-function closeLogin() { loginModal.style.display = "none"; }
-
-/* HELPERS */
-function saveUserToStorage(user) {
-    let users = JSON.parse(localStorage.getItem("users") || "[]");
-    const idx = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
-    if (idx !== -1) {
-        users[idx] = user;
-    } else {
-        users.push(user);
-    }
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("currentUser", JSON.stringify(user));
-}
-
-function formatMoney(amount) {
-    return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
-}
-
-function sameDay(d1, d2) {
-    return d1.getFullYear() === d2.getFullYear() &&
-           d1.getMonth() === d2.getMonth() &&
-           d1.getDate() === d2.getDate();
-}
-
-/* ASSIGN / UPDATE DAILY MISSION */
-function ensureMissionForToday(user) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    if (!user.missionDate || !user.missionGameId) {
-        const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.missionGameId = random.id;
-        user.missionGameName = random.name;
-        user.missionDate = today.toISOString();
-        user.missionCompleted = false;
-        saveUserToStorage(user);
-        return user;
+    function formatMoney(amount) {
+        return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
     }
 
-    const missionDate = new Date(user.missionDate);
-    const missionDay = new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate());
-
-    if (!sameDay(today, missionDay)) {
-        const random = missionGames[Math.floor(Math.random() * missionGames.length)];
-        user.missionGameId = random.id;
-        user.missionGameName = random.name;
-        user.missionDate = today.toISOString();
-        user.missionCompleted = false;
-        saveUserToStorage(user);
+    function sameDay(d1, d2) {
+        return d1.getFullYear() === d2.getFullYear() &&
+               d1.getMonth() === d2.getMonth() &&
+               d1.getDate() === d2.getDate();
     }
 
-    return user;
-}
-
-/* SYNC MISSION COMPLETION FROM GAMES */
-function syncMissionCompletion(user) {
-    const completedGameId = localStorage.getItem("missionCompleteGame");
-    if (!completedGameId) return user;
-
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
-
-    if (missionDate && sameDay(today, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        if (completedGameId === user.missionGameId) {
-            user.missionCompleted = true;
-            saveUserToStorage(user);
-        }
+    async function saveCurrentUser() {
+        if (!currentUser) return;
+        await db.from("profiles").update({
+            balance: currentUser.balance,
+            streak: currentUser.streak,
+            last_claim: currentUser.last_claim,
+            mission_game_id: currentUser.mission_game_id,
+            mission_game_name: currentUser.mission_game_name,
+            mission_date: currentUser.mission_date,
+            mission_completed: currentUser.mission_completed,
+            wants_updates: currentUser.wants_updates
+        }).eq("id", currentUser.id);
     }
 
-    localStorage.removeItem("missionCompleteGame");
-    return user;
-}
-
-/* REWARD STATE CALCULATION */
-function getRewardState(user) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = user.lastClaim ? new Date(user.lastClaim) : null;
-
-    let canClaim = false;
-    let streak = user.streak || 0;
-
-    if (!lastClaimDate) {
-        canClaim = true;
-    } else {
-        const lastDay = new Date(lastClaimDate.getFullYear(), lastClaimDate.getMonth(), lastClaimDate.getDate());
-        const diffDays = Math.round((today - lastDay) / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            canClaim = false;
-        } else if (diffDays === 1) {
-            canClaim = true;
-        } else if (diffDays > 1) {
-            streak = 0;
-            user.streak = 0;
-            saveUserToStorage(user);
-            canClaim = true;
-        }
-    }
-
-    const baseReward = 1000;
-    const previewStreak = canClaim ? (streak + 1) : streak;
-    let rewardAmount = baseReward + previewStreak * 200;
-
-    const nowDate = new Date();
-    const missionDate = user.missionDate ? new Date(user.missionDate) : null;
-    let missionActiveToday = false;
-    if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        missionActiveToday = true;
-    }
-
-    const missionCompletedToday = missionActiveToday && user.missionCompleted;
-
-    if (canClaim && missionCompletedToday) {
-        rewardAmount = rewardAmount * 2;
-    }
-
-    const nextRewardAmount = baseReward + (previewStreak + 1) * 200;
-
-    return {
-        canClaim,
-        streak,
-        rewardAmount,
-        nextRewardAmount,
-        missionActiveToday,
-        missionCompletedToday
-    };
-}
-
-/* UPDATE NAV CLAIM BUTTON */
-function updateRewardButtonState(user) {
-    if (!user) {
-        claimRewardNavBtn.textContent = "Claim Reward";
-        claimRewardNavBtn.classList.add("disabled");
-        claimRewardNavBtn.classList.remove("bouncing");
-        return;
-    }
-
-    const state = getRewardState(user);
-
-    if (state.canClaim) {
-        claimRewardNavBtn.textContent = "Claim Reward";
-        claimRewardNavBtn.classList.remove("disabled");
-        claimRewardNavBtn.classList.add("bouncing");
-    } else {
-        claimRewardNavBtn.classList.add("disabled");
-        claimRewardNavBtn.classList.remove("bouncing");
-        claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(state.nextRewardAmount);
-    }
-}
-
-/* LOCALSTORAGE AUTH SYSTEM */
-function handleAuth() {
-    const email = document.getElementById("email").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-        alert("Email and password are required.");
-        return;
-    }
-
-    let users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    let existingByEmail = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (existingByEmail) {
-        if (existingByEmail.password !== password) {
-            alert("Incorrect password.");
+    function updateUIForLogin(user) {
+        if (!user) {
+            heroTitle.textContent = "Welcome to MoneyGames.work.gd";
+            loginBtn.textContent = "Login";
+            userDisplay.textContent = "";
+            balanceDisplay.textContent = "";
+            updateRewardButtonState(null);
             return;
         }
 
-        if (existingByEmail.balance == null) existingByEmail.balance = 0;
-        if (existingByEmail.streak == null) existingByEmail.streak = 0;
-        if (!existingByEmail.lastClaim) existingByEmail.lastClaim = null;
-        if (!existingByEmail.missionGameId) existingByEmail.missionGameId = null;
-        if (!existingByEmail.missionGameName) existingByEmail.missionGameName = null;
-        if (!existingByEmail.missionDate) existingByEmail.missionDate = null;
-        if (existingByEmail.missionCompleted == null) existingByEmail.missionCompleted = false;
-
-        existingByEmail = ensureMissionForToday(existingByEmail);
-        existingByEmail = syncMissionCompletion(existingByEmail);
-
-        localStorage.setItem("currentUser", JSON.stringify(existingByEmail));
-        updateUIForLogin(existingByEmail);
-        closeLogin();
-        return;
+        heroTitle.textContent = "Welcome to MoneyGames.work.gd";
+        loginBtn.textContent = "Logout";
+        userDisplay.textContent = user.username || "";
+        const balance = user.balance || 0;
+        balanceDisplay.textContent = "Balance: " + formatMoney(balance);
+        updateRewardButtonState(user);
     }
 
-    if (!username) {
-        alert("Please enter a username to create an account.");
-        return;
+    // ---------- MISSION LOGIC ----------
+    function ensureMissionForToday(user) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        if (!user.mission_date || !user.mission_game_id) {
+            const random = missionGames[Math.floor(Math.random() * missionGames.length)];
+            user.mission_game_id = random.id;
+            user.mission_game_name = random.name;
+            user.mission_date = today.toISOString();
+            user.mission_completed = false;
+            return user;
+        }
+
+        const missionDate = new Date(user.mission_date);
+        const missionDay = new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate());
+
+        if (!sameDay(today, missionDay)) {
+            const random = missionGames[Math.floor(Math.random() * missionGames.length)];
+            user.mission_game_id = random.id;
+            user.mission_game_name = random.name;
+            user.mission_date = today.toISOString();
+            user.mission_completed = false;
+        }
+
+        return user;
     }
 
-    const existingByUsername = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    if (existingByUsername) {
-        alert("Username already taken.");
-        return;
+    function syncMissionCompletion(user) {
+        const completedGameId = localStorage.getItem("missionCompleteGame");
+        if (!completedGameId) return user;
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const missionDate = user.mission_date ? new Date(user.mission_date) : null;
+
+        if (missionDate && sameDay(today, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+            if (completedGameId === user.mission_game_id) {
+                user.mission_completed = true;
+            }
+        }
+
+        localStorage.removeItem("missionCompleteGame");
+        return user;
     }
 
-    const newUser = { 
-        email, 
-        username, 
-        password,
-        balance: 0,
-        streak: 0,
-        lastClaim: null,
-        missionGameId: null,
-        missionGameName: null,
-        missionDate: null,
-        missionCompleted: false
+    function getRewardState(user) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        let lastClaimDate = user.last_claim ? new Date(user.last_claim) : null;
+
+        let canClaim = false;
+        let streak = user.streak || 0;
+
+        if (!lastClaimDate) {
+            canClaim = true;
+        } else {
+            const lastDay = new Date(lastClaimDate.getFullYear(), lastClaimDate.getMonth(), lastClaimDate.getDate());
+            const diffDays = Math.round((today - lastDay) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) {
+                canClaim = false;
+            } else if (diffDays === 1) {
+                canClaim = true;
+            } else if (diffDays > 1) {
+                streak = 0;
+                user.streak = 0;
+                canClaim = true;
+            }
+        }
+
+        const baseReward = 1000;
+        const previewStreak = canClaim ? (streak + 1) : streak;
+        let rewardAmount = baseReward + previewStreak * 200;
+
+        const nowDate = new Date();
+        const missionDate = user.mission_date ? new Date(user.mission_date) : null;
+        let missionActiveToday = false;
+        if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+            missionActiveToday = true;
+        }
+
+        const missionCompletedToday = missionActiveToday && user.mission_completed;
+
+        if (canClaim && missionCompletedToday) {
+            rewardAmount = rewardAmount * 2;
+        }
+
+        const nextRewardAmount = baseReward + (previewStreak + 1) * 200;
+
+        return {
+            canClaim,
+            streak,
+            rewardAmount,
+            nextRewardAmount,
+            missionActiveToday,
+            missionCompletedToday
+        };
+    }
+
+    function updateRewardButtonState(user) {
+        if (!user) {
+            claimRewardNavBtn.textContent = "Claim Reward";
+            claimRewardNavBtn.classList.add("disabled");
+            claimRewardNavBtn.classList.remove("bouncing");
+            return;
+        }
+
+        const state = getRewardState(user);
+
+        if (state.canClaim) {
+            claimRewardNavBtn.textContent = "Claim Reward";
+            claimRewardNavBtn.classList.remove("disabled");
+            claimRewardNavBtn.classList.add("bouncing");
+        } else {
+            claimRewardNavBtn.classList.add("disabled");
+            claimRewardNavBtn.classList.remove("bouncing");
+            claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(state.nextRewardAmount);
+        }
+    }
+
+    // ---------- AUTH ----------
+    loginBtn.onclick = async () => {
+        if (currentUser) {
+            // logout
+            await db.auth.signOut();
+            currentUser = null;
+            updateUIForLogin(null);
+        } else {
+            loginModal.style.display = "flex";
+        }
     };
 
-    ensureMissionForToday(newUser);
-    saveUserToStorage(newUser);
-    updateUIForLogin(newUser);
-    closeLogin();
-}
+    async function handleAuth() {
+        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const wantsUpdates = updatesOptIn.checked;
 
-function updateUIForLogin(user) {
-    heroTitle.textContent = "Welcome to MoneyGames.work.gd";
-    loginBtn.textContent = "Logout";
-    userDisplay.textContent = user.username;
-    const balance = user.balance || 0;
-    balanceDisplay.textContent = "Balance: " + formatMoney(balance);
-    updateRewardButtonState(user);
-}
+        if (!email || !password) {
+            alert("Email and password are required.");
+            return;
+        }
 
-function logout() {
-    localStorage.removeItem("currentUser");
-    heroTitle.textContent = "Welcome to MoneyGames.work.gd";
-    loginBtn.textContent = "Login";
-    userDisplay.textContent = "";
-    balanceDisplay.textContent = "";
-    updateRewardButtonState(null);
-}
+        // Try sign-in first
+        const { data: signInData, error: signInError } = await db.auth.signInWithPassword({
+            email,
+            password
+        });
 
-/* LOAD STATE ON PAGE LOAD */
-(function initAuth() {
-    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (currentUser) {
-        if (currentUser.balance == null) currentUser.balance = 0;
-        if (currentUser.streak == null) currentUser.streak = 0;
-        if (!currentUser.lastClaim) currentUser.lastClaim = null;
-        if (!currentUser.missionGameId) currentUser.missionGameId = null;
-        if (!currentUser.missionGameName) currentUser.missionGameName = null;
-        if (!currentUser.missionDate) currentUser.missionDate = null;
-        if (currentUser.missionCompleted == null) currentUser.missionCompleted = false;
+        if (!signInError && signInData.user) {
+            await loadUserProfile(signInData.user.id);
+            closeLogin();
+            return;
+        }
+
+        // If sign-in failed, try sign-up
+        if (!username) {
+            alert("Please enter a username to create an account.");
+            return;
+        }
+
+        const { data: signUpData, error: signUpError } = await db.auth.signUp({
+            email,
+            password
+        });
+
+        if (signUpError) {
+            alert("Signup failed: " + signUpError.message);
+            return;
+        }
+
+        const userId = signUpData.user.id;
+
+        await db.from("profiles").insert({
+            id: userId,
+            email,
+            username,
+            balance: 0,
+            streak: 0,
+            last_claim: null,
+            mission_game_id: null,
+            mission_game_name: null,
+            mission_date: null,
+            mission_completed: false,
+            wants_updates: wantsUpdates
+        });
+
+        await loadUserProfile(userId);
+        closeLogin();
+    }
+
+    async function loadUserProfile(userId) {
+        const { data, error } = await db
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .single();
+
+        if (error) {
+            console.error("Profile load error:", error);
+            return;
+        }
+
+        currentUser = data;
+
+        // Ensure mission + sync completion
+        currentUser = ensureMissionForToday(currentUser);
+        currentUser = syncMissionCompletion(currentUser);
+        await saveCurrentUser();
+
+        updateUIForLogin(currentUser);
+    }
+
+    // On page load, restore session
+    (async function initAuth() {
+        const { data } = await db.auth.getSession();
+        if (data.session) {
+            const userId = data.session.user.id;
+            await loadUserProfile(userId);
+        } else {
+            updateUIForLogin(null);
+        }
+    })();
+
+    // ---------- LEADERBOARD (STATIC FOR NOW) ----------
+    const leaderboardData = [
+        { game: "Race To A Billion", player: "SSCCOOTTTT", time: "5:18" },
+        { game: "Race To A Trillion", player: "SSCCOOTTT", time: "6:22" },
+        { game: "Real Estate Tycoon V1", player: "Max", time: "45 Years" },
+        { game: "Real Estate Tycoon V2", player: "lawsss", time: "6 Years" },
+        { game: "Black Jack ", player: "Gus M", time: "2:11" },
+        { game: "Stock Sim", player: "Bobby", time: "15:00" },
+        { game: "Life sim", player: "Bobby", time: "$210,000" },
+        { game: "Tropico Island Sim", player: "mo", time: "00:09" },
+        { game: "F1 Manager Tycoon", player: "Teuts", time: "490 Points" }
+    ];
+
+    function loadLeaderboard() {
+        const body = document.getElementById("leaderboardBody");
+        body.innerHTML = "";
+
+        leaderboardData.forEach(entry => {
+            body.innerHTML += `
+                <tr>
+                    <td>${entry.game}</td>
+                    <td>${entry.player}</td>
+                    <td>${entry.time}</td>
+                </tr>
+            `;
+        });
+    }
+
+    document.getElementById("openLeaderboard").onclick = () => {
+        loadLeaderboard();
+        leaderboardModal.style.display = "flex";
+    };
+
+    // ---------- DAILY REWARD ----------
+    claimRewardNavBtn.onclick = async () => {
+        if (!currentUser) {
+            alert("Log in or create an account to claim your daily reward.");
+            loginModal.style.display = "flex";
+            return;
+        }
+        await openDailyRewardModal();
+    };
+
+    async function openDailyRewardModal() {
+        if (!currentUser) {
+            alert("Log in or create an account to claim your daily reward.");
+            loginModal.style.display = "flex";
+            return;
+        }
 
         currentUser = ensureMissionForToday(currentUser);
         currentUser = syncMissionCompletion(currentUser);
-        saveUserToStorage(currentUser);
-        updateUIForLogin(currentUser);
-    } else {
-        heroTitle.textContent = "Welcome to MoneyGames.work.gd";
-        loginBtn.textContent = "Login";
-        userDisplay.textContent = "";
-        balanceDisplay.textContent = "";
-        updateRewardButtonState(null);
-    }
-})();
+        await saveCurrentUser();
 
-/* LEADERBOARD */
-document.getElementById("openLeaderboard").onclick = () => {
-    loadLeaderboard();
-    leaderboardModal.style.display = "flex";
-};
+        const state = getRewardState(currentUser);
 
-function closeLeaderboard() { leaderboardModal.style.display = "none"; }
+        rewardWelcome.textContent = "Hey " + (currentUser.username || "") + ", your money machine is waiting.";
+        rewardAmountDisplay.textContent = state.canClaim
+            ? "Today's reward: " + formatMoney(state.rewardAmount)
+            : "You've already claimed today's reward!";
 
-const leaderboardData = [
-    { game: "Race To A Billion", player: "SSCCOOTTTT", time: "5:18" },
-    { game: "Race To A Trillion", player: "SSCCOOTTT", time: "6:22" },
-    { game: "Real Estate Tycoon V1", player: "Max", time: "45 Years" },
-    { game: "Real Estate Tycoon V2", player: "lawsss", time: "6 Years" },
-    { game: "Black Jack ", player: "Gus M", time: "2:11" },
-    { game: "Stock Sim", player: "Bobby", time: "15:00" },
-    { game: "Life sim", player: "Bobby", time: "$210,000" },
-    { game: "Tropico Island Sim", player: "mo", time: "00:09" },
-    { game: "F1 Manager Tycoon", player: "Teuts", time: "490 Points" }
+        streakDisplay.textContent = "Current streak: " + (state.streak || 0) + " day" + ((state.streak || 0) === 1 ? "" : "s");
 
-
-
-];
-
-function loadLeaderboard() {
-    const body = document.getElementById("leaderboardBody");
-    body.innerHTML = "";
-
-    leaderboardData.forEach(entry => {
-        body.innerHTML += `
-            <tr>
-                <td>${entry.game}</td>
-                <td>${entry.player}</td>
-                <td>${entry.time}</td>
-            </tr>
-        `;
-    });
-}
-
-/* DAILY REWARD SYSTEM */
-document.getElementById("openDailyReward")?.addEventListener("click", () => {
-    openDailyRewardModal();
-});
-
-claimRewardNavBtn.onclick = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) {
-        alert("Log in or create an account to claim your daily reward.");
-        loginModal.style.display = "flex";
-        return;
-    }
-    openDailyRewardModal();
-};
-
-function openDailyRewardModal() {
-    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) {
-        alert("Log in or create an account to claim your daily reward.");
-        loginModal.style.display = "flex";
-        return;
-    }
-
-    currentUser = ensureMissionForToday(currentUser);
-    currentUser = syncMissionCompletion(currentUser);
-    saveUserToStorage(currentUser);
-
-    const state = getRewardState(currentUser);
-
-    rewardWelcome.textContent = "Hey " + currentUser.username + ", your money machine is waiting.";
-    rewardAmountDisplay.textContent = state.canClaim
-        ? "Today's reward: " + formatMoney(state.rewardAmount)
-        : "You've already claimed today's reward!";
-
-    streakDisplay.textContent = "Current streak: " + (state.streak || 0) + " day" + ((state.streak || 0) === 1 ? "" : "s");
-
-    if (state.missionActiveToday) {
-        if (state.missionCompletedToday) {
-            missionBonusInfo.textContent = "Mission complete! Your daily reward is doubled today.";
+        if (state.missionActiveToday) {
+            if (state.missionCompletedToday) {
+                missionBonusInfo.textContent = "Mission complete! Your daily reward is doubled today.";
+            } else {
+                missionBonusInfo.textContent = "Beat today's mission game to double your reward before claiming.";
+            }
         } else {
-            missionBonusInfo.textContent = "Beat today's mission game to double your reward before claiming.";
+            missionBonusInfo.textContent = "";
         }
-    } else {
-        missionBonusInfo.textContent = "";
+
+        if (state.canClaim) {
+            nextClaimInfo.textContent = "Keep your streak alive by coming back tomorrow for an even bigger reward.";
+            claimRewardBtn.disabled = false;
+            claimRewardBtn.style.opacity = "1";
+        } else {
+            nextClaimInfo.textContent = "Come back tomorrow to continue your streak and grow your daily payout.";
+            claimRewardBtn.disabled = true;
+            claimRewardBtn.style.opacity = "0.5";
+        }
+
+        dailyRewardModal.style.display = "flex";
     }
 
-    if (state.canClaim) {
-        nextClaimInfo.textContent = "Keep your streak alive by coming back tomorrow for an even bigger reward.";
-        claimRewardBtn.disabled = false;
-        claimRewardBtn.style.opacity = "1";
-    } else {
-        nextClaimInfo.textContent = "Come back tomorrow to continue your streak and grow your daily payout.";
+    claimRewardBtn.onclick = async () => {
+        if (!currentUser) return;
+
+        currentUser = ensureMissionForToday(currentUser);
+        currentUser = syncMissionCompletion(currentUser);
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        let lastClaimDate = currentUser.last_claim ? new Date(currentUser.last_claim) : null;
+
+        let canClaim = false;
+        let streak = currentUser.streak || 0;
+
+        if (!lastClaimDate) {
+            canClaim = true;
+        } else {
+            const lastDay = new Date(lastClaimDate.getFullYear(), lastClaimDate.getMonth(), lastClaimDate.getDate());
+            const diffDays = Math.round((today - lastDay) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) {
+                canClaim = false;
+            } else if (diffDays === 1) {
+                canClaim = true;
+            } else if (diffDays > 1) {
+                streak = 0;
+                canClaim = true;
+            }
+        }
+
+        if (!canClaim) {
+            alert("You've already claimed today's reward. Come back tomorrow!");
+            return;
+        }
+
+        streak = streak + 1;
+        const baseReward = 1000;
+        let rewardAmount = baseReward + streak * 200;
+
+        const nowDate = new Date();
+        const missionDate = currentUser.mission_date ? new Date(currentUser.mission_date) : null;
+        let missionActiveToday = false;
+        if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+            missionActiveToday = true;
+        }
+        const missionCompletedToday = missionActiveToday && currentUser.mission_completed;
+
+        if (missionCompletedToday) {
+            rewardAmount = rewardAmount * 2;
+        }
+
+        currentUser.streak = streak;
+        currentUser.last_claim = today.toISOString();
+        currentUser.balance = (currentUser.balance || 0) + rewardAmount;
+
+        await saveCurrentUser();
+        updateUIForLogin(currentUser);
+
+        const nextRewardAmount = baseReward + (streak + 1) * 200;
+
+        rewardAmountDisplay.textContent = "You claimed: " + formatMoney(rewardAmount);
+        streakDisplay.textContent = "Current streak: " + streak + " day" + (streak === 1 ? "" : "s");
+        nextClaimInfo.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
+        missionBonusInfo.textContent = missionCompletedToday
+            ? "Mission complete bonus applied today."
+            : "No mission bonus today. Complete tomorrow's mission for double reward.";
+
         claimRewardBtn.disabled = true;
         claimRewardBtn.style.opacity = "0.5";
-    }
 
-    dailyRewardModal.style.display = "flex";
-}
+        claimRewardNavBtn.classList.add("disabled");
+        claimRewardNavBtn.classList.remove("bouncing");
+        claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
+    };
 
-function closeDailyReward() { dailyRewardModal.style.display = "none"; }
-
-claimRewardBtn.onclick = () => {
-    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) return;
-
-    currentUser = ensureMissionForToday(currentUser);
-    currentUser = syncMissionCompletion(currentUser);
-    saveUserToStorage(currentUser);
-
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let lastClaimDate = currentUser.lastClaim ? new Date(currentUser.lastClaim) : null;
-
-    let canClaim = false;
-    let streak = currentUser.streak || 0;
-
-    if (!lastClaimDate) {
-        canClaim = true;
-    } else {
-        const lastDay = new Date(lastClaimDate.getFullYear(), lastClaimDate.getMonth(), lastClaimDate.getDate());
-        const diffDays = Math.round((today - lastDay) / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            canClaim = false;
-        } else if (diffDays === 1) {
-            canClaim = true;
-        } else if (diffDays > 1) {
-            streak = 0;
-            canClaim = true;
+    // ---------- DAILY MISSION UI ----------
+    document.getElementById("openMission").onclick = async () => {
+        if (!currentUser) {
+            alert("Log in or create an account to see your daily mission.");
+            loginModal.style.display = "flex";
+            return;
         }
-    }
 
-    if (!canClaim) {
-        alert("You've already claimed today's reward. Come back tomorrow!");
-        return;
-    }
+        currentUser = ensureMissionForToday(currentUser);
+        currentUser = syncMissionCompletion(currentUser);
+        await saveCurrentUser();
 
-    streak = streak + 1;
-    const baseReward = 1000;
-    let rewardAmount = baseReward + streak * 200;
+        missionGameDisplay.textContent = "Today's mission: " + (currentUser.mission_game_name || "Unknown");
+        missionHint.textContent = "Beat this game today to double your daily cash reward.";
 
-    const nowDate = new Date();
-    const missionDate = currentUser.missionDate ? new Date(currentUser.missionDate) : null;
-    let missionActiveToday = false;
-    if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        missionActiveToday = true;
-    }
-    const missionCompletedToday = missionActiveToday && currentUser.missionCompleted;
+        const now = new Date();
+        const missionDate = currentUser.mission_date ? new Date(currentUser.mission_date) : null;
+        let missionActiveToday = false;
+        if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
+            missionActiveToday = true;
+        }
 
-    if (missionCompletedToday) {
-        rewardAmount = rewardAmount * 2;
-    }
+        if (!missionActiveToday) {
+            missionStatusDisplay.textContent = "A new mission will be assigned at midnight.";
+        } else if (currentUser.mission_completed) {
+            missionStatusDisplay.textContent = "Status: Completed ✅ — your next claim today will be doubled.";
+        } else {
+            missionStatusDisplay.textContent = "Status: In progress — beat this game before claiming to earn double.";
+        }
 
-    currentUser.streak = streak;
-    currentUser.lastClaim = today.toISOString();
-    currentUser.balance = (currentUser.balance || 0) + rewardAmount;
+        missionModal.style.display = "flex";
+    };
 
-    saveUserToStorage(currentUser);
-    updateUIForLogin(currentUser);
-
-    const nextRewardAmount = baseReward + (streak + 1) * 200;
-
-    rewardAmountDisplay.textContent = "You claimed: " + formatMoney(rewardAmount);
-    streakDisplay.textContent = "Current streak: " + streak + " day" + (streak === 1 ? "" : "s");
-    nextClaimInfo.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
-    missionBonusInfo.textContent = missionCompletedToday
-        ? "Mission complete bonus applied today."
-        : "No mission bonus today. Complete tomorrow's mission for double reward.";
-
-    claimRewardBtn.disabled = true;
-    claimRewardBtn.style.opacity = "0.5";
-
-    claimRewardNavBtn.classList.add("disabled");
-    claimRewardNavBtn.classList.remove("bouncing");
-    claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
-};
-
-/* DAILY MISSION UI */
-document.getElementById("openMission").onclick = () => {
-    let currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) {
-        alert("Log in or create an account to see your daily mission.");
-        loginModal.style.display = "flex";
-        return;
-    }
-
-    currentUser = ensureMissionForToday(currentUser);
-    currentUser = syncMissionCompletion(currentUser);
-    saveUserToStorage(currentUser);
-
-    missionGameDisplay.textContent = "Today's mission: " + (currentUser.missionGameName || "Unknown");
-    missionHint.textContent = "Beat this game today to double your daily cash reward.";
-
-    const now = new Date();
-    const missionDate = currentUser.missionDate ? new Date(currentUser.missionDate) : null;
-    let missionActiveToday = false;
-    if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-        missionActiveToday = true;
-    }
-
-    if (!missionActiveToday) {
-        missionStatusDisplay.textContent = "A new mission will be assigned at midnight.";
-    } else if (currentUser.missionCompleted) {
-        missionStatusDisplay.textContent = "Status: Completed ✅ — your next claim today will be doubled.";
-    } else {
-        missionStatusDisplay.textContent = "Status: In progress — beat this game before claiming to earn double.";
-    }
-
-    missionModal.style.display = "flex";
-};
-
-function closeMission() { missionModal.style.display = "none"; }
-
-/* CLOSE MODALS ON BACKGROUND CLICK */
-window.onclick = e => {
-    if (e.target === loginModal) closeLogin();
-    if (e.target === leaderboardModal) closeLeaderboard();
-    if (e.target === dailyRewardModal) closeDailyReward();
-    if (e.target === missionModal) closeMission();
-};
-</script>
-
+    // ---------- CLOSE MODALS ON BACKGROUND CLICK ----------
+    window.onclick = e => {
+        if (e.target === loginModal) closeLogin();
+        if (e.target === leaderboardModal) closeLeaderboard();
+        if (e.target === dailyRewardModal) closeDailyReward();
+        if (e.target === missionModal) closeMission();
+    };
+    </script>
 
 </body>
 </html>
