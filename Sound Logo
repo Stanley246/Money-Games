@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggressive Gaming Sound Logo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #030305;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+        .play-btn {
+            padding: 30px 60px;
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #ff0055, #00ffcc);
+            border: 4px solid #fff;
+            cursor: pointer;
+            box-shadow: 0 0 40px rgba(255, 0, 85, 0.7);
+            transition: all 0.15s ease;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            transform: skewX(-10deg);
+        }
+        .play-btn:hover {
+            box-shadow: 0 0 60px rgba(0, 255, 204, 0.9);
+            transform: skewX(-10deg) scale(1.05);
+        }
+        .play-btn:active {
+            transform: skewX(-10deg) scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+<button class="play-btn" onclick="playAuthoritativeLogo()">INITIALIZE ANTHEM</button>
+
+<script>
+function playAuthoritativeLogo() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContext();
+
+    // Required for Chrome autoplay policy
+    if (ctx.state === "suspended") ctx.resume();
+
+    const now = ctx.currentTime;
+
+    // MASTER COMPRESSOR
+    const masterCompressor = ctx.createDynamicsCompressor();
+    masterCompressor.threshold.value = -6;
+    masterCompressor.knee.value = 2;
+    masterCompressor.ratio.value = 20;
+    masterCompressor.attack.value = 0.001;
+    masterCompressor.release.value = 0.05;
+    masterCompressor.connect(ctx.destination);
+
+    // IMPACT INTRO
+    const impactOsc = ctx.createOscillator();
+    const impactGain = ctx.createGain();
+    impactOsc.type = "sawtooth";
+    impactOsc.frequency.setValueAtTime(180, now);
+    impactOsc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+
+    impactGain.gain.setValueAtTime(0.4, now);
+    impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+    impactOsc.connect(impactGain);
+    impactGain.connect(masterCompressor);
+    impactOsc.start(now);
+    impactOsc.stop(now + 0.5);
+
+    // 808 SUB BASS
+    const bassSequence = [
+        { time: 0.0, freq: 36.71, dur: 0.9 },
+        { time: 1.0, freq: 36.71, dur: 0.4 },
+        { time: 1.4, freq: 48.99, dur: 0.8 },
+        { time: 2.4, freq: 43.65, dur: 0.8 },
+        { time: 3.4, freq: 32.70, dur: 1.4 }
+    ];
+
+    bassSequence.forEach(hit => {
+        const sub = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        sub.type = "triangle";
+
+        sub.frequency.setValueAtTime(hit.freq * 2, now + hit.time);
+        sub.frequency.exponentialRampToValueAtTime(hit.freq, now + hit.time + 0.12);
+
+        subGain.gain.setValueAtTime(0.0001, now + hit.time);
+        subGain.gain.linearRampToValueAtTime(1.0, now + hit.time + 0.01);
+        subGain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + hit.dur);
+
+        sub.connect(subGain);
+        subGain.connect(masterCompressor);
+        sub.start(now + hit.time);
+        sub.stop(now + hit.time + hit.dur);
+    });
+
+    // MID-BASS ROAR
+    bassSequence.forEach(hit => {
+        const mid = ctx.createOscillator();
+        const midGain = ctx.createGain();
+        const midFilter = ctx.createBiquadFilter();
+
+        mid.type = "sawtooth";
+        mid.frequency.setValueAtTime(hit.freq * 2, now + hit.time);
+
+        midFilter.type = "peaking";
+        midFilter.frequency.value = 250;
+        midFilter.Q.value = 4;
+        midFilter.gain.value = 6;
+
+        midGain.gain.setValueAtTime(0.0001, now + hit.time);
+        midGain.gain.linearRampToValueAtTime(0.35, now + hit.time + 0.02);
+        midGain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + hit.dur * 0.5);
+
+        mid.connect(midFilter);
+        midFilter.connect(midGain);
+        midGain.connect(masterCompressor);
+
+        mid.start(now + hit.time);
+        mid.stop(now + hit.time + hit.dur);
+    });
+
+    // LEAD MELODY
+    const leadHook = [
+        { time: 0.0, note: 146.83, dur: 0.25 },
+        { time: 0.3, note: 146.83, dur: 0.15 },
+        { time: 0.5, note: 164.81, dur: 0.20 },
+        { time: 0.8, note: 174.61, dur: 0.35 },
+        { time: 1.4, note: 196.00, dur: 0.40 },
+        { time: 2.0, note: 174.61, dur: 0.20 },
+        { time: 2.4, note: 220.00, dur: 0.35 },
+        { time: 3.0, note: 196.00, dur: 0.20 },
+        { time: 3.4, note: 293.66, dur: 1.20 }
+    ];
+
+    leadHook.forEach(hit => {
+        const lead1 = ctx.createOscillator();
+        const lead2 = ctx.createOscillator();
+        const leadGain = ctx.createGain();
+        const leadFilter = ctx.createBiquadFilter();
+
+        lead1.type = "sawtooth";
+        lead2.type = "square";
+
+        lead1.frequency.setValueAtTime(hit.note, now + hit.time);
+        lead2.frequency.setValueAtTime(hit.note + 4, now + hit.time);
+
+        leadFilter.type = "lowpass";
+        leadFilter.frequency.value = 2200;
+
+        leadGain.gain.setValueAtTime(0.0001, now + hit.time);
+        leadGain.gain.linearRampToValueAtTime(0.18, now + hit.time + 0.01);
+        leadGain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + hit.dur);
+
+        lead1.connect(leadFilter);
+        lead2.connect(leadFilter);
+        leadFilter.connect(leadGain);
+        leadGain.connect(masterCompressor);
+
+        lead1.start(now + hit.time);
+        lead2.start(now + hit.time);
+        lead1.stop(now + hit.time + hit.dur);
+        lead2.stop(now + hit.time + hit.dur);
+    });
+
+    // DRUMS (WHITE NOISE)
+    const bufferSize = ctx.sampleRate * 0.3;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+    const drums = [
+        { time: 0.0, type: "kick" },
+        { time: 0.3, type: "hat" },
+        { time: 0.5, type: "snare" },
+        { time: 0.8, type: "hat" },
+        { time: 1.0, type: "kick" },
+        { time: 1.2, type: "hat" },
+        { time: 1.4, type: "snare" },
+        { time: 1.7, type: "hat" },
+        { time: 1.9, type: "hat" },
+        { time: 2.4, type: "snare" },
+        { time: 2.9, type: "hat" },
+        { time: 3.4, type: "snare" },
+        { time: 3.5, type: "snare" }
+    ];
+
+    drums.forEach(hit => {
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+
+        if (hit.type === "snare") {
+            filter.type = "bandpass";
+            filter.frequency.value = 1300;
+            gain.gain.setValueAtTime(0.4, now + hit.time);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + 0.14);
+        } else if (hit.type === "kick") {
+            filter.type = "lowpass";
+            filter.frequency.value = 150;
+            gain.gain.setValueAtTime(0.5, now + hit.time);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + 0.1);
+        } else {
+            filter.type = "highpass";
+            filter.frequency.value = 8500;
+            gain.gain.setValueAtTime(0.22, now + hit.time);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + hit.time + 0.03);
+        }
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterCompressor);
+
+        noise.start(now + hit.time);
+    });
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Idle Clicker Jingle</title>
+<style>
+    body {
+        background: #05060a;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        flex-direction: column;
+    }
+    button {
+        padding: 20px 40px;
+        font-size: 24px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ff0088, #00ffee);
+        color: white;
+        letter-spacing: 2px;
+        box-shadow: 0 0 25px rgba(0,255,200,0.5);
+    }
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 40px rgba(0,255,200,0.9);
+    }
+</style>
+</head>
+<body>
+
+<button id="playBtn">PLAY JINGLE</button>
+
+<script>
+let ctx = null;
+let loopTimeout = null;
+let isPlaying = false;
+
+function playIdleLoop() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    const loopLength = 50;
+
+    // MASTER
+    const master = ctx.createGain();
+    master.gain.value = 0.55;
+    master.connect(ctx.destination);
+
+    // SUBTLE PULSE
+    function makePulse(time) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(48, time);
+        gain.gain.setValueAtTime(0.25, time);
+        gain.gain.exponentialRampToValueAtTime(0.05, time + 0.4);
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start(time);
+        osc.stop(time + 0.5);
+    }
+    for (let t = 0; t < loopLength; t += 1.0) makePulse(now + t);
+
+    // PLUCK ARP
+    function pluck(time, note) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(note, time);
+
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(1800, time);
+
+        gain.gain.setValueAtTime(0.001, time);
+        gain.gain.exponentialRampToValueAtTime(0.25, time + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+
+        osc.start(time);
+        osc.stop(time + 0.4);
+    }
+
+    const scale = [261.63, 293.66, 329.63, 392.00, 440.00];
+    for (let t = 0; t < loopLength; t += 0.75) {
+        const note = scale[Math.floor(Math.random() * scale.length)];
+        pluck(now + t, note);
+    }
+
+    // HI-HATS
+    function hat(time) {
+        const noise = ctx.createBufferSource();
+        const buffer = ctx.createBuffer(1, 2000, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = "highpass";
+        filter.frequency.value = 8000;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.12, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+
+        noise.buffer = buffer;
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+
+        noise.start(time);
+    }
+    for (let t = 0; t < loopLength; t += 0.33) hat(now + t);
+
+    // PAD
+    function pad(start, end) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.value = 130;
+
+        gain.gain.setValueAtTime(0.05, start);
+        gain.gain.linearRampToValueAtTime(0.08, start + 5);
+        gain.gain.linearRampToValueAtTime(0.05, end - 5);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(end);
+    }
+    pad(now, now + loopLength);
+
+    // LOOP
+    loopTimeout = setTimeout(() => {
+        if (isPlaying) playIdleLoop();
+    }, loopLength * 1000);
+}
+
+document.getElementById("playBtn").onclick = () => {
+    if (!isPlaying) {
+        isPlaying = true;
+        playIdleLoop();
+        document.getElementById("playBtn").innerText = "STOP JINGLE";
+    } else {
+        isPlaying = false;
+        if (loopTimeout) clearTimeout(loopTimeout);
+        if (ctx) ctx.close();
+        ctx = null;
+        document.getElementById("playBtn").innerText = "PLAY JINGLE";
+    }
+};
+</script>
+
+</body>
+</html>
