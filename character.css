@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap');
+
+body {
+  background: #0a0a0f;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+h1, h2 {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+}
+
+.character-wrapper {
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+  padding-top: 30px;
+}
+
+.avatar-preview img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 3px solid #00eaff;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.rotate-controls button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 20px;
+}
+
+.upload-box {
+  margin: 20px 0;
+}
+
+.shop-item {
+  background: #11131a;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #00eaff;
+}
+
+.save-btn {
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: #00eaff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Orbitron';
+  cursor: pointer;
+}
+
+#inventory-box {
+  margin-top: 15px;
+  font-size: 18px;
+}
