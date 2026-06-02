@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Character</title>
+  <link rel="stylesheet" href="character.css">
+</head>
+<body>
+
+<div class="character-wrapper">
+
+  <h1>Character Customization</h1>
+
+  <!-- AVATAR PREVIEW -->
+  <div class="avatar-preview">
+    <img id="avatar-img" src="" alt="Avatar">
+  </div>
+
+  <!-- ROTATION -->
+  <div class="rotate-controls">
+    <button onclick="rotateAvatar(-15)">⟲</button>
+    <button onclick="rotateAvatar(15)">⟳</button>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-box">
+    <label>Upload Face Image</label>
+    <input type="file" id="upload" accept="image/*">
+  </div>
+
+  <!-- SHOP -->
+  <h2>Shop</h2>
+  <div class="shop">
+    <div class="shop-item">
+      <p>Cool Glasses 😎 — 500 coins</p>
+      <button onclick="buyItem('glasses', 500)">Buy</button>
+    </div>
+
+    <div class="shop-item">
+      <p>Golden Crown 👑 — 5000 coins</p>
+      <button onclick="buyItem('crown', 5000)">Buy</button>
+    </div>
+  </div>
+
+  <!-- INVENTORY -->
+  <h2>Your Items</h2>
+  <div id="inventory-box"></div>
+
+  <button class="save-btn" onclick="saveAvatar()">Save Character</button>
+
+</div>
+
+<script src="character.js"></script>
+</body>
+</html>
