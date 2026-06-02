@@ -321,12 +321,6 @@
         height: 40px;
     }
 
-    .loading {
-        text-align: center;
-        color: var(--accent);
-        padding: 20px;
-    }
-
     .notification {
         position: fixed;
         top: 80px;
@@ -408,9 +402,13 @@
 <div id="scrollSentinel"></div>
 
 <script>
-/* ==================== CONFIG ==================== */
+/* ==================== SUPABASE CONFIG ==================== */
 
-const API_URL = "YOUR_API_ENDPOINT"; // e.g., "https://api.yourdomain.com"
+const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMh[...]";
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const PAGE_ID = "comments-page";
 const PAGE_SIZE = 5;
 
@@ -419,7 +417,7 @@ let topLevel = [];
 let replies = [];
 let votes = {};
 let shadowBannedUsers = new Set();
-let sortMode = "newest"; // "newest" or "topscore"
+let sortMode = "newest";
 
 let voterId = localStorage.getItem("mg_voter_id");
 if (!voterId) {
@@ -524,53 +522,67 @@ function registerCommentAttempt() {
     localStorage.setItem("mg_comment_window_count", String(count));
 }
 
-/* ==================== API CALLS ==================== */
-
-async function apiCall(endpoint, method = "GET", data = null) {
-    const options = {
-        method,
-        headers: {
-            "Content-Type": "application/json"
-        }
-    };
-
-    if (data) {
-        options.body = JSON.stringify(data);
-    }
-
-    try {
-        const response = await fetch(`${API_URL}${endpoint}`, options);
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("API call failed:", error);
-        return null;
-    }
-}
-
 /* ==================== SHADOW BAN SYSTEM ==================== */
 
 async function loadShadowBans() {
-    const data = await apiCall("/api/shadow-bans/active");
-    
+    const { data, error } = await client
+        .from("shadow_bans")
+        .select("user_name, ban_until")
+        .gt("ban_until", new Date().toISOString());
+
+    if (error) {
+        console.error("Failed to load shadow bans:", error);
+        return;
+    }
+
     shadowBannedUsers.clear();
-    if (data && data.bans) {
-        data.bans.forEach(ban => {
+    if (data) {
+        data.forEach(ban => {
             shadowBannedUsers.add(ban.user_name);
         });
     }
 }
 
-async function blockComment(commentId, userName, reason) {
-    const result = await apiCall("/api/comments/block", "POST", {
-        comment_id: commentId,
-        user_name: userName,
-        reason: reason
-    });
+async function getBlockCount(userName) {
+    const { count, error } = await client
+        .from("comment_blocks")
+        .select("*", { count: "exact" })
+        .eq("user_name", userName)
+        .gt("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
 
-    if (result && result.shadow_banned) {
+    if (error) {
+        console.error("Failed to get block count:", error);
+        return 0;
+    }
+
+    return count || 0;
+}
+
+async function blockComment(commentId, userName, reason) {
+    const blockCount = await getBlockCount(userName);
+    
+    // Add block record
+    await client
+        .from("comment_blocks")
+        .insert({
+            comment_id: commentId,
+            user_name: userName,
+            reason: reason
+        });
+
+    // If threshold reached (3 blocks), shadow ban
+    if (blockCount >= 2) {
+        const banUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        
+        await client
+            .from("shadow_bans")
+            .upsert({
+                user_name: userName,
+                ban_until: banUntil,
+                reason: `${blockCount + 1} comments blocked`
+            });
+
+        shadowBannedUsers.add(userName);
         showNotification(`User "${userName}" has been shadow banned for 24 hours.`, "warning");
     }
 
@@ -598,37 +610,59 @@ async function loadComments(initial = false) {
 
     await loadShadowBans();
 
-    const offset = currentPage * PAGE_SIZE;
-    
-    const data = await apiCall(`/api/comments/page/${PAGE_ID}?offset=${offset}&limit=${PAGE_SIZE}`);
+    const from = currentPage * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
-    if (!data) {
+    const { data: parents, error: pErr } = await client
+        .from("comments")
+        .select("*")
+        .eq("page_id", PAGE_ID)
+        .is("parent_id", null)
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+    if (pErr) {
+        console.error(pErr);
         isLoading = false;
         return;
     }
 
     if (initial) {
-        topLevel = data.parents || [];
+        topLevel = parents || [];
     } else {
-        topLevel = topLevel.concat(data.parents || []);
+        topLevel = topLevel.concat(parents || []);
     }
 
-    if (!data.parents || data.parents.length < PAGE_SIZE) {
+    if (!parents || parents.length < PAGE_SIZE) {
         hasMore = false;
     }
 
-    replies = data.replies || [];
+    const { data: replyRows, error: rErr } = await client
+        .from("comments")
+        .select("*")
+        .eq("page_id", PAGE_ID)
+        .not("parent_id", "is", null)
+        .order("created_at", { ascending: true });
 
-    // Load votes
-    const commentIds = [...topLevel, ...replies].map(c => c.id);
-    if (commentIds.length > 0) {
-        const voteData = await apiCall("/api/votes/batch", "POST", {
-            comment_ids: commentIds,
-            voter_hash: voterId
-        });
+    if (rErr) {
+        console.error(rErr);
+        isLoading = false;
+        return;
+    }
 
-        if (voteData && voteData.votes) {
-            buildVotes(voteData.votes);
+    replies = replyRows || [];
+
+    const ids = [...topLevel, ...replies].map(c => c.id);
+    if (ids.length > 0) {
+        const { data: voteRows, error: vErr } = await client
+            .from("comment_votes")
+            .select("*")
+            .in("comment_id", ids);
+
+        if (vErr) {
+            console.error(vErr);
+        } else {
+            buildVotes(voteRows || []);
         }
     } else {
         votes = {};
@@ -667,7 +701,7 @@ function getSortedComments(comments) {
             return new Date(b.created_at) - new Date(a.created_at);
         });
     }
-    return comments; // Already sorted by newest
+    return comments;
 }
 
 function renderTree() {
@@ -796,14 +830,17 @@ function toggleReplyBox(parentId, el) {
             return;
         }
 
-        const result = await apiCall("/api/comments/create", "POST", {
-            page_id: PAGE_ID,
-            parent_id: parentId,
-            user_name: name,
-            content: text
-        });
+        const { error: dbErr } = await client
+            .from("comments")
+            .insert({
+                page_id: PAGE_ID,
+                parent_id: parentId,
+                user_name: name,
+                content: text
+            });
 
-        if (!result) {
+        if (dbErr) {
+            console.error(dbErr);
             alert("Failed to post reply.");
             return;
         }
@@ -831,15 +868,27 @@ document.addEventListener("click", (e) => {
 async function handleVote(commentId, type) {
     const current = votes[commentId] || { myVote: 0 };
 
-    const result = await apiCall("/api/votes/cast", "POST", {
-        comment_id: commentId,
-        voter_hash: voterId,
-        vote_type: current.myVote === type ? 0 : type
-    });
+    await client
+        .from("comment_votes")
+        .delete()
+        .match({ comment_id: commentId, voter_hash: voterId });
 
-    if (result) {
+    if (current.myVote === type) {
         await loadComments(true);
+        return;
     }
+
+    const { error } = await client
+        .from("comment_votes")
+        .insert({
+            comment_id: commentId,
+            voter_hash: voterId,
+            vote_type: type
+        });
+
+    if (error) console.error(error);
+
+    await loadComments(true);
 }
 
 function showReportDialog(commentId, userName) {
@@ -901,14 +950,17 @@ postRootBtn.onclick = async () => {
         return;
     }
 
-    const result = await apiCall("/api/comments/create", "POST", {
-        page_id: PAGE_ID,
-        parent_id: null,
-        user_name: name,
-        content: text
-    });
+    const { error: dbErr } = await client
+        .from("comments")
+        .insert({
+            page_id: PAGE_ID,
+            parent_id: null,
+            user_name: name,
+            content: text
+        });
 
-    if (!result) {
+    if (dbErr) {
+        console.error(dbErr);
         alert("Failed to post comment.");
         return;
     }
