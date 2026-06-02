@@ -36,8 +36,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         nav h1 {
@@ -49,24 +47,17 @@
             margin: 0;
         }
 
-        nav div {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
         nav a, nav button, #userDisplay, #balanceDisplay {
             color: var(--text);
+            margin-left: 20px;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: 0.3s;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-family: 'Roboto', sans-serif;
-            white-space: nowrap;
         }
 
         nav a:hover, nav button:hover {
@@ -82,6 +73,7 @@
         #balanceDisplay {
             cursor: default;
             opacity: 0.9;
+            font-weight: 600;
         }
 
         /* CLAIM REWARD BUTTON */
@@ -94,7 +86,7 @@
             font-weight: 700;
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(0,234,255,0.7);
-            font-size: 12px;
+            font-size: 13px;
         }
 
         #devicesBtn {
@@ -106,8 +98,9 @@
             font-weight: 700;
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(123,97,255,0.7);
-            font-size: 12px;
+            font-size: 13px;
             display: none;
+            margin-left: 20px;
         }
 
         #claimRewardNavBtn.bouncing {
@@ -120,7 +113,6 @@
             box-shadow: none;
             border-color: rgba(255,255,255,0.2);
             cursor: default;
-            font-size: 11px;
         }
 
         @keyframes bounce {
@@ -413,6 +405,13 @@
             font-weight: bold;
         }
 
+        .legal-text {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
         @media (max-width: 768px) {
             nav {
                 padding: 15px 20px;
@@ -420,6 +419,11 @@
 
             nav h1 {
                 font-size: 20px;
+            }
+
+            nav a, nav button {
+                font-size: 14px;
+                margin-left: 10px;
             }
 
             .modal-content {
@@ -443,7 +447,7 @@
             <span id="userDisplay"></span>
             <span id="balanceDisplay"></span>
             <a href="about.html">About</a>
-            <a href="#" id="openMission">Mission</a>
+            <a href="#" id="openMission">Daily Mission</a>
             <a href="comments.html">Comments</a>
             <a href="contributors.html">Contributors</a>
             <button id="loginBtn">Login</button>
@@ -609,6 +613,9 @@
                 <span>Send me updates when new games are released</span>
             </label>
             <button onclick="handleAuth()">Continue</button>
+            <p class="legal-text">
+                By signing up, you agree to our Terms of Service and Privacy Policy. We respect your privacy and will only send game updates to your email if you opt in above.
+            </p>
             <p style="margin-top:10px; font-size:14px; opacity:0.8;">
                 If this email already has an account, you'll be logged in.<br>
                 If not, a new account will be created.
