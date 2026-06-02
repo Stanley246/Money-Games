@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,9 +15,9 @@
             --accent: #00eaff;
             --gameColor: #0000E7;
         }
-html {
-  filter: brightness(110%);
-}
+        html {
+          filter: brightness(110%);
+        }
         body {
             margin: 0;
             background: var(--bg);
@@ -37,6 +36,8 @@ html {
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         nav h1 {
@@ -45,19 +46,27 @@ html {
             letter-spacing: 3px;
             color: var(--accent);
             text-shadow: 0 0 10px var(--accent);
+            margin: 0;
+        }
+
+        nav div {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         nav a, nav button, #userDisplay, #balanceDisplay {
             color: var(--text);
-            margin-left: 20px;
             text-decoration: none;
             font-weight: 500;
             transition: 0.3s;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-family: 'Roboto', sans-serif;
+            white-space: nowrap;
         }
 
         nav a:hover, nav button:hover {
@@ -66,6 +75,8 @@ html {
 
         #userDisplay {
             cursor: default;
+            font-weight: 700;
+            color: var(--accent);
         }
 
         #balanceDisplay {
@@ -83,16 +94,20 @@ html {
             font-weight: 700;
             text-transform: uppercase;
             box-shadow: 0 0 15px rgba(0,234,255,0.7);
+            font-size: 12px;
         }
-         #xxx {
+
+        #devicesBtn {
             padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid var(--accent);
-            background: linear-gradient(135deg, #00eaff, #7b61ff);
+            background: linear-gradient(135deg, #7b61ff, #00eaff);
             color: #000;
             font-weight: 700;
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(0,234,255,0.7);
+            box-shadow: 0 0 15px rgba(123,97,255,0.7);
+            font-size: 12px;
+            display: none;
         }
 
         #claimRewardNavBtn.bouncing {
@@ -105,6 +120,7 @@ html {
             box-shadow: none;
             border-color: rgba(255,255,255,0.2);
             cursor: default;
+            font-size: 11px;
         }
 
         @keyframes bounce {
@@ -236,6 +252,8 @@ html {
             width: 380px;
             border-radius: 12px;
             text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal input {
@@ -248,6 +266,10 @@ html {
             color: var(--text);
         }
 
+        .modal input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
         .modal button {
             padding: 10px 20px;
             background: var(--accent);
@@ -255,28 +277,42 @@ html {
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            color: #000;
+            transition: 0.3s;
+        }
+
+        .modal button:hover {
+            filter: brightness(1.1);
         }
 
         .close {
             float: right;
             cursor: pointer;
             font-size: 20px;
+            color: var(--accent);
+        }
+
+        .close:hover {
+            color: #fff;
         }
 
         table {
             width: 100%;
             color: var(--text);
             border-collapse: collapse;
+            margin: 15px 0;
         }
 
         table td, table th {
-            padding: 8px;
+            padding: 12px 8px;
             border-bottom: 1px solid var(--accent);
+            text-align: left;
         }
 
         table th {
             color: var(--accent);
             font-family: 'Orbitron';
+            font-weight: bold;
         }
 
         .reward-highlight {
@@ -286,7 +322,8 @@ html {
             text-shadow: 0 0 10px var(--accent);
             margin: 10px 0;
         }
-          .leaderboardBtn {
+
+        .leaderboardBtn {
             display: block;
             margin: 10px auto 30px auto;
             padding: 10px 22px;
@@ -338,8 +375,62 @@ html {
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-    </style>
 
+        .revoke-btn {
+            padding: 6px 12px;
+            background: #ff4444;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .revoke-btn:hover {
+            background: #ff2222;
+        }
+
+        .sign-out-all-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background: #ff4444;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sign-out-all-btn:hover {
+            background: #ff2222;
+        }
+
+        .device-current {
+            background: rgba(0, 234, 255, 0.1);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            nav h1 {
+                font-size: 20px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            .hero h2 {
+                font-size: 35px;
+            }
+        }
+    </style>
 
 </head>
 
@@ -352,10 +443,11 @@ html {
             <span id="userDisplay"></span>
             <span id="balanceDisplay"></span>
             <a href="about.html">About</a>
-            <a href="#" id="openMission">Daily Mission</a>
+            <a href="#" id="openMission">Mission</a>
             <a href="comments.html">Comments</a>
             <a href="contributors.html">Contributors</a>
             <button id="loginBtn">Login</button>
+            <button id="devicesBtn">My Devices</button>
             <button id="claimRewardNavBtn" class="disabled">Claim Reward</button>
         </div>
     </nav>
@@ -410,7 +502,7 @@ html {
             </a>
 
             <a class="game-card" href="https://phcode.site/p/p-84dcc2e378d/default%20project/index.html" target="_blank">
-                <img src="https://images.unsplash.com/photo-1617994452722-4145e196248b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVkaW8lMjB3YXZlc3xlbnwwfHwwfHx8MA%3D%3D">
+                <img src="https://images.unsplash.com/photo-1617994452722-4145e196248b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVkaW8lMjB3YXZlc3xlbnwwfHww">
                 <h3>Texas Hold'Em</h3>
                 <p>Build a stack through patience, discipline, and calculated risks.</p>
             </a>
@@ -434,13 +526,13 @@ html {
             </a>
 
             <a class="game-card" href="tropico_island.html" target="_blank">
-                <img src="https://images.unsplash.com/photo-1672841828482-45faa4c70e50?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHJvcGljYWwlMjBpc2xhbmR8ZW58MHx8MHx8fDA%3D">
+                <img src="https://images.unsplash.com/photo-1672841828482-45faa4c70e50?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHJvcGljYWwlMjBpc2xhbmR8ZW58">
                 <h3>Tropico Island Sim</h3>
                 <p>Still Being Developed!!!</p>
             </a>
 
             <a class="game-card" href="career_sim.html" target="_blank">
-                <img src="https://images.unsplash.com/photo-1766218326892-4b261b02a03f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fHN0b2NrJTIwY2hhcnR8ZW58MHx8MHx8fDA%3D">
+                <img src="https://images.unsplash.com/photo-1766218326892-4b261b02a03f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fHN0b2NrJTIwY2hhcnR8ZW58MHx8">
                 <h3>Career Sim</h3>
                 <p>Still Being Developed!!!</p>
             </a>
@@ -452,7 +544,7 @@ html {
             </a>
 
             <a class="game-card" href="offshore_empire.html" target="_blank">
-                <img src="https://images.unsplash.com/photo-1758129949419-c296cead04c3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGFyZ2UlMjBvaWxyaWdzfGVufDB8fDB8fHww">
+                <img src="https://images.unsplash.com/photo-1758129949419-c296cead04c3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bGFyZ2UlMjBvaWxyaWdzfGVufDB8">
                 <h3>Offshore Empire</h3>
                 <p>Still Being Developed!!!</p>
             </a>
@@ -477,7 +569,7 @@ html {
 
             <a class="game-card" href="#" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
-                <h3>Buisness Empire Web Edition</h3>
+                <h3>Business Empire Web Edition</h3>
                 <p>Coming Soon!!!</p>
             </a>
 
@@ -486,7 +578,8 @@ html {
                 <h3>Crypto Miner Tycoon</h3>
                 <p>Coming Soon!!!</p>
             </a>
-              <a class="game-card" href="#" target="_blank">
+            
+            <a class="game-card" href="#" target="_blank">
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80">
                 <h3>Life Sim V2</h3>
                 <p>Coming Soon!!!</p>
@@ -563,27 +656,45 @@ html {
         </div>
     </div>
 
+    <!-- DEVICES MODAL -->
+    <div class="modal" id="devicesModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDevices()">&times;</span>
+            <h2>Active Sessions</h2>
+            <p>Manage your active sessions across all devices.</p>
+            <table>
+                <tr><th>Device</th><th>Last Used</th><th>Action</th></tr>
+                <tbody id="sessionsBody"></tbody>
+            </table>
+            <button class="sign-out-all-btn" onclick="signOutAllDevices()">
+                Sign Out All Devices
+            </button>
+        </div>
+    </div>
+
     <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
     // ---------- SUPABASE CLIENT ----------
     const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnemt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnekt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.x6zArNK_8lDKNGKPz4GzNj6eFRqN-DQVz_MnbYuG0uI";
 
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ---------- GLOBAL STATE ----------
-    let currentUser = null; // this will hold the row from profiles
+    let currentUser = null;
 
     // ---------- DOM ELEMENTS ----------
     const loginModal = document.getElementById("loginModal");
     const leaderboardModal = document.getElementById("leaderboardModal");
     const dailyRewardModal = document.getElementById("dailyRewardModal");
     const missionModal = document.getElementById("missionModal");
+    const devicesModal = document.getElementById("devicesModal");
 
     const heroTitle = document.getElementById("heroTitle");
     const loginBtn = document.getElementById("loginBtn");
+    const devicesBtn = document.getElementById("devicesBtn");
     const userDisplay = document.getElementById("userDisplay");
     const balanceDisplay = document.getElementById("balanceDisplay");
 
@@ -616,6 +727,7 @@ html {
     function closeLeaderboard() { leaderboardModal.style.display = "none"; }
     function closeDailyReward() { dailyRewardModal.style.display = "none"; }
     function closeMission() { missionModal.style.display = "none"; }
+    function closeDevices() { devicesModal.style.display = "none"; }
 
     function formatMoney(amount) {
         return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
@@ -645,6 +757,7 @@ html {
         if (!user) {
             heroTitle.textContent = "Welcome to MoneyGames.work.gd";
             loginBtn.textContent = "Login";
+            devicesBtn.style.display = "none";
             userDisplay.textContent = "";
             balanceDisplay.textContent = "";
             updateRewardButtonState(null);
@@ -653,6 +766,7 @@ html {
 
         heroTitle.textContent = "Welcome to MoneyGames.work.gd";
         loginBtn.textContent = "Logout";
+        devicesBtn.style.display = "inline-block";
         userDisplay.textContent = user.username || "";
         const balance = user.balance || 0;
         balanceDisplay.textContent = "Balance: " + formatMoney(balance);
@@ -776,21 +890,221 @@ html {
         } else {
             claimRewardNavBtn.classList.add("disabled");
             claimRewardNavBtn.classList.remove("bouncing");
-            claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(state.nextRewardAmount);
+            claimRewardNavBtn.textContent = "Tomorrow: " + formatMoney(state.nextRewardAmount);
         }
+    }
+
+    // ---------- SESSION MANAGEMENT (CROSS-DEVICE) ----------
+    async function registerUserSession(userId) {
+        try {
+            const deviceName = getDeviceName();
+            const deviceInfo = navigator.userAgent;
+            const ipAddress = await getClientIP();
+
+            const { data, error } = await db.from("user_sessions").insert({
+                user_id: userId,
+                device_name: deviceName,
+                device_info: deviceInfo,
+                ip_address: ipAddress,
+                is_active: true
+            });
+
+            if (error) {
+                console.error("Error registering session:", error);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                localStorage.setItem("sessionId", data[0].id);
+                console.log("✓ Session registered:", deviceName);
+            }
+        } catch (err) {
+            console.error("Session registration error:", err);
+        }
+    }
+
+    function getDeviceName() {
+        const userAgent = navigator.userAgent;
+        let browserName = "Unknown Browser";
+        let osName = "Unknown OS";
+
+        if (userAgent.includes("Firefox")) browserName = "Firefox";
+        else if (userAgent.includes("Chrome")) browserName = "Chrome";
+        else if (userAgent.includes("Safari")) browserName = "Safari";
+        else if (userAgent.includes("Edge")) browserName = "Edge";
+        else if (userAgent.includes("Opera")) browserName = "Opera";
+
+        if (userAgent.includes("Win")) osName = "Windows";
+        else if (userAgent.includes("Mac")) osName = "macOS";
+        else if (userAgent.includes("Linux")) osName = "Linux";
+        else if (userAgent.includes("Android")) osName = "Android";
+        else if (userAgent.includes("iPhone")) osName = "iOS";
+
+        return `${browserName} on ${osName}`;
+    }
+
+    async function getClientIP() {
+        try {
+            const response = await fetch("https://api.ipify.org?format=json");
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.error("IP fetch error:", error);
+            return "Unknown";
+        }
+    }
+
+    async function verifySessionIsActive(userId) {
+        try {
+            const sessionId = localStorage.getItem("sessionId");
+            if (!sessionId) return true;
+
+            const { data, error } = await db.from("user_sessions")
+                .select("is_active")
+                .eq("id", sessionId)
+                .eq("user_id", userId)
+                .single();
+
+            if (error) {
+                console.warn("Session verification error:", error);
+                return false;
+            }
+
+            return data?.is_active === true;
+        } catch (error) {
+            console.error("Session check error:", error);
+            return false;
+        }
+    }
+
+    async function loadActiveSessions() {
+        try {
+            const { data: sessions, error } = await db.from("user_sessions")
+                .select("*")
+                .eq("user_id", currentUser.id)
+                .eq("is_active", true)
+                .order("last_accessed_at", { ascending: false });
+
+            if (error) {
+                console.error("Error loading sessions:", error);
+                return;
+            }
+
+            const tbody = document.getElementById("sessionsBody");
+            tbody.innerHTML = "";
+
+            if (!sessions || sessions.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align: center; padding: 20px;'>No active sessions</td></tr>";
+                return;
+            }
+
+            sessions.forEach(session => {
+                const lastUsed = new Date(session.last_accessed_at).toLocaleDateString();
+                const currentSessionId = localStorage.getItem("sessionId");
+                const isCurrent = session.id === currentSessionId;
+
+                const rowClass = isCurrent ? "device-current" : "";
+
+                tbody.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${session.device_name}${isCurrent ? " ✓" : ""}</td>
+                        <td>${lastUsed}</td>
+                        <td>${isCurrent ? "Current" : `<button class="revoke-btn" onclick="revokeSession('${session.id}')">Revoke</button>`}</td>
+                    </tr>
+                `;
+            });
+        } catch (error) {
+            console.error("Session loading error:", error);
+        }
+    }
+
+    async function revokeSession(sessionId) {
+        if (!confirm("Sign out this device? It will be logged out on next refresh.")) return;
+
+        try {
+            const { error } = await db.from("user_sessions")
+                .update({ is_active: false })
+                .eq("id", sessionId);
+
+            if (error) {
+                console.error("Error revoking session:", error);
+                alert("Failed to revoke session");
+                return;
+            }
+
+            alert("✓ Session revoked");
+            await loadActiveSessions();
+        } catch (error) {
+            console.error("Revoke error:", error);
+        }
+    }
+
+    async function signOutAllDevices() {
+        if (!confirm("Sign out from ALL devices? You will be logged out immediately.")) return;
+
+        try {
+            const { error } = await db.from("user_sessions")
+                .update({ is_active: false })
+                .eq("user_id", currentUser.id);
+
+            if (error) {
+                console.error("Error signing out all devices:", error);
+                alert("Failed to sign out all devices");
+                return;
+            }
+
+            await db.auth.signOut();
+            currentUser = null;
+            localStorage.removeItem("sessionId");
+            updateUIForLogin(null);
+            closeDevices();
+            alert("✓ Signed out from all devices");
+        } catch (error) {
+            console.error("Sign out all error:", error);
+        }
+    }
+
+    async function openDevicesModal() {
+        if (!currentUser) {
+            alert("Log in to view your sessions.");
+            return;
+        }
+
+        await loadActiveSessions();
+        devicesModal.style.display = "flex";
     }
 
     // ---------- AUTH ----------
     loginBtn.onclick = async () => {
         if (currentUser) {
-            // logout
-            await db.auth.signOut();
-            currentUser = null;
-            updateUIForLogin(null);
+            await logoutCurrentSession();
         } else {
             loginModal.style.display = "flex";
         }
     };
+
+    devicesBtn.onclick = openDevicesModal;
+
+    async function logoutCurrentSession() {
+        try {
+            const sessionId = localStorage.getItem("sessionId");
+
+            if (sessionId) {
+                await db.from("user_sessions")
+                    .update({ is_active: false })
+                    .eq("id", sessionId);
+            }
+
+            await db.auth.signOut();
+            localStorage.removeItem("sessionId");
+            currentUser = null;
+            updateUIForLogin(null);
+            alert("✓ Logged out successfully");
+        } catch (error) {
+            console.error("Logout error:", error);
+            alert("Error logging out");
+        }
+    }
 
     async function handleAuth() {
         const email = document.getElementById("email").value.trim();
@@ -803,59 +1117,59 @@ html {
             return;
         }
 
-        // Try sign-in first
-        const { data: signInData, error: signInError } = await db.auth.signInWithPassword({
-            email,
-            password
-        });
+        try {
+            const { data: signInData, error: signInError } = await db.auth.signInWithPassword({
+                email,
+                password
+            });
 
-        if (!signInError && signInData.user) {
-            await loadUserProfile(signInData.user.id);
+            if (!signInError && signInData.user) {
+                await registerUserSession(signInData.user.id);
+                await loadUserProfile(signInData.user.id);
+                closeLogin();
+                return;
+            }
+
+            if (!username) {
+                alert("Please enter a username to create an account.");
+                return;
+            }
+
+            const { data: signUpData, error: signUpError } = await db.auth.signUp({
+                email,
+                password
+            });
+
+            if (signUpError) {
+                console.error("SIGNUP ERROR:", signUpError);
+                alert("Signup failed: " + signUpError.message);
+                return;
+            }
+
+            const userId = signUpData.user.id;
+
+            await db.from("profiles").insert({
+                id: userId,
+                email,
+                username,
+                balance: 0,
+                streak: 0,
+                last_claim: null,
+                mission_game_id: null,
+                mission_game_name: null,
+                mission_date: null,
+                mission_completed: false,
+                wants_updates: wantsUpdates
+            });
+
+            await registerUserSession(userId);
+            await loadUserProfile(userId);
             closeLogin();
-            return;
+
+        } catch (error) {
+            console.error("Auth error:", error);
+            alert("An error occurred: " + error.message);
         }
-
-        // If sign-in failed, try sign-up
-        if (!username) {
-            alert("Please enter a username to create an account.");
-            return;
-        }
-
-const { data: signUpData, error: signUpError } = await db.auth.signUp({
-    email,
-    password
-});
-
-if (signUpError) {
-    console.error("SIGNUP ERROR:", signUpError);
-    alert("Signup failed: " + signUpError.message);
-    return;
-}
-
-console.log("SIGNUP SUCCESS:", signUpData);
-        if (signUpError) {
-            alert("Signup failed: " + signUpError.message);
-            return;
-        }
-
-        const userId = signUpData.user.id;
-
-        await db.from("profiles").insert({
-            id: userId,
-            email,
-            username,
-            balance: 0,
-            streak: 0,
-            last_claim: null,
-            mission_game_id: null,
-            mission_game_name: null,
-            mission_date: null,
-            mission_completed: false,
-            wants_updates: wantsUpdates
-        });
-
-        await loadUserProfile(userId);
-        closeLogin();
     }
 
     async function loadUserProfile(userId) {
@@ -872,7 +1186,6 @@ console.log("SIGNUP SUCCESS:", signUpData);
 
         currentUser = data;
 
-        // Ensure mission + sync completion
         currentUser = ensureMissionForToday(currentUser);
         currentUser = syncMissionCompletion(currentUser);
         await saveCurrentUser();
@@ -885,23 +1198,33 @@ console.log("SIGNUP SUCCESS:", signUpData);
         const { data } = await db.auth.getSession();
         if (data.session) {
             const userId = data.session.user.id;
-            await loadUserProfile(userId);
+
+            const isSessionValid = await verifySessionIsActive(userId);
+
+            if (isSessionValid) {
+                await loadUserProfile(userId);
+            } else {
+                await db.auth.signOut();
+                currentUser = null;
+                updateUIForLogin(null);
+                alert("⚠️ Your session was ended on another device. Please login again.");
+            }
         } else {
             updateUIForLogin(null);
         }
     })();
 
-    // ---------- LEADERBOARD (STATIC FOR NOW) ----------
+    // ---------- LEADERBOARD ----------
     const leaderboardData = [
         { game: "Race To A Billion", player: "SSCCOOTTT", time: "5:18" },
         { game: "Race To A Trillion", player: "SSCCOOTTT", time: "6:22" },
         { game: "Real Estate Tycoon V1", player: "Max", time: "45 Years" },
         { game: "Real Estate Tycoon V2", player: "lawsss", time: "6 Years" },
-        { game: "Black Jack ", player: "Gus M", time: "2:11" },
+        { game: "Black Jack", player: "Gus M", time: "2:11" },
         { game: "Stock Sim", player: "Bobby", time: "15:00" },
         { game: "Life sim", player: "SSCCOOTTT", time: "$375,200" },
         { game: "Tropico Island Sim", player: "mo", time: "00:09" },
-        { game: "Side Hustle  Tycoon", player: "Toby D", time: "00:05" },
+        { game: "Side Hustle Tycoon", player: "Toby D", time: "00:05" },
         { game: "F1 Manager Tycoon", player: "SSCCOOTTT", time: "766 Points" }
     ];
 
@@ -1008,90 +1331,50 @@ console.log("SIGNUP SUCCESS:", signUpData);
         }
 
         if (!canClaim) {
-            alert("You've already claimed today's reward. Come back tomorrow!");
+            alert("You've already claimed today. Come back tomorrow!");
             return;
         }
 
-        streak = streak + 1;
         const baseReward = 1000;
-        let rewardAmount = baseReward + streak * 200;
-
-        const nowDate = new Date();
-        const missionDate = currentUser.mission_date ? new Date(currentUser.mission_date) : null;
-        let missionActiveToday = false;
-        if (missionDate && sameDay(nowDate, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-            missionActiveToday = true;
-        }
-        const missionCompletedToday = missionActiveToday && currentUser.mission_completed;
-
-        if (missionCompletedToday) {
-            rewardAmount = rewardAmount * 2;
-        }
-
+        streak++;
         currentUser.streak = streak;
-        currentUser.last_claim = today.toISOString();
-        currentUser.balance = (currentUser.balance || 0) + rewardAmount;
+        let reward = baseReward + streak * 200;
+
+        if (currentUser.mission_completed) {
+            reward = reward * 2;
+        }
+
+        currentUser.balance += reward;
+        currentUser.last_claim = now.toISOString();
 
         await saveCurrentUser();
-        updateUIForLogin(currentUser);
+        updateRewardButtonState(currentUser);
+        closeDailyReward();
 
-        const nextRewardAmount = baseReward + (streak + 1) * 200;
-
-        rewardAmountDisplay.textContent = "You claimed: " + formatMoney(rewardAmount);
-        streakDisplay.textContent = "Current streak: " + streak + " day" + (streak === 1 ? "" : "s");
-        nextClaimInfo.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
-        missionBonusInfo.textContent = missionCompletedToday
-            ? "Mission complete bonus applied today."
-            : "No mission bonus today. Complete tomorrow's mission for double reward.";
-
-        claimRewardBtn.disabled = true;
-        claimRewardBtn.style.opacity = "0.5";
-
-        claimRewardNavBtn.classList.add("disabled");
-        claimRewardNavBtn.classList.remove("bouncing");
-        claimRewardNavBtn.textContent = "Tomorrow's reward: " + formatMoney(nextRewardAmount);
+        alert(`✓ Claimed ${formatMoney(reward)}! Your new balance: ${formatMoney(currentUser.balance)}`);
     };
 
-    // ---------- DAILY MISSION UI ----------
-    document.getElementById("openMission").onclick = async () => {
+    // ---------- DAILY MISSION ----------
+    document.getElementById("openMission").onclick = (e) => {
+        e.preventDefault();
         if (!currentUser) {
-            alert("Log in or create an account to see your daily mission.");
+            alert("Log in to view your daily mission.");
             loginModal.style.display = "flex";
             return;
         }
 
         currentUser = ensureMissionForToday(currentUser);
-        currentUser = syncMissionCompletion(currentUser);
-        await saveCurrentUser();
+        const state = getRewardState(currentUser);
 
-        missionGameDisplay.textContent = "Today's mission: " + (currentUser.mission_game_name || "Unknown");
-        missionHint.textContent = "Beat this game today to double your daily cash reward.";
-
-        const now = new Date();
-        const missionDate = currentUser.mission_date ? new Date(currentUser.mission_date) : null;
-        let missionActiveToday = false;
-        if (missionDate && sameDay(now, new Date(missionDate.getFullYear(), missionDate.getMonth(), missionDate.getDate()))) {
-            missionActiveToday = true;
-        }
-
-        if (!missionActiveToday) {
-            missionStatusDisplay.textContent = "A new mission will be assigned at midnight.";
-        } else if (currentUser.mission_completed) {
-            missionStatusDisplay.textContent = "Status: Completed ✅ — your next claim today will be doubled.";
-        } else {
-            missionStatusDisplay.textContent = "Status: In progress — beat this game before claiming to earn double.";
-        }
+        missionGameDisplay.textContent = `Play: ${currentUser.mission_game_name || "Unknown"}`;
+        missionStatusDisplay.textContent = currentUser.mission_completed
+            ? "✓ Completed! Ready to claim double reward."
+            : "Not completed yet.";
+        missionHint.textContent = "Complete this game to double your daily reward when you claim it.";
 
         missionModal.style.display = "flex";
     };
 
-    // ---------- CLOSE MODALS ON BACKGROUND CLICK ----------
-    window.onclick = e => {
-        if (e.target === loginModal) closeLogin();
-        if (e.target === leaderboardModal) closeLeaderboard();
-        if (e.target === dailyRewardModal) closeDailyReward();
-        if (e.target === missionModal) closeMission();
-    };
     </script>
 
 </body>
