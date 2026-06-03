@@ -433,19 +433,6 @@
             .hero h2 {
                 font-size: 35px;
             }
-            .nav-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #00eaff;
-  object-fit: cover;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.nav-avatar img:hover {
-  transform: scale(1.1);
-}
         }
     </style>
 
@@ -455,9 +442,6 @@
 
     <!-- NAVBAR -->
     <nav>
-        <div class="nav-avatar" onclick="openCharacterUI()">
-  <img id="nav-avatar-img" src="" alt="Avatar">
-</div>
         <h1>Money Games</h1>
         <div>
             <span id="userDisplay"></span>
@@ -699,24 +683,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        function loadNavbarAvatar() {
-  const saved = JSON.parse(localStorage.getItem("avatar"));
-  if (!saved) return;
-
-  const img = document.getElementById("nav-avatar-img");
-  img.src = saved.img;
-  img.style.transform = `rotate(${saved.rotation}deg)`;
-}
-
-function openCharacterUI() {
-  window.location.href = "character.html";
-}
-
-loadNavbarAvatar();
-
     // ---------- SUPABASE CLIENT ----------
     const SUPABASE_URL = "https://dagktrogjsxocawwgzkw.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnekt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.x6zArNK_8lDKNGKPz4GzNj6eFRqN-DQVz_MnbYuG0uI";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZ2t0cm9nanN4b2Nhd3dnekt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTg2NzYsImV4cCI6MjA5MzEzNDY3Nn0.oMhEtCEzykI-2qM6Rz0N3ceU7lAlhwWCATNAjw0XE6o";
 
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
